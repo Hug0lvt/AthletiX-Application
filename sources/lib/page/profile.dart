@@ -20,7 +20,7 @@ class ProfilePage extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      margin: const EdgeInsets.all(35.0),
+                      margin: const  EdgeInsets.symmetric(vertical: 35.0),
                       constraints: BoxConstraints.expand(
                         width: screenWidth * 0.9,
                         height: screenHeight * 0.2,
@@ -46,13 +46,19 @@ class ProfilePage extends StatelessWidget {
                             ),
                           ),
                           const Text(
-                            'Contenu de la nouvelle page',
+                            'Pseudo',
                             style: TextStyle(
                               color: Colors.white,
                             ),
                           ),
+                          Container(
+                            width: screenWidth * 0.3,
+                            height: 1.0,
+                            color: const Color(0xFF232323),
+                            margin: const EdgeInsets.symmetric(vertical: 10.0),
+                          ),
                           const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Column(
                                 children: [
