@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/buttonProfilePage.dart';
+import 'package:sources/components/profilePublicPostedCard.dart';
 import '../components/sendMessage.dart';
 
 class ProfilePublicPage extends StatelessWidget {
@@ -68,11 +68,13 @@ class ProfilePublicPage extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    ButtonProfilePage(
-                      text: 'Mon bouton',
-                      imagePath: '../assets/PostIcon.png',
-                      width: screenWidth * 0.9,
-                      height: screenHeight * 0.07,
+                    ProfilePublicPostedCard(
+                      postName: 'Name post',
+                      description: 'Lorem ipsum sdjfhvb sdjfbhjbse kjfsku dfub isdbdsiuifb skdf ...',
+                      postDate: 'Posted 21/09/2023 at 22:46',
+                      imagePath: '../assets/EditIcon.png',
+                      width: screenWidth * 0.45,
+                      height: screenHeight * 0.3,
                     ),
                   ],
                 ),
