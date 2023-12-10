@@ -42,11 +42,14 @@ class ProfilePublicPostedCard extends StatelessWidget {
                 ),
               ),
             ),
-            Image.asset(
-              imagePath,
-              width: double.infinity,
-              height: height * 0.8,
-              fit: BoxFit.cover,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.asset(
+                imagePath,
+                width: double.infinity,
+                height: height * 0.8,
+                fit: BoxFit.cover,
+              ),
             ),
             Text(
               postDate,
