@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/buttonProfilePage.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePrivatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
