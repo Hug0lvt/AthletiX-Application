@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'page/profile.dart';
+import 'package:sources/page/profilePublic.dart';
+import 'page/profilePrivate.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ProfilePage(),
+      home: ProfilePublicPage(),
     );
   }
 }
