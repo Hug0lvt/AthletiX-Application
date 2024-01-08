@@ -1,11 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.asset("../assets/doigby.mp4")
+      ..initialize().then((_) {
+        _controller.setLooping(true);
+        _controller.play();
+        setState(() {});
+      });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          Container(
+            color: const Color(0xFF363636),
+            child: Center(
+              child: _controller.value.isInitialized
+                  ? FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: VideoPlayer(_controller),
+                ),
+              )
+                  : CircularProgressIndicator(),
+            ),
+          ),
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
@@ -19,9 +54,8 @@ class HomePage extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 20),
                     decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(1000)
-                    ),
+                        color: const Color(0xFF363636).withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(1000)),
                     child: Column(
                       children: [
                         ClipOval(
@@ -32,7 +66,7 @@ class HomePage extends StatelessWidget {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        const Row(
+                        const Column(
                           children: [
                             Icon(Icons.favorite, color: Colors.white),
                             SizedBox(width: 5.0),
@@ -40,7 +74,7 @@ class HomePage extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 10.0),
-                        const Row(
+                        const Column(
                           children: [
                             Icon(Icons.comment, color: Colors.white),
                             SizedBox(width: 5.0),
@@ -48,7 +82,7 @@ class HomePage extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 10.0),
-                        const Row(
+                        const Column(
                           children: [
                             Icon(Icons.send, color: Colors.white),
                             SizedBox(width: 5.0),
@@ -61,7 +95,7 @@ class HomePage extends StatelessWidget {
                   const SizedBox(height: 10.0),
                   const Text(
                     'Description de la vidéo',
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ],
               ),
@@ -71,4 +105,16 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: HomePage(),
+  ));
 }
