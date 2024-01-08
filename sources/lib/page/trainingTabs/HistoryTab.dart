@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../components/Program_Container.dart';
+
 class HistoryTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      child: Center(child: Text('Tab 1 Content')),
+    return Scaffold(
+        body: Program_Container(),
     );
   }
 }
