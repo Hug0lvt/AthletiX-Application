@@ -105,7 +105,7 @@ class ProfilePublicPage extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: const Text(
-                        'Text',
+                        'Posts',
                         style: TextStyle(
                           color: Colors.white,
                         ),

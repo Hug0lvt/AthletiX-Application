@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sources/page/home.dart';
+import 'package:sources/page/TrainingHome.dart';
 import 'package:sources/page/profilePublic.dart';
 import 'page/profilePrivate.dart';
 
