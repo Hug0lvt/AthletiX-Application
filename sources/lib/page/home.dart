@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,89 +21,108 @@ class _HomePageState extends State<HomePage> {
       });
   }
 
+  void onScreenTap() {
+    if (_controller.value.isPlaying) {
+      _controller.pause();
+    } else {
+      _controller.play();
+    }
+    _controller.pause();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            color: const Color(0xFF363636),
-            child: Center(
-              child: _controller.value.isInitialized
-                  ? FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: VideoPlayer(_controller),
-                ),
-              )
-                  : CircularProgressIndicator(),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.12,
-              height: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const SizedBox(height: 10.0),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    decoration: BoxDecoration(
-                        color: const Color(0xFF363636).withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(1000)),
-                    child: Column(
-                      children: [
-                        ClipOval(
-                          child: Image.asset(
-                            '../assets/EditIcon.png',
-                            width: 40.0,
-                            height: 40.0,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const Column(
-                          children: [
-                            Icon(Icons.favorite, color: Colors.white),
-                            SizedBox(width: 5.0),
-                            Text('123', style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                        const SizedBox(height: 10.0),
-                        const Column(
-                          children: [
-                            Icon(Icons.comment, color: Colors.white),
-                            SizedBox(width: 5.0),
-                            Text('456', style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                        const SizedBox(height: 10.0),
-                        const Column(
-                          children: [
-                            Icon(Icons.send, color: Colors.white),
-                            SizedBox(width: 5.0),
-                            Text('789', style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                      ],
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: onScreenTap,
+              child: Container(
+                color: const Color(0xFF363636),
+                child: Center(
+                  child: _controller.value.isInitialized
+                      ? FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: VideoPlayer(_controller),
                     ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  const Text(
-                    'Description de la vidéo',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
+                  )
+                      : CircularProgressIndicator(),
+                ),
               ),
             ),
           ),
-        ],
-      ),
+          Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  height: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const SizedBox(height: 10.0),
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        decoration: BoxDecoration(
+                            color: const Color(0xFF202020).withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(1000),
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.11,
+                        child: Column(
+                          children: [
+                            ClipOval(
+                              child: Image.asset(
+                                '../assets/EditIcon.png',
+                                width: 50.0,
+                                height: 50.0,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(height: 10.0),
+                            Column(
+                              children: [
+                                SvgPicture.asset('assets/LikeIcon.svg', color: Colors.white, width: 45,),
+                                const SizedBox(width: 5.0),
+                                const Text('123', style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                            const SizedBox(height: 5.0),
+                            Column(
+                              children: [
+                                SvgPicture.asset('assets/DoubleHaltereIcon.svg', width: 45,),
+                                const SizedBox(width: 10.0),
+                                const Text('456', style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                            const SizedBox(height: 5.0),
+                            Column(
+                              children: [
+                                SvgPicture.asset('assets/CommentIcon.svg', width: 35,),
+                                const SizedBox(width: 10.0),
+                                const Text('789', style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
+                            const SizedBox(height: 5.0),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      const Text(
+                        'Description de la vidéo',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+        ),
     );
   }
 
@@ -111,10 +131,4 @@ class _HomePageState extends State<HomePage> {
     _controller.dispose();
     super.dispose();
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: HomePage(),
-  ));
 }
