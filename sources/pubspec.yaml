@@ -1,4 +1,4 @@
-sname: sources
+name: sources
 description: AthletiX - Votre compagnon pour une vie plus saine et active
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -30,7 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  chewie: ^1.2.2
   video_player: ^2.8.2
   flutter_svg: ^2.0.9
 
@@ -69,6 +68,7 @@ flutter:
   - assets/CommentIcon.svg
   - assets/AddPlus.svg
   - assets/MagGlass.svg
+  - assets/doigby.mp4
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
