@@ -56,15 +56,6 @@ class _TrainingHomeState extends State<TrainingHome> with SingleTickerProviderSt
       ),
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                prefixIcon: Icon(Icons.search),
-              ),
-            ),
-          ),
           Expanded(
             child: TabBarView(
               controller: _tabController,
