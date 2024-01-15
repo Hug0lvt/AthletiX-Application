@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../components/commentCard.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -117,6 +119,28 @@ class _HomePageState extends State<HomePage> {
                         'Description de la vidéo',
                         style: TextStyle(color: Colors.white),
                       ),
+                    ],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.90,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF202020).withOpacity(0.9),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ListView(
+                    children: [
+                      CommentCard(),
+                      CommentCard(),
+                      CommentCard(),
+                      CommentCard(),
                     ],
                   ),
                 ),
