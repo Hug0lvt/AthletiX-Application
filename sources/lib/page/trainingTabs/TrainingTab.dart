@@ -8,6 +8,7 @@ class TrainingTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body:
       Container(
@@ -17,8 +18,7 @@ class TrainingTab extends StatelessWidget {
           children: [
             SizedBox(height: 8.0),
             Container(
-              width: 410,
-              height: 48,
+              width: screenWidth * 0.9,
               child: Stack(
                 children: [
                   TextField(
