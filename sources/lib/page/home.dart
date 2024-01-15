@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                             color: const Color(0xFF202020).withOpacity(0.9),
                             borderRadius: BorderRadius.circular(1000),
                         ),
-                        width: MediaQuery.of(context).size.width * 0.11,
+                        width: 60,
                         child: Column(
                           children: [
                             ClipOval(
