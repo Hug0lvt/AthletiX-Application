@@ -17,7 +17,7 @@ class _TrainingHomeState extends State<TrainingHome> with SingleTickerProviderSt
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _tabController.index=1; // defaults to Training tab on load
+    _tabController.index=2; // defaults to Training tab on load
   }
 
   @override

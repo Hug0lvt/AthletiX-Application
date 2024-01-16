@@ -4,10 +4,13 @@ import 'package:flutter_svg/svg.dart';
 import '../../components/ProgramContainer.dart';
 
 class TrainingTab extends StatelessWidget {
+  const TrainingTab({super.key});
+
   get onPressed => null;
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body:
       Container(
@@ -15,49 +18,45 @@ class TrainingTab extends StatelessWidget {
         child:
         Column(
           children: [
-            SizedBox(height: 8.0),
-            Container(
-              width: 410,
-              height: 48,
+            const SizedBox(height: 8.0),
+            SizedBox(
+              width: screenWidth * 0.9,
               child: Stack(
                 children: [
                   TextField(
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText: 'Search',
                       hintStyle: TextStyle(
                         color: Colors.white.withOpacity(0.5),
                       ),
                       filled: true,
-                      fillColor: Color(0xFF1A1A1A),
+                      fillColor: const Color(0xFF1A1A1A),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
                       prefixIcon: Padding(
-                        padding: EdgeInsets.all(15.0), // Adjust padding as needed
+                        padding: const EdgeInsets.all(15.0), // Adjust padding as needed
                         child: SvgPicture.asset(
                           'assets/MagGlass.svg',
                         ),
                       ),
-                      contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
                     ),
                   )
-
                 ],
               ),
             ),
             Row(
               children: [
-                SizedBox(width: 8.0),
-                Text(
+                const SizedBox(width: 8.0),
+                const Text(
                   'My Training Programs',
                   style: TextStyle(
                     color: Colors.white,
-                    fontFamily: 'Mulish',
-                    fontWeight: FontWeight.w700,
-                  ),
+                    fontFamily: 'Mulish',),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: Container(
                     color: Colors.white,
@@ -67,11 +66,10 @@ class TrainingTab extends StatelessWidget {
                 IconButton(onPressed: onPressed, icon: SvgPicture.asset('assets/AddPlus.svg'),)
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Expanded(
               child: ListView(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
                 children: [
                   ProgramContainer(
                     title: 'Push',
@@ -93,7 +91,6 @@ class TrainingTab extends StatelessWidget {
                       '4 x 8 Face Pulls',
                     ],
                   ),
-                  // Add more ProgramContainer widgets as needed
                 ],
               ),
             ),

@@ -3,29 +3,29 @@ import 'package:flutter/material.dart';
 import '../../components/ProgramContainer.dart';
 
 class HistoryTab extends StatelessWidget {
+  const HistoryTab({super.key});
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body:
       Container(
-        color: Color(0xFF282828),
+        color: const Color(0xFF282828),
         child:
         Column(
           children: [
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               children: [
-                SizedBox(width: 8.0),
-                Text(
+                const SizedBox(width: 8.0),
+                const Text(
                   'Training History',
                   style: TextStyle(
                     color: Colors.white,
-                    fontFamily: 'Mulish',
-                    fontWeight: FontWeight.w700,
-                  ),
+                    fontFamily: 'Mulish',),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: Container(
                     color: Colors.white,
@@ -34,11 +34,10 @@ class HistoryTab extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Expanded(
               child: ListView(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
                 children: [
                   ProgramContainer(
                     title: 'Push',
