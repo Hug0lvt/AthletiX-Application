@@ -68,7 +68,7 @@ class ProfilePublicPage extends StatelessWidget {
                                 padding: const EdgeInsets.only(left: 20, right: 10),
                                 child: ClipOval(
                                   child: Image.asset(
-                                    '../assets/EditIcon.png',
+                                    'assets/EditIcon.svg',
                                     width: 78.0,
                                     height: 78.0,
                                     fit: BoxFit.cover,

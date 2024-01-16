@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ButtonProfilePage extends StatelessWidget {
   final String text;
@@ -44,10 +45,9 @@ class ButtonProfilePage extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          Image.asset(
-            imagePath,
-            width: 50.0,
-            height: 50.0,
+          SvgPicture.asset(
+              imagePath,
+              width: 50,
           ),
           const SizedBox(width: 20.0),
           Text(

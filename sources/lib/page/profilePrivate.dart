@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../components/buttonProfilePage.dart';
 
 class ProfilePrivatePage extends StatelessWidget {
@@ -32,16 +33,20 @@ class ProfilePrivatePage extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Image en haut à droite dans le container
                           Align(
                             alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Image.asset(
-                                '../assets/EditIcon.png',
-                                width: 25.0,
-                                height: 25.0,
-                                fit: BoxFit.cover,
+                            child: Center (
+                              child : Container(
+                                width: 80,
+                                height: 80,
+                                child : ClipOval(
+                                  child: Center(
+                                    child: SvgPicture.asset(
+                                      'assets/EditIcon.svg',
+                                      width: 80,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -134,7 +139,7 @@ class ProfilePrivatePage extends StatelessWidget {
                       top: 0,
                       child: ClipOval(
                         child: Image.asset(
-                          '../assets/EditIcon.png',
+                          'assets/EditIcon.svg',
                           width: 78.0,
                           height: 78.0,
                           fit: BoxFit.cover,
@@ -148,7 +153,7 @@ class ProfilePrivatePage extends StatelessWidget {
                   children: [
                     ButtonProfilePage(
                       text: 'Mon bouton',
-                      imagePath: '../assets/PostIcon.png',
+                      imagePath: 'assets/PostIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
                     ),

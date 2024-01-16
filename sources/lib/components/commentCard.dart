@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CommentCard extends StatelessWidget {
   @override
@@ -23,11 +24,14 @@ class CommentCard extends StatelessWidget {
                     Container(
                       width: 50,
                       height: 50,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage("../assets/EditIcon.png"),
-                          fit: BoxFit.cover,
+                      child: ClipOval(
+                        child: Container(
+                          child: Center(
+                            child: SvgPicture.asset(
+                              'assets/EditIcon.svg',
+                              width: 50,
+                            ),
+                          ),
                         ),
                       ),
                     ),
