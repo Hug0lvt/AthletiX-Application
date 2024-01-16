@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../components/ProgramContainer.dart';
+import '../../components/ExerciseContainer.dart';
 
 class ExercicesTab extends StatelessWidget {
+  const ExercicesTab({super.key});
+
   get onPressed => null;
 
   @override
@@ -12,92 +14,100 @@ class ExercicesTab extends StatelessWidget {
     return Scaffold(
       body:
       Container(
-        color: Color(0xFF282828),
+        color: const Color(0xFF282828),
         child:
         Column(
           children: [
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row( children: [
               Container(
+                margin: EdgeInsets.fromLTRB(screenWidth * 0.045,0,screenWidth * 0.02,0),
                 width: screenWidth * 0.8,
                 child: Stack(
                   children: [
                     TextField(
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         hintText: 'Search',
                         hintStyle: TextStyle(
                           color: Colors.white.withOpacity(0.5),
                         ),
                         filled: true,
-                        fillColor: Color(0xFF1A1A1A),
+                        fillColor: const Color(0xFF1A1A1A),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
                         prefixIcon: Padding(
-                          padding: EdgeInsets.all(15.0), // Adjust padding as needed
+                          padding: const EdgeInsets.all(15.0), // Adjust padding as needed
                           child: SvgPicture.asset(
                             'assets/MagGlass.svg',
                           ),
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
                       ),
                     )
-
                   ],
                 ),
               ),
-              IconButton(onPressed: onPressed, icon: SvgPicture.asset('assets/Filter.svg'))
+              IconButton(onPressed: onPressed, icon: SvgPicture.asset('assets/Filter.svg'), padding: EdgeInsets.fromLTRB(0, screenWidth * 0.01, screenWidth * 0.02, 0))
               ],
             ),
             Row(
               children: [
-                SizedBox(width: 8.0),
-                Text(
-                  'My Training Programs',
+                const SizedBox(width: 8.0),
+                const Text(
+                  'Exercises',
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'Mulish',
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: Container(
                     color: Colors.white,
                     height: 1.0,
                   ),
                 ),
-                IconButton(onPressed: onPressed, icon: SvgPicture.asset('assets/AddPlus.svg'))
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Expanded(
               child: ListView(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
                 children: [
-                  ProgramContainer(
-                    title: 'Push',
-                    lastSession: '19',
-                    exercises: [
-                      '4 x 8 Dumbbell Benchpress',
-                      '4 x 8 Inclined Dumbbell Benchpress',
-                      '4 x 8 Machine Fly',
-                      '4 x 8 Cable Triceps',
-                    ],
+                  ExerciseContainer(
+                    name: 'Dumbbell Benchpress',
+                    icon: 'assets/Benchpress.png'
                   ),
-                  ProgramContainer(
-                    title: 'Pull',
-                    lastSession: '1',
-                    exercises: [
-                      '4 x 8 Pull-ups',
-                      '4 x 8 Barbell Rows',
-                      '4 x 8 Lat Pulldowns',
-                      '4 x 8 Face Pulls',
-                    ],
+                  ExerciseContainer(
+                      name: 'Dumbbell Benchpress',
+                      icon: 'assets/Benchpress.png'
                   ),
-                  // Add more ProgramContainer widgets as needed
+                  ExerciseContainer(
+                      name: 'Dumbbell Benchpress',
+                      icon: 'assets/Benchpress.png'
+                  ),
+                  ExerciseContainer(
+                      name: 'Dumbbell Benchpress',
+                      icon: 'assets/Benchpress.png'
+                  ),ExerciseContainer(
+                      name: 'Dumbbell Benchpress',
+                      icon: 'assets/Benchpress.png'
+                  ),ExerciseContainer(
+                      name: 'Dumbbell Benchpress',
+                      icon: 'assets/Benchpress.png'
+                  ),ExerciseContainer(
+                      name: 'Dumbbell Benchpress',
+                      icon: 'assets/Benchpress.png'
+                  ),ExerciseContainer(
+                      name: 'Dumbbell Benchpress',
+                      icon: 'assets/Benchpress.png'
+                  ),
+
+
+
+
                 ],
               ),
             ),
