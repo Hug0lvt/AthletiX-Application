@@ -45,9 +45,12 @@ class ButtonProfilePage extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          SvgPicture.asset(
+          Transform.scale(
+            scale: 1.3,
+            child: SvgPicture.asset(
               imagePath,
               width: 50,
+            ),
           ),
           const SizedBox(width: 20.0),
           Text(
