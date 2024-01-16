@@ -2,15 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../components/ExerciseContainer.dart';
+import '../../components/FilterContainer.dart';
 
 class ExercicesTab extends StatelessWidget {
   const ExercicesTab({super.key});
 
-  get onPressed => null;
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
+
+    void onPressed() {
+      showModalBottomSheet<int>(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) {
+          return FilterContainer(filters: ['Chest', 'Test', 'Test2', 'Test3', 'Test4', 'Test5']);
+        },
+      );
+    }
+
     return Scaffold(
       body:
       Container(
