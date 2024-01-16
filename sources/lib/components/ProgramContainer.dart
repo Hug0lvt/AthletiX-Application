@@ -24,28 +24,32 @@ class ProgramContainer extends StatelessWidget {
           child: Text(
             exercises[i],
             style: TextStyle(
-              color: Color(0xFFA1A1A1),
+              color: const Color(0xFFA1A1A1),
               fontSize: screenWidth * 0.02,
               fontFamily: 'Mulish',
-              fontWeight: FontWeight.w700,
             ),
           ),
         ),
       );
     }
 
-    return Column(
+    return GestureDetector(
+        onTap: () {
+           ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(content: Text('Gesture Detected!')));
+    },
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: screenWidth,
           decoration: ShapeDecoration(
-            color: Color(0xE51A1A1A),
+            color: const Color(0xE51A1A1A),
             shape: RoundedRectangleBorder(
-              side: BorderSide(width: 2, color: Color(0xFFB56CFF)),
+              side: const BorderSide(width: 2, color: Color(0xFFB56CFF)),
               borderRadius: BorderRadius.circular(10),
             ),
-            shadows: [
+            shadows: const [
               BoxShadow(
                 color: Color(0x3F000000),
                 blurRadius: 4,
@@ -70,12 +74,11 @@ class ProgramContainer extends StatelessWidget {
                 ),
 
                 Text(
-                  'Last session : '+ lastSession +' days ago',
+                  'Last session : $lastSession days ago',
                   style: TextStyle(
-                    color: Color(0xFFA1A1A1),
+                    color: const Color(0xFFA1A1A1),
                     fontSize: screenWidth * 0.022,
                     fontFamily: 'Mulish',
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 SizedBox(
@@ -83,15 +86,16 @@ class ProgramContainer extends StatelessWidget {
                 ),
                 ListView(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   children: positionedWidgets,
                 ),
               ],
             ),
           ),
         ),
-        SizedBox(height: 8.0),
+        const SizedBox(height: 8.0),
       ],
+    ),
     );
   }
 }
