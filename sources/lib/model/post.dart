@@ -1,4 +1,4 @@
-import 'enums/publicationType.dart';
+import 'enums/publication_type.dart';
 import 'profile.dart';
 import 'category.dart';
 import 'comment.dart';

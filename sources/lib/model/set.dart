@@ -1,4 +1,4 @@
-import 'enums/setMode.dart';
+import 'enums/set_mode.dart';
 
 class Set {
   int id;
