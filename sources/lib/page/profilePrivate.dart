@@ -5,8 +5,8 @@ import '../components/buttonProfilePage.dart';
 class ProfilePrivatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: SafeArea(
@@ -33,26 +33,10 @@ class ProfilePrivatePage extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Center (
-                              child : Container(
-                                width: 80,
-                                height: 80,
-                                child : ClipOval(
-                                  child: Center(
-                                    child: SvgPicture.asset(
-                                      'assets/EditIcon.svg',
-                                      width: 80,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const Text(
+                          Text(
                             'Pseudo',
                             style: TextStyle(
+                              fontSize: screenWidth * 0.036,
                               color: Colors.white,
                             ),
                           ),
@@ -138,7 +122,7 @@ class ProfilePrivatePage extends StatelessWidget {
                     Positioned(
                       top: 0,
                       child: ClipOval(
-                        child: Image.asset(
+                        child: SvgPicture.asset(
                           'assets/EditIcon.svg',
                           width: 78.0,
                           height: 78.0,
