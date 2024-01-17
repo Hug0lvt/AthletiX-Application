@@ -2,66 +2,56 @@ import 'package:flutter/material.dart';
 
 class FilterContainer extends StatelessWidget {
   final List<String> filters;
+  final Color color;
 
   FilterContainer({
     required this.filters,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-
     final double dynamicWidth = screenWidth * 0.2;
-    final double dynamicHeight = dynamicWidth * 0.4;
-    final double dynamicFontSize = dynamicWidth * 0.2;
 
     Widget buildFilterItem(String filter) {
       return GestureDetector(
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gesture Detected!')),
-          );
+            filters.remove(filter);
         },
-        child: Container(
+        child: SizedBox(
           width: dynamicWidth,
-          height: dynamicHeight,
           child: Stack(
             children: [
-              Positioned(
-                left: 0,
-                top: 0,
-                child: Container(
-                  width: dynamicWidth,
-                  height: dynamicHeight,
-                  decoration: ShapeDecoration(
-                    color: Color(0xFF707070),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(dynamicWidth * 0.1),
+              Container(
+                width: dynamicWidth,
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(dynamicWidth * 0.2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: dynamicWidth * 0.04,
+                      offset: Offset(0, dynamicWidth * 0.04),
+                      spreadRadius: 0,
                     ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: dynamicWidth * 0.04,
-                        offset: Offset(0, dynamicWidth * 0.04),
-                        spreadRadius: 0,
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
               ),
               Positioned(
                 left: dynamicWidth * 0.072,
-                top: dynamicHeight * 0.15,
+                top: dynamicWidth * 0.05,
                 child: SizedBox(
                   width: dynamicWidth * 0.833,
-                  height: dynamicHeight * 0.91,
+                  height: dynamicWidth * 0.91,
                   child: Text(
                     filter,
+                    softWrap: true,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: dynamicFontSize,
+                      fontSize: dynamicWidth * 0.2,
                       fontFamily: 'Mulish',
                     ),
                   ),
@@ -74,22 +64,19 @@ class FilterContainer extends StatelessWidget {
     }
 
     return Container(
-      color:  Color(0xFF151515).withOpacity(0.9),
-      child: Column(
-      children: [
-          GridView.builder(
-            padding: EdgeInsets.fromLTRB(screenWidth * 0.03, screenHeight * 0.05,screenWidth * 0.01, 0),
-            shrinkWrap: true,
-            gridDelegate:  const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-
-            ),
-            itemCount: filters.length,
-            itemBuilder: (BuildContext context, int index) {
-              return buildFilterItem(filters[index]);
-            },
-          ),
-        ],
+      child: GridView.builder(
+        padding: EdgeInsets.fromLTRB(screenWidth * 0.03, screenHeight * 0.05, screenWidth * 0.01, 0),
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: dynamicWidth * 1.2,
+          mainAxisSpacing: dynamicWidth * 0.2,
+          crossAxisSpacing: 0,
+          childAspectRatio: dynamicWidth * 0.035,
+        ),
+        itemCount: filters.length,
+        itemBuilder: (BuildContext context, int index) {
+          return buildFilterItem(filters[index]);
+        },
       ),
     );
   }

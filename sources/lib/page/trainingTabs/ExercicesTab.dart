@@ -14,10 +14,30 @@ class ExercicesTab extends StatelessWidget {
 
     void onPressed() {
       showModalBottomSheet<int>(
-        backgroundColor: Colors.transparent,
+        showDragHandle: true,
+        isScrollControlled: true,
+        backgroundColor: Colors.black87,
         context: context,
         builder: (context) {
-          return FilterContainer(filters: ['Chest', 'Test', 'Test2', 'Test3', 'Test4', 'Test5']);
+          return Container(
+            child: Column(
+              children: [
+                Text(
+                    'Filters',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: screenWidth * 0.1,
+                      fontFamily: 'Mulish',
+                    ),
+                  ),
+                FilterContainer(
+                    filters: ['Chest', 'Back', 'Arms', 'Legs', 'Abs', 'Biceps'],
+                    color: Colors.white24,
+                ),
+            ],
+            ),
+          );
         },
       );
     }
