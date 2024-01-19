@@ -22,7 +22,10 @@ class _MessagePageState extends State<MessagePage> {
     return MaterialApp(
       home: Scaffold(
         backgroundColor: AppColors.greyDark,
-        body: Column(
+        body:
+        SafeArea(
+          child:
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -135,6 +138,7 @@ class _MessagePageState extends State<MessagePage> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

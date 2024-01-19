@@ -61,6 +61,7 @@ class _ConversationPageState extends State<ConversationPage> {
         child: Column(
           children: [
             Container(
+              padding: const EdgeInsets.all(10),
               margin: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                 color: AppColors.blackLight,
