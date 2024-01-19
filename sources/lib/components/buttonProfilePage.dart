@@ -6,8 +6,10 @@ class ButtonProfilePage extends StatelessWidget {
   final String imagePath;
   final double width;
   final double height;
+  final double screenWidth;
+  final double screenHeight;
 
-  ButtonProfilePage({required this.text, required this.imagePath, required this.width, required this.height});
+  ButtonProfilePage({required this.text, required this.imagePath, required this.width, required this.height, required this.screenWidth, required this.screenHeight});
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +54,12 @@ class ButtonProfilePage extends StatelessWidget {
               width: 50,
             ),
           ),
-          const SizedBox(width: 20.0),
+          SizedBox(width: 20.0),
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 20,
+              fontSize: screenWidth * 0.050,
             ),
           ),
         ],
