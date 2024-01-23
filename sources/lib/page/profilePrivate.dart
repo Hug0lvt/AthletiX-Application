@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../components/buttonProfilePage.dart';
 
 class ProfilePrivatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: SafeArea(
@@ -30,34 +31,23 @@ class ProfilePrivatePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25.0),
                       ),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Image en haut à droite dans le container
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Image.asset(
-                                '../assets/EditIcon.png',
-                                width: 25.0,
-                                height: 25.0,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          const Text(
+                          Text(
                             'Pseudo',
                             style: TextStyle(
+                              fontSize: screenWidth * 0.040,
                               color: Colors.white,
                             ),
                           ),
                           Container(
                             width: screenWidth * 0.3,
                             height: 1.0,
-                            color: const Color(0xFF232323),
+                            color: const Color(0xFF434343),
                             margin: const EdgeInsets.symmetric(vertical: 10.0),
                           ),
-                          const Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Column(
@@ -66,12 +56,14 @@ class ProfilePrivatePage extends StatelessWidget {
                                     'coucou',
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
                                     '1',
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                 ],
@@ -82,12 +74,14 @@ class ProfilePrivatePage extends StatelessWidget {
                                     'coucou',
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
                                     '2',
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                 ],
@@ -98,12 +92,14 @@ class ProfilePrivatePage extends StatelessWidget {
                                     'coucou',
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
                                     '3',
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                 ],
@@ -114,12 +110,14 @@ class ProfilePrivatePage extends StatelessWidget {
                                     'coucou',
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
                                     '4',
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                 ],
@@ -133,8 +131,8 @@ class ProfilePrivatePage extends StatelessWidget {
                     Positioned(
                       top: 0,
                       child: ClipOval(
-                        child: Image.asset(
-                          '../assets/EditIcon.png',
+                        child: SvgPicture.asset(
+                          'assets/EditIcon.svg',
                           width: 78.0,
                           height: 78.0,
                           fit: BoxFit.cover,
@@ -148,33 +146,43 @@ class ProfilePrivatePage extends StatelessWidget {
                   children: [
                     ButtonProfilePage(
                       text: 'Mon bouton',
-                      imagePath: '../assets/PostIcon.png',
+                      imagePath: 'assets/PostIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
                       text: 'Mon bouton',
-                      imagePath: '../assets/HeartIcon.png',
+                      imagePath: 'assets/HeartIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
                       text: 'Mon bouton',
-                      imagePath: '../assets/StatisticsIcon.png',
+                      imagePath: 'assets/StatisticsIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
                       text: 'Mon bouton',
-                      imagePath: '../assets/LogoAppIcon.png',
+                      imagePath: 'assets/DoubleHaltereIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
                       text: 'Mon bouton',
-                      imagePath: '../assets/SettingsIcon.png',
+                      imagePath: 'assets/SettingsIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
                     ),
                   ],
                 ),
