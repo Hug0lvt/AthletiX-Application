@@ -2,15 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../components/ExerciseContainer.dart';
+import '../../components/FilterContainer.dart';
 
 class ExercicesTab extends StatelessWidget {
   const ExercicesTab({super.key});
 
-  get onPressed => null;
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
+
+    void onPressed() {
+      showModalBottomSheet<int>(
+        showDragHandle: true,
+        isScrollControlled: true,
+        backgroundColor: Colors.black87,
+        context: context,
+        builder: (context) {
+          return Container(
+            child: Column(
+              children: [
+                Text(
+                    'Filters',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: screenWidth * 0.1,
+                      fontFamily: 'Mulish',
+                    ),
+                  ),
+                FilterContainer(
+                    filters: ['Chest', 'Back', 'Arms', 'Legs', 'Abs', 'Biceps'],
+                    color: Colors.white24,
+                ),
+            ],
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       body:
       Container(
