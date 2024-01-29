@@ -67,7 +67,7 @@ class ProfilePrivatePage extends StatelessWidget {
                           Text(
                             'Pseudo',
                             style: TextStyle(
-                              fontSize: screenWidth * 0.040,
+                              fontSize: ((screenWidth + screenHeight) / 2) * 0.040,
                               color: Colors.white,
                             ),
                           ),
@@ -75,7 +75,7 @@ class ProfilePrivatePage extends StatelessWidget {
                             width: screenWidth * 0.3,
                             height: 1.0,
                             color: const Color(0xFF434343),
-                            margin: const EdgeInsets.symmetric(vertical: 10.0),
+                            margin: const EdgeInsets.symmetric(vertical: 5.0),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -175,8 +175,8 @@ class ProfilePrivatePage extends StatelessWidget {
                       child: ClipOval(
                         child: SvgPicture.asset(
                           'assets/EditIcon.svg',
-                          width: 78,
-                          height: 78,
+                          width: screenWidth * 0.08,
+                          height: screenHeight * 0.08,
                           fit: BoxFit.cover,
                         ),
                       ),
