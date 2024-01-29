@@ -28,7 +28,9 @@ class ProfilePrivatePage extends StatelessWidget {
                     fontFamily: 'Mulish',
                   ),
                 ),
-                EditProfileContainer(),
+                EditProfileContainer(onClose: () {
+                  Navigator.pop(context);
+                }),
               ],
             ),
           );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class EditProfileContainer extends StatelessWidget {
+  final VoidCallback onClose;
+
+  EditProfileContainer({required this.onClose});
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -10,23 +13,19 @@ class EditProfileContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03, vertical: screenWidth * 0.05),
       child: Column(
         children: [
-          // Ajoutez des TextInputs avec espacement
-          buildTextInputWithSpacing("Nom", "Entrez votre nom"),
-          buildTextInputWithSpacing("Prénom", "Entrez votre prénom"),
-          buildTextInputWithSpacing("Email", "Entrez votre email"),
+          buildTextInputWithSpacing("Pseudo", "Enter your new username", screenWidth),
+          buildTextInputWithSpacing("Height", "Enter your height", screenWidth),
+          buildTextInputWithSpacing("Weight", "Enter your weight", screenWidth),
 
-          // Ajoutez d'autres TextInputs selon vos besoins
-
-          // Ajoutez un bouton Valider tout en bas
-          buildSubmitButton(),
+          buildSubmitButton(screenWidth),
         ],
       ),
     );
   }
 
-  Widget buildTextInputWithSpacing(String label, String placeholder) {
+  Widget buildTextInputWithSpacing(String label, String placeholder, double screenWidth) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16.0),
+      margin: EdgeInsets.only(bottom: screenWidth * 0.05),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -34,11 +33,11 @@ class EditProfileContainer extends StatelessWidget {
             label,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 18.0,
+              fontSize: screenWidth * 0.05,
             ),
           ),
           SizedBox(
-            width: double.infinity, // prend toute la largeur disponible
+            width: double.infinity,
             child: TextField(
               decoration: InputDecoration(
                 hintText: placeholder,
@@ -48,7 +47,7 @@ class EditProfileContainer extends StatelessWidget {
               ),
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 16.0,
+                fontSize: screenWidth * 0.04,
               ),
             ),
           ),
@@ -57,23 +56,41 @@ class EditProfileContainer extends StatelessWidget {
     );
   }
 
-  Widget buildSubmitButton() {
+  Widget buildSubmitButton(double screenWidth) {
     return Container(
-      margin: EdgeInsets.only(top: 32.0),
+      margin: EdgeInsets.only(top: screenWidth * 0.1),
+      width: screenWidth * 0.35,
+      height: screenWidth * 0.14,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFB66CFF), Color(0xFFA2E4E6)],
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
       child: ElevatedButton(
         onPressed: () {
-          // Logique de validation ici
+          onClose();
         },
-        child: Text(
-          'Valider',
-          style: TextStyle(
-            fontSize: 18.0,
+        style: ElevatedButton.styleFrom(
+          primary: Colors.transparent,
+          onPrimary: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0.0),
           ),
         ),
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        child: Container(
+          child: Text(
+            'Submit',
+            style: TextStyle(
+              fontSize: screenWidth * 0.05,
+            ),
+          ),
         ),
       ),
     );
   }
+
+
 }
