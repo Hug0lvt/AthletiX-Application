@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sources/page/home.dart';
 import 'package:sources/page/TrainingHome.dart';
+import 'package:sources/page/login/login.dart';
+import 'package:sources/page/login/start.dart';
 import 'package:sources/page/profilePublic.dart';
 import 'page/profilePrivate.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
@@ -14,12 +19,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Athletix Application',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomePage(),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginPage(),
+        '/home': (context) => HomePage(),
+        '/profile/public': (context) => ProfilePublicPage(),
+        '/profile/private': (context) => ProfilePrivatePage(),
+      },
     );
   }
 }
