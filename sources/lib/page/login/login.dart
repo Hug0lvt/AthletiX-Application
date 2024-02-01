@@ -7,8 +7,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatelessWidget {
 
-
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -58,6 +56,7 @@ class LoginPage extends StatelessWidget {
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
+      print(googleAuth?.idToken);
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
@@ -65,7 +64,7 @@ class LoginPage extends StatelessWidget {
       );
 
       // Once signed in, return the UserCredential
-      print(await FirebaseAuth.instance.signInWithCredential(credential));
+      //print(await FirebaseAuth.instance.signInWithCredential(credential));
       Navigator.pushReplacementNamed(context, '/home');
     } catch (error) {
       print('Error during Google sign in: $error');

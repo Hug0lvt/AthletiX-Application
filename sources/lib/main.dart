@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -6,10 +7,15 @@ import 'package:sources/page/TrainingHome.dart';
 import 'package:sources/page/login/login.dart';
 import 'package:sources/page/login/start.dart';
 import 'package:sources/page/profilePublic.dart';
+import 'firebase_options.dart';
 import 'page/profilePrivate.dart';
 
+
+
 Future<void> main() async {
-  await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  //await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
