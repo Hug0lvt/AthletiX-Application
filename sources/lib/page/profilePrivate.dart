@@ -1,12 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../components/buttonProfilePage.dart';
+import '../components/editProfilContainer.dart';
 
 class ProfilePrivatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    void onPressed() {
+      showModalBottomSheet<int>(
+        showDragHandle: true,
+        isScrollControlled: true,
+        backgroundColor: Colors.black87,
+        context: context,
+        builder: (context) {
+          return Container(
+            child: Column(
+              children: [
+                Text(
+                  'Edit my profile',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: screenWidth * 0.1,
+                    fontFamily: 'Mulish',
+                  ),
+                ),
+                EditProfileContainer(onClose: () {
+                  Navigator.pop(context);
+                }),
+              ],
+            ),
+          );
+        },
+      );
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -37,7 +67,7 @@ class ProfilePrivatePage extends StatelessWidget {
                           Text(
                             'Pseudo',
                             style: TextStyle(
-                              fontSize: screenWidth * 0.040,
+                              fontSize: ((screenWidth + screenHeight) / 2) * 0.040,
                               color: Colors.white,
                             ),
                           ),
@@ -45,7 +75,7 @@ class ProfilePrivatePage extends StatelessWidget {
                             width: screenWidth * 0.3,
                             height: 1.0,
                             color: const Color(0xFF434343),
-                            margin: const EdgeInsets.symmetric(vertical: 10.0),
+                            margin: const EdgeInsets.symmetric(vertical: 5.0),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -127,14 +157,26 @@ class ProfilePrivatePage extends StatelessWidget {
                         ],
                       ),
                     ),
+                    Positioned(
+                      top: 50.0,
+                      right: 20.0,
+                      child: IconButton(
+                        onPressed: onPressed,
+                        icon: SvgPicture.asset(
+                          'assets/EditIcon.svg',
+                          width: screenWidth * 0.034,
+                          height: screenHeight * 0.034,
+                        ),
+                      ),
+                    ),
                     // Image en haut au centre
                     Positioned(
                       top: 0,
                       child: ClipOval(
                         child: SvgPicture.asset(
                           'assets/EditIcon.svg',
-                          width: 78.0,
-                          height: 78.0,
+                          width: screenWidth * 0.08,
+                          height: screenHeight * 0.08,
                           fit: BoxFit.cover,
                         ),
                       ),
