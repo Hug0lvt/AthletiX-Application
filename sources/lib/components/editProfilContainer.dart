@@ -1,9 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:sources/providers/api/api_client.dart';
+import 'package:sources/providers/api/profile_api_client.dart';
+import 'package:sources/model/profile.dart';
+import 'package:sources/model/enums/role.dart';
 
-class EditProfileContainer extends StatelessWidget {
+class EditProfileApiClient extends ApiClient with ProfileApiClient {
+  EditProfileApiClient(String baseUrl) : super(baseUrl);
+}
+
+class EditProfileContainer extends StatefulWidget {
   final VoidCallback onClose;
 
   EditProfileContainer({required this.onClose});
+
+  @override
+  _EditProfileContainerState createState() => _EditProfileContainerState();
+}
+
+class _EditProfileContainerState extends State<EditProfileContainer> {
+  final TextEditingController pseudoController = TextEditingController();
+  final TextEditingController heightController = TextEditingController();
+  final TextEditingController weightController = TextEditingController();
+
+  late final ProfileApiClient profileApiClient; // Declare a late final variable
+
+  @override
+  void initState() {
+    super.initState();
+    // Instantiate the ProfileApiClient here
+    profileApiClient = EditProfileApiClient('https://codefirst.iut.uca.fr/container/AthletiX-ath-api/'); // Replace with your actual base URL
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -13,17 +40,16 @@ class EditProfileContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03, vertical: screenWidth * 0.05),
       child: Column(
         children: [
-          buildTextInputWithSpacing("Pseudo", "Enter your new username", screenWidth),
-          buildTextInputWithSpacing("Height", "Enter your height", screenWidth),
-          buildTextInputWithSpacing("Weight", "Enter your weight", screenWidth),
-
+          buildTextInputWithSpacing("Pseudo", "Enter your new username", screenWidth, pseudoController),
+          buildTextInputWithSpacing("Height", "Enter your height", screenWidth, heightController),
+          buildTextInputWithSpacing("Weight", "Enter your weight", screenWidth, weightController),
           buildSubmitButton(screenWidth),
         ],
       ),
     );
   }
 
-  Widget buildTextInputWithSpacing(String label, String placeholder, double screenWidth) {
+  Widget buildTextInputWithSpacing(String label, String placeholder, double screenWidth, TextEditingController controller) {
     return Container(
       margin: EdgeInsets.only(bottom: screenWidth * 0.05),
       child: Column(
@@ -39,6 +65,7 @@ class EditProfileContainer extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: TextField(
+              controller: controller,
               decoration: InputDecoration(
                 hintText: placeholder,
                 hintStyle: TextStyle(
@@ -71,7 +98,7 @@ class EditProfileContainer extends StatelessWidget {
       ),
       child: ElevatedButton(
         onPressed: () {
-          onClose();
+          submitForm();
         },
         style: ElevatedButton.styleFrom(
           primary: Colors.transparent,
@@ -92,5 +119,28 @@ class EditProfileContainer extends StatelessWidget {
     );
   }
 
+  void submitForm() async {
+    Profile updatedProfile = Profile(
+      id: 0, // localStorageUser.id
+      username: pseudoController.text,
+      mail: '', // localStorageUser.mail
+      uniqueNotificationToken: '', // localStorageUser.notificationToken
+      role: Role.user, // localStorageUser.role
+      age: 0, // localStorageUser.age
+      email: '', // localStorageUser.email
+      weight: double.parse(weightController.text),
+      height: double.parse(heightController.text),
+    );
 
+    int profileId = 123; // Replace with the actual profile ID
+
+    try {
+      await profileApiClient.updateProfile(profileId, updatedProfile);
+      widget.onClose();
+    } catch (e) {
+      print("Error updating profile: $e");
+      widget.onClose();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error updating profile: $e')));
+    }
+  }
 }
