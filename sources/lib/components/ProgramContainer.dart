@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sources/model/exercise.dart';
 
 class ProgramContainer extends StatelessWidget {
   final String title;
-  final List<String> exercises;
+  final List<Exercise> exercises;
   final String lastSession;
 
   ProgramContainer({
@@ -18,11 +19,12 @@ class ProgramContainer extends StatelessWidget {
     List<Widget> positionedWidgets = [];
 
     for (int i = 0; i < exercises.length; i++) {
+      String buildExercice = "${exercises[i].sets.length} x ${exercises[i].sets[0].reps} ${exercises[i].name}";
       positionedWidgets.add(
         SizedBox(
           width: screenWidth * 0.57,
           child: Text(
-            exercises[i],
+            buildExercice,
             style: TextStyle(
               color: const Color(0xFFA1A1A1),
               fontSize: screenWidth * 0.03,

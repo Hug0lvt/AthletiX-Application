@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:sources/providers/api/api_client.dart';
 
 import '../../components/ProgramContainer.dart';
+import '../../model/session.dart';
+import '../../providers/api/session_api_client.dart';
 
-class HistoryTab extends StatelessWidget {
+class HistoryApiClient extends ApiClient with SessionApiClient {
+  HistoryApiClient(String baseUrl) : super(baseUrl);
+}
+
+class HistoryTab extends StatefulWidget {
   const HistoryTab({super.key});
+  @override
+  State<HistoryTab> createState() => _HistoryTab();
+}
 
+class _HistoryTab extends State<HistoryTab> {
+  final HistoryApiClient apiClient = HistoryApiClient("https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/");
+  late Future<List<Session>> FutureSessions;
+
+  @override
+  void initState() {
+    super.initState();
+    FutureSessions = apiClient.getAllSessions();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +54,31 @@ class HistoryTab extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8.0),
-            Expanded(
-              child: ListView(
+          ListView(
+            shrinkWrap: true,
+            children: [
+              FutureBuilder<List<Session>>(
+                future: FutureSessions,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Session> allSessions = snapshot.data!;
+                    for (int i = 0; i < allSessions.length; i++) {
+                      ProgramContainer(
+                        title: allSessions[i].name,
+                        lastSession : DateTime.now().difference(allSessions[i].date).inDays.toString(), // in days
+                        exercises : allSessions[i].exercises
+                      );
+                    }
+                  }
+                  return const CircularProgressIndicator();
+                },
+              )
+          ],
+              /*ListView(
                 shrinkWrap: true,
-                children: [
+                children:*/
+
+                /*[
                   ProgramContainer(
                     title: 'Push',
                     lastSession: '19',
@@ -61,7 +101,7 @@ class HistoryTab extends StatelessWidget {
                   ),
                   // Add more ProgramContainer widgets as needed
                 ],
-              ),
+              ),*/
             ),
           ],
         ),
