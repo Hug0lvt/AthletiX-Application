@@ -72,10 +72,17 @@ flutter:
   - assets/Filter.svg
   - assets/Benchpress.png
   - assets/doigby.mp4
+  - assets/EditIcon.svg
+  - assets/PostIcon.svg
+  - assets/SendIcon.svg
+  - assets/SettingsIcon.svg
+  - assets/StatisticsIcon.svg
+  - assets/HeartIcon.svg
   - assets/edit.svg
   - assets/back.svg
   - assets/send.svg
   - assets/testAvatar.jpg
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
