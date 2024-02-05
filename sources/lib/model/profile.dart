@@ -41,11 +41,12 @@ class Profile {
       username: json['username'] as String,
       mail: json['mail'] as String,
       uniqueNotificationToken: json['uniqueNotificationToken'] as String,
-      role: Role.values.firstWhere((e) => e.toString() == 'Role.' + json['role']),
+      //role: Role.values.firstWhere((e) => e.toString() == 'Role.' + json['role'].toString()),
+      role: Role.user,
       age: json['age'] as int,
       email: json['email'] as String,
-      weight: (json['weight'] as num).toDouble(),
-      height: (json['height'] as num).toDouble(),
+      weight: json['weight'] as double,
+      height: json['height'] as double,
     );
   }
 

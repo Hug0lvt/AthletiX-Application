@@ -1,9 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sources/model/profile.dart';
+import 'package:sources/providers/api/api_client.dart';
+import 'package:sources/providers/api/profile_api_client.dart';
 import '../components/buttonProfilePage.dart';
 import '../components/editProfilContainer.dart';
 
-class ProfilePrivatePage extends StatelessWidget {
+class ProfilePrivateApiClient extends ApiClient with ProfileApiClient {
+  ProfilePrivateApiClient(String baseUrl) : super(baseUrl);
+}
+
+class ProfilePrivatePage extends StatefulWidget {
+  const ProfilePrivatePage({super.key});
+  @override
+  State<ProfilePrivatePage> createState() => _ProfilePrivatePage();
+}
+
+
+class _ProfilePrivatePage extends State<ProfilePrivatePage> {
+
+  @override
+  // TODO: implement baseUrl
+  String get baseUrl => throw UnimplementedError();
+
+  //final ProfilePrivateApiClient apiClient = ProfilePrivateApiClient("https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/");
+  final ProfilePrivateApiClient apiClient = ProfilePrivateApiClient("https://localhost:7028/api");
+  late Future<Profile> FutureProfile = fetchData();
+
+  @override
+  void initState() {
+    super.initState();
+    //FutureProfile = apiClient.getProfileByEmail("zaky@gmail.com");
+    //FutureProfile = apiClient.getProfileById(1);
+    //fetchData();
+  }
+
+  Future<Profile> fetchData() async {
+    try {
+      // Utilisation de votre API client pour récupérer le profil par son ID
+      final Profile profile = await apiClient.getProfileById(1);
+
+      return profile;
+    } catch (error) {
+      // Gérer les erreurs ici
+      print('Error fetching profile: $error');
+      // Vous pouvez renvoyer une valeur par défaut ou une instance de Profile avec des valeurs par défaut ici
+      throw Exception('Failed to fetch profile');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -60,12 +105,32 @@ class ProfilePrivatePage extends StatelessWidget {
                         color: const Color(0xFF1A1A1A).withOpacity(0.7),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
-                      child: Column(
+                      child:
+                      FutureBuilder<Profile>(
+                        future: FutureProfile,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            // Affiche un indicateur de chargement pendant que les données sont récupérées
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            // Affiche une erreur si la récupération des données échoue
+                            return Text('Error: ${snapshot.error}');
+                          } else if (!snapshot.hasData) {
+                            // Affiche un message si les données ne sont pas disponibles
+                            return Text('No data available');
+                          } else {
+                            print(snapshot.data!);
+                            // Affiche les données de FutureProfile
+                            Profile profile = snapshot.data!;
+                            return
+
+
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Pseudo',
+                            profile.username,
                             style: TextStyle(
                               fontSize: ((screenWidth + screenHeight) / 2) * 0.040,
                               color: Colors.white,
@@ -83,32 +148,14 @@ class ProfilePrivatePage extends StatelessWidget {
                               Column(
                                 children: [
                                   Text(
-                                    'coucou',
+                                    'Age',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
-                                    '1',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: screenWidth * 0.034,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    'coucou',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: screenWidth * 0.034,
-                                    ),
-                                  ),
-                                  Text(
-                                    '2',
+                                    profile.age.toString(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
@@ -119,14 +166,14 @@ class ProfilePrivatePage extends StatelessWidget {
                               Column(
                                 children: [
                                   Text(
-                                    'coucou',
+                                    'Height',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
-                                    '3',
+                                    profile.height.toString(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
@@ -137,14 +184,14 @@ class ProfilePrivatePage extends StatelessWidget {
                               Column(
                                 children: [
                                   Text(
-                                    'coucou',
+                                    'Weight',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
-                                    '4',
+                                    profile.weight.toString(),
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
@@ -155,7 +202,10 @@ class ProfilePrivatePage extends StatelessWidget {
                             ],
                           ),
                         ],
-                      ),
+                      );
+
+                          }},),
+
                     ),
                     Positioned(
                       top: 50.0,
