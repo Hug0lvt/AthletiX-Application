@@ -26,14 +26,13 @@ class LoginPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SvgPicture.asset('assets/AthletiX.svg', width: width*0.8),
-                SizedBox(height: 350),
+                SizedBox(height: height*0.4),
                 SignInButton(
                   Buttons.Google,
                   onPressed: () async {
                     await _handleGoogleSignIn(context);
                   },
                 ),
-                const Divider(),
                 SignInButton(
                   Buttons.Apple,
                   onPressed: () async {

@@ -8,30 +8,40 @@ class StartPage extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
-        child : Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.purple, Colors.blue],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgPicture.asset('assets/AthletiX.svg', width: width*0.8),
-              SvgPicture.asset('assets/LetsGo.svg', width: width*1.5),
-              SizedBox(height: 20),
-              Icon(
-                Icons.arrow_upward,
-                size: 40,
-                color: Colors.white,
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.purple, Colors.blue],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
-            ],
-          ),
+            ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 50.0),
+                child: SvgPicture.asset('assets/AthletiX.svg', width: width*0.8),
+              ),
+            ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SvgPicture.asset('assets/LetsGo.svg', width: width*0.8,),
+                  Icon(
+                    Icons.arrow_upward,
+                    size: width*0.1,
+                    color: Colors.white,
+                  ),
+                  SizedBox(height: width*0.2),
+                ],
+              ),
+            ),
+          ],
         ),
-      ),
       ),
     );
   }
