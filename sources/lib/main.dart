@@ -1,12 +1,10 @@
+import 'package:AthletiX/page/home.dart';
+import 'package:AthletiX/page/login/login.dart';
+import 'package:AthletiX/page/login/register.dart';
+import 'package:AthletiX/page/login/start.dart';
+import 'package:AthletiX/page/profilePublic.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sources/page/home.dart';
-import 'package:sources/page/TrainingHome.dart';
-import 'package:sources/page/login/login.dart';
-import 'package:sources/page/login/start.dart';
-import 'package:sources/page/profilePublic.dart';
 import 'firebase_options.dart';
 import 'page/profilePrivate.dart';
 
@@ -25,14 +23,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Athletix Application',
+      title: 'Athletix',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/start',
+      initialRoute: '/login',
       routes: {
         '/start': (context) => StartPage(),
+        '/register': (context) => RegisterPage(),
         '/login': (context) => LoginPage(),
         '/home': (context) => HomePage(),
         '/profile/public': (context) => ProfilePublicPage(),

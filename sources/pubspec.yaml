@@ -1,5 +1,8 @@
-name: sources
+name: AthletiX
 description: AthletiX - Votre compagnon pour une vie plus saine et active
+
+android: app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+ios: Runner/Assets.xcassets/AppIcon.appiconset/AppIcon.png
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

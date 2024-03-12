@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:sources/providers/api/api_client.dart';
+import 'package:AthletiX/providers/api/api_client.dart';
 
 import '../../exceptions/not_found_exception.dart';
 import '../../model/category.dart';
