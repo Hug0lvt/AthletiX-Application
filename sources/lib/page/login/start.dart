@@ -31,10 +31,15 @@ class StartPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SvgPicture.asset('assets/LetsGo.svg', width: width*0.8,),
-                  Icon(
-                    Icons.arrow_upward,
-                    size: width*0.1,
-                    color: Colors.white,
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/register');
+                    },
+                    icon: Icon(
+                      Icons.arrow_upward,
+                      size: width * 0.1,
+                      color: Colors.white,
+                    ),
                   ),
                   SizedBox(height: width*0.2),
                 ],

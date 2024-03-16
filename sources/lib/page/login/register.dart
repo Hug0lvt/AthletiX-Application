@@ -70,9 +70,14 @@ class RegisterPage extends StatelessWidget {
                 onPressed: () {
                   // Add your log-in logic here
                 },
-                child: Text(
-                  'Log In',
-                  style: TextStyle(color: Colors.white),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: Text(
+                    'Log In',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ],

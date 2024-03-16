@@ -1,0 +1,4 @@
+enum AuthKeys {
+  ATH_BEARER_TOKEN_API,
+  ATH_BEARER_REFRESH_TOKEN_API,
+}

@@ -1,7 +1,12 @@
-import 'enums/publication_type.dart';
+import 'dart:convert';
+
+import 'comment.dart';
 import 'profile.dart';
 import 'category.dart';
-import 'comment.dart';
+
+List<Post> postListFromJson(String str) => List<Post>.from(json.decode(str).map((x) => Post.fromJson(x)));
+Post postFromJson(String str) => Post.fromJson(json.decode(str));
+String postToJson(Post data) => json.encode(data.toJson());
 
 class Post {
   int id;
@@ -9,7 +14,7 @@ class Post {
   Category category;
   String title;
   String description;
-  PublicationType publicationType;
+  int publicationType;
   String content;
   List<Comment> comments;
 
@@ -21,53 +26,28 @@ class Post {
     required this.description,
     required this.publicationType,
     required this.content,
-    this.comments = const [],
+    required this.comments,
   });
 
-  Post.partial({
-    int? id,
-    Profile? publisher,
-    Category? category,
-    String? title,
-    String? description,
-    PublicationType? publicationType,
-    String? content,
-    List<Comment>? comments,
-  })  : id = id ?? 0,
-        publisher = publisher ?? Profile.partial(),
-        category = category ?? Category.partial(),
-        title = title ?? '',
-        description = description ?? '',
-        publicationType = publicationType ?? PublicationType.image,
-        content = content ?? '',
-        comments = comments ?? [];
+  factory Post.fromJson(Map<String, dynamic> json) => Post(
+    id: json["id"],
+    publisher: Profile.fromJson(json["publisher"]),
+    category: Category.fromJson(json["category"]),
+    title: json["title"],
+    description: json["description"],
+    publicationType: json["publicationType"],
+    content: json["content"],
+    comments: List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x))),
+  );
 
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-      id: json['id'] as int,
-      publisher: Profile.fromJson(json['publisher'] as Map<String, dynamic>),
-      category: Category.fromJson(json['category'] as Map<String, dynamic>),
-      title: json['title'] as String,
-      description: json['description'] as String,
-      publicationType: PublicationType.values.firstWhere((e) => e.toString() == 'PublicationType.' + json['publicationType']),
-      content: json['content'] as String,
-      comments: (json['comments'] as List<dynamic>?)
-          ?.map((comment) => Comment.fromJson(comment as Map<String, dynamic>))
-          .toList() ??
-          [],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'publisher': publisher.toJson(),
-      'category': category.toJson(),
-      'title': title,
-      'description': description,
-      'publicationType': publicationType.toString().split('.')[1],
-      'content': content,
-      'comments': comments.map((comment) => comment.toJson()).toList(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "publisher": publisher.toJson(),
+    "category": category.toJson(),
+    "title": title,
+    "description": description,
+    "publicationType": publicationType,
+    "content": content,
+    "comments": List<dynamic>.from(comments.map((x) => x.toJson())),
+  };
 }

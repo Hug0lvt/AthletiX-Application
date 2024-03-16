@@ -1,5 +1,11 @@
-import 'profile.dart';
+import 'dart:convert';
+
 import 'exercise.dart';
+import 'profile.dart';
+
+List<Session> sessionListFromJson(String str) => List<Session>.from(json.decode(str).map((x) => Session.fromJson(x)));
+Session sessionFromJson(String str) => Session.fromJson(json.decode(str));
+String sessionToJson(Session data) => json.encode(data.toJson());
 
 class Session {
   int id;
@@ -15,45 +21,24 @@ class Session {
     required this.name,
     required this.date,
     required this.duration,
-    this.exercises = const [],
+    required this.exercises,
   });
 
-  Session.partial({
-    int? id,
-    Profile? profile,
-    String? name,
-    DateTime? date,
-    Duration? duration,
-    List<Exercise>? exercises,
-  })  : id = id ?? 0,
-        profile = profile ?? Profile.partial(),
-        name = name ?? '',
-        date = date ?? DateTime.now(),
-        duration = duration ?? Duration(),
-        exercises = exercises ?? [];
+  factory Session.fromJson(Map<String, dynamic> json) => Session(
+    id: json["id"],
+    profile: Profile.fromJson(json["profile"]),
+    name: json["name"],
+    date: DateTime.parse(json["date"]),
+    duration: Duration(milliseconds: json["duration"]),
+    exercises: List<Exercise>.from(json["exercises"].map((x) => Exercise.fromJson(x))),
+  );
 
-  factory Session.fromJson(Map<String, dynamic> json) {
-    return Session(
-      id: json['id'] as int,
-      profile: Profile.fromJson(json['profile'] as Map<String, dynamic>),
-      name: json['name'] as String,
-      date: DateTime.parse(json['date'] as String),
-      duration: Duration(seconds: json['durationInSeconds'] as int),
-      exercises: (json['exercises'] as List<dynamic>?)
-          ?.map((exercise) => Exercise.fromJson(exercise as Map<String, dynamic>))
-          .toList() ??
-          [],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'profile': profile.toJson(),
-      'name': name,
-      'date': date.toIso8601String(),
-      'durationInSeconds': duration.inSeconds,
-      'exercises': exercises.map((exercise) => exercise.toJson()).toList(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "profile": profile.toJson(),
+    "name": name,
+    "date": date.toIso8601String(),
+    "duration": duration.inMilliseconds,
+    "exercises": List<dynamic>.from(exercises.map((x) => x.toJson())),
+  };
 }
