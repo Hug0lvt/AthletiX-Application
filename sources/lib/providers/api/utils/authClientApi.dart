@@ -2,6 +2,7 @@ import 'package:AthletiX/model/authentification/login/login.dart';
 import 'package:AthletiX/model/authentification/login/loginResponse.dart';
 import 'package:AthletiX/model/authentification/login/refresh.dart';
 import 'package:AthletiX/model/authentification/register.dart';
+import 'package:AthletiX/model/errors/error.dart';
 import 'package:http/http.dart' as http;
 
 class AuthClientApi {
@@ -32,10 +33,13 @@ class AuthClientApi {
       },
       body: registerToJson(identifiers),
     );
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      throw Exception('Failed to register');
+    switch (response.statusCode) {
+      case 200:
+        return true;
+      case 400:
+        throw Exception(errorFromJson(response.body).errors.entries.first);
+      default:
+        throw Exception('Failed to delete data');
     }
   }
 

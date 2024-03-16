@@ -1,5 +1,3 @@
-import 'package:AthletiX/model/authentification/login/login.dart';
-import 'package:AthletiX/model/authentification/login/loginResponse.dart';
 import 'package:AthletiX/page/home.dart';
 import 'package:AthletiX/page/login/login.dart';
 import 'package:AthletiX/page/login/register.dart';
@@ -47,7 +45,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/start',
       routes: {
         '/start': (context) => StartPage(),
-        '/register': (context) => RegisterPage(),
+        '/register': (context) => const RegisterForm(),
         '/login': (context) => const LoginForm(),
         '/home': (context) => HomePage(),
         '/profile/public': (context) => ProfilePublicPage(),

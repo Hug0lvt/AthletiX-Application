@@ -1,5 +1,4 @@
 import 'package:AthletiX/model/authentification/login/login.dart';
-import 'package:AthletiX/model/authentification/login/loginResponse.dart';
 import 'package:AthletiX/providers/api/clientApi.dart';
 import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
@@ -31,7 +30,6 @@ class LoginPage extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -53,22 +51,28 @@ class LoginPage extends State<LoginForm> {
                 ),
               ),
               SizedBox(height: 20.0),
-              TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  fillColor: Colors.white,
-                  filled: true,
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
                 ),
               ),
               SizedBox(height: 10.0),
-              TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  fillColor: Colors.white,
-                  filled: true,
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
                 ),
               ),
               SizedBox(height: 10.0),
@@ -127,7 +131,7 @@ class LoginPage extends State<LoginForm> {
       return;
     }
 
-    clientApi.authApiClient.login(Login(email: email, password: password))
+    clientApi.authClientApi.login(Login(email: email, password: password))
         .then((loginResponse) {
           AuthManager.setToken(AuthKeys.ATH_BEARER_TOKEN_API.name, loginResponse.accessToken);
           AuthManager.setToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name, loginResponse.refreshToken);
@@ -152,9 +156,6 @@ class LoginPage extends State<LoginForm> {
           );
           return;
         });
-
-
-
   }
 
 }
