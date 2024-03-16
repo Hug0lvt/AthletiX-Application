@@ -1,3 +1,5 @@
+import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthManager {
@@ -9,5 +11,13 @@ class AuthManager {
 
   static Future<void> setToken(String key, String token) async {
     await _storage.write(key: key, value: token);
+  }
+
+  static Future<Profile> getProfile() async {
+    return profileFromJson(_storage.read(key: AuthKeys.ATH_PROFILE.name).toString());
+  }
+
+  static Future<void> setProfile(Profile profile) async {
+    await _storage.write(key: AuthKeys.ATH_PROFILE.name, value: profileToJson(profile));
   }
 }

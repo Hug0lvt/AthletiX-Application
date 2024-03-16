@@ -1,31 +1,32 @@
 import 'package:AthletiX/model/authentification/register.dart';
+import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../main.dart';
 import '../../providers/api/clientApi.dart';
 
-class RegisterForm extends StatefulWidget {
-  const RegisterForm({super.key});
+class CreateProfileForm extends StatefulWidget {
+  const CreateProfileForm({super.key});
   @override
-  State<RegisterForm> createState() => RegisterPage();
+  State<CreateProfileForm> createState() => CreateProfilePage();
 }
 
-class RegisterPage extends State<RegisterForm> {
+class CreateProfilePage extends State<CreateProfileForm> {
 
-  final clientApi = getIt<ClientApi>();
+  final profileClientApi = getIt<ProfileClientApi>();
 
-  final emailController = TextEditingController();
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  final ageController = TextEditingController();
+  final heightController = TextEditingController();
+  final weightController = TextEditingController();
 
   @override
   void dispose() {
-    emailController.dispose();
-    usernameController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
+    ageController.dispose();
+    heightController.dispose();
+    weightController.dispose();
     super.dispose();
   }
 
@@ -56,9 +57,10 @@ class RegisterPage extends State<RegisterForm> {
               Container(
                 margin: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  controller: emailController,
+                  controller: ageController,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Age (Years)',
                     fillColor: Colors.white,
                     filled: true,
                   ),
@@ -68,9 +70,10 @@ class RegisterPage extends State<RegisterForm> {
               Container(
                 margin: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  controller: usernameController,
+                  controller: weightController,
+                  keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                    labelText: 'Username',
+                    labelText: 'Weight (Kg)',
                     fillColor: Colors.white,
                     filled: true,
                   ),
@@ -80,44 +83,22 @@ class RegisterPage extends State<RegisterForm> {
               Container(
                 margin: const EdgeInsets.all(8.0),
                 child: TextFormField(
-                  controller: passwordController,
+                  controller: heightController,
+                  keyboardType: TextInputType.number,
                   obscureText: true,
                   decoration: const InputDecoration(
-                    labelText: 'Password',
+                    labelText: 'Height (Cm)',
                     fillColor: Colors.white,
                     filled: true,
                   ),
                 ),
               ),
               const SizedBox(height: 10.0),
-              Container(
-                margin: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Confirm password',
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () {
-                  register();
+                  createProfile();
                 },
-                child: const Text('Sign Up'),
-              ),
-              const SizedBox(height: 20.0),
-              TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/login');
-                },
-                child: const Text(
-                  'Log In',
-                  style: TextStyle(color: Colors.white),
-                ),
+                child: const Text('Confirm'),
               ),
             ],
           ),
@@ -126,13 +107,12 @@ class RegisterPage extends State<RegisterForm> {
     );
   }
 
-  void register(){
-    String email = emailController.value.text;
-    String username = usernameController.value.text;
-    String password = passwordController.value.text;
-    String confirmPassword = confirmPasswordController.value.text;
+  void createProfile(){
+    int? age = int.tryParse(ageController.value.text);
+    int? weight = int.tryParse(weightController.value.text);
+    int? height = int.tryParse(heightController.value.text);
 
-    if(email.isEmpty || password.isEmpty || username.isEmpty || confirmPassword.isEmpty){
+    if(age == null || weight == null || height == null){
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('At least one of the fields is empty !'),
@@ -143,18 +123,23 @@ class RegisterPage extends State<RegisterForm> {
       return;
     }
 
-    if(!password.compareTo(confirmPassword).isEven){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Passwords are different !'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 5),
-        ),
-      );
-      return;
-    }
+    AuthManager.getProfile()
+        .then((profile) {
+          profileClientApi.createProfile(Profile(
+              id: 0,
+              email: profile.email,
+              age: age,
+              height: height,
+              weight: weight,
+              role: 0,
+              uniqueNotificationToken: "",
+              username: profile.username
+          ));// TODO A FINIR ! notif token et tout... verif si créer ou pas ?
+        });
 
-    clientApi.authClientApi.register(Register(email: email, password: password))
+
+
+    /*clientApi.authClientApi.register(Register(email: email, password: password))
         .then((loginResponse) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -163,7 +148,7 @@ class RegisterPage extends State<RegisterForm> {
               duration: Duration(seconds: 5),
             ),
           );
-          Navigator.pushNamed(context, '/createProfile');
+          Navigator.pushNamed(context, '/login'); // TODO allé sur la page de créa de profile avant
           return;
         })
         .catchError((error) {
@@ -187,7 +172,7 @@ class RegisterPage extends State<RegisterForm> {
               );
               return;
           }
-        });
+        });*/
 
   }
 
