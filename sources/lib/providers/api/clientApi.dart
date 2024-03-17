@@ -4,6 +4,8 @@ import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:http/http.dart' as http;
 
+import '../../model/authentification/login/loginResponse.dart';
+import '../../model/authentification/login/refresh.dart';
 import '../exceptions/unauthorized_exception.dart';
 import 'utils/authClientApi.dart';
 
@@ -20,9 +22,24 @@ class ClientApi {
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     };
-    final token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
+
+    String? token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
+    String? refreshToken = await AuthManager.getToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name);
+    DateTime? expireAt = DateTime.tryParse(await AuthManager.getToken(AuthKeys.ATH_END_OF_BEARER_TOKEN_API.name) ?? "");
+    if(token != null && refreshToken != null){
+      if(expireAt != null && expireAt.isBefore(DateTime.now())){
+        try {
+          LoginResponse loginResponse = await authClientApi.refreshToken(Refresh(refreshToken: refreshToken));
+          await AuthManager.setToken(AuthKeys.ATH_BEARER_TOKEN_API.name, loginResponse.accessToken);
+          await AuthManager.setToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name, loginResponse.refreshToken);
+          await AuthManager.setToken(AuthKeys.ATH_END_OF_BEARER_TOKEN_API.name, DateTime.now().add(const Duration(seconds: 3500)).toString());
+        } catch (ignored) {}
+      }
+    }
+
+    final validToken = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
     if (token != null) {
-      headers['Authorization'] = 'Bearer $token';
+      headers['Authorization'] = 'Bearer $validToken';
     }
     return headers;
   }
