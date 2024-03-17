@@ -25,7 +25,7 @@ class ProgramContainer extends StatelessWidget {
             exercises[i],
             style: TextStyle(
               color: const Color(0xFFA1A1A1),
-              fontSize: screenWidth * 0.02,
+              fontSize: screenWidth * 0.03,
               fontFamily: 'Mulish',
             ),
           ),
@@ -33,65 +33,86 @@ class ProgramContainer extends StatelessWidget {
       );
     }
 
+    final kGradientBoxDecoration = BoxDecoration(
+      boxShadow: const [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 4),
+              spreadRadius: 0,
+            ),
+      ],
+      gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFFB66CFF), Color(0xFFA2E4E6)]),
+      borderRadius: BorderRadius.circular(10),
+    );
+
     return GestureDetector(
         onTap: () {
            ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text('Gesture Detected!')));
+             const SnackBar(content: Text('Gesture Detected!')));
     },
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-          width: screenWidth,
-          decoration: ShapeDecoration(
-            color: const Color(0xE51A1A1A),
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 2, color: Color(0xFFB56CFF)),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            shadows: const [
-              BoxShadow(
-                color: Color(0x3F000000),
-                blurRadius: 4,
-                offset: Offset(0, 4),
-                spreadRadius: 0,
+        decoration: kGradientBoxDecoration,
+        child: Padding(
+        padding: const EdgeInsets.all(2.0),
+          child: Container(
+            width: screenWidth * 0.97,
+            decoration: ShapeDecoration(
+              color: const Color(0xE51A1A1A),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.036,
-                    fontFamily: 'Mulish',
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-
-                Text(
-                  'Last session : $lastSession days ago',
-                  style: TextStyle(
-                    color: const Color(0xFFA1A1A1),
-                    fontSize: screenWidth * 0.022,
-                    fontFamily: 'Mulish',
-                  ),
-                ),
-                SizedBox(
-                  height: screenWidth * 0.02,
-                ),
-                ListView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: positionedWidgets,
+              shadows: const [
+                BoxShadow(
+                  color: Color(0x3F000000),
+                  blurRadius: 4,
+                  offset: Offset(0, 4),
+                  spreadRadius: 0,
                 ),
               ],
             ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: screenWidth * 0.05,
+                      fontFamily: 'Mulish',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+
+                  Text(
+                    'Last session : $lastSession days ago',
+                    style: TextStyle(
+                      color: const Color(0xFFA1A1A1),
+                      fontSize: screenWidth * 0.03,
+                      fontFamily: 'Mulish',
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenWidth * 0.02,
+                  ),
+                  ListView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: positionedWidgets,
+                  ),
+                ],
+              ),
+            ),
           ),
+        ),
         ),
         const SizedBox(height: 8.0),
       ],

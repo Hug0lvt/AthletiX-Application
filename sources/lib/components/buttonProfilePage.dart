@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ButtonProfilePage extends StatelessWidget {
   final String text;
   final String imagePath;
   final double width;
   final double height;
+  final double screenWidth;
+  final double screenHeight;
 
-  ButtonProfilePage({required this.text, required this.imagePath, required this.width, required this.height});
+
+  ButtonProfilePage({required this.text, required this.imagePath, required this.width, required this.height, required this.screenWidth, required this.screenHeight});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10.0),
-      constraints: BoxConstraints.expand(
-        width: width,
-        height: height,
-      ),
+      width: screenWidth * 0.9,
+      height: screenHeight * 0.08,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(0.0),
@@ -41,20 +43,23 @@ class ButtonProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16),
       child: Row(
         children: [
-          Image.asset(
-            imagePath,
-            width: 50.0,
-            height: 50.0,
+          Transform.scale(
+            scale: 1,
+            child: SvgPicture.asset(
+              imagePath,
+              width: screenWidth * 0.08,
+              height: screenHeight * 0.05,
+            ),
           ),
-          const SizedBox(width: 20.0),
+          SizedBox(width: screenWidth * 0.04),
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 20,
+              fontSize: ((screenHeight + screenWidth) / 2) * 0.04,
             ),
           ),
         ],

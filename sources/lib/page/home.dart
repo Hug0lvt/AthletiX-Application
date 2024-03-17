@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../components/commentCard.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -13,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset("../assets/doigby.mp4")
+    _controller = VideoPlayerController.asset("assets/doigby.mp4")
       ..initialize().then((_) {
         _controller.setLooping(true);
         _controller.play();
@@ -27,7 +29,6 @@ class _HomePageState extends State<HomePage> {
     } else {
       _controller.play();
     }
-    _controller.pause();
   }
 
 
@@ -76,12 +77,18 @@ class _HomePageState extends State<HomePage> {
                         width: 60,
                         child: Column(
                           children: [
-                            ClipOval(
-                              child: Image.asset(
-                                '../assets/EditIcon.png',
-                                width: 50.0,
-                                height: 50.0,
-                                fit: BoxFit.cover,
+                            Container(
+                              width: 50,
+                              height: 50,
+                              child: ClipOval(
+                                child: Container(
+                                  child: Center(
+                                    child: SvgPicture.asset(
+                                      'assets/EditIcon.svg',
+                                      width: 50,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                             const SizedBox(height: 10.0),
@@ -121,6 +128,44 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+
+              // ------------------------ Partie Commentaire ----------------------------
+
+          /*Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.90,
+              decoration: BoxDecoration(
+                color: const Color(0xFF202020).withOpacity(0.9),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(40),
+                  topRight: Radius.circular(40),
+                ),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  const SizedBox(height: 16),
+                  Container(
+                    height: 2,
+                    width: MediaQuery.of(context).size.width * 0.50,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        CommentCard(),
+                        CommentCard(),
+                        CommentCard(),
+                        CommentCard(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),*/
             ],
         ),
     );
