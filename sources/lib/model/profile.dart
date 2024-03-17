@@ -1,65 +1,49 @@
-import 'enums/role.dart';
+import 'dart:convert';
+
+List<Profile> profileListFromJson(String str) => List<Profile>.from(json.decode(str).map((x) => Profile.fromJson(x)));
+Profile profileFromJson(String str) => Profile.fromJson(json.decode(str));
+String profileToJson(Profile data) => json.encode(data.toJson());
 
 class Profile {
-  int id;
-  String username;
-  String mail;
-  String uniqueNotificationToken;
-  Role role;
-  int age;
-  String email;
-  double weight;
-  double height;
+  int? id;
+  String? username;
+  String? uniqueNotificationToken;
+  int? role;
+  int? age;
+  String? email;
+  int? weight;
+  int? height;
 
   Profile({
-    required this.id,
-    required this.username,
-    required this.mail,
-    required this.uniqueNotificationToken,
-    required this.role,
-    required this.age,
-    required this.email,
-    required this.weight,
-    required this.height,
+    this.id,
+    this.username,
+    this.uniqueNotificationToken,
+    this.role,
+    this.age,
+    this.email,
+    this.weight,
+    this.height,
   });
 
-  Profile.partial({
-    this.id = 0,
-    this.username = '',
-    this.mail = '',
-    this.uniqueNotificationToken = '',
-    this.role = Role.user,
-    this.age = 0,
-    this.email = '',
-    this.weight = 0.0,
-    this.height = 0.0,
-  });
+  factory Profile.fromJson(Map<String, dynamic> json) => Profile(
+    id: json["id"],
+    username: json["username"],
+    uniqueNotificationToken: json["uniqueNotificationToken"],
+    role: json["role"],
+    age: json["age"],
+    email: json["email"],
+    weight: json["weight"],
+    height: json["height"],
+  );
 
-  factory Profile.fromJson(Map<String, dynamic> json) {
-    return Profile(
-      id: json['id'] as int,
-      username: json['username'] as String,
-      mail: json['mail'] as String,
-      uniqueNotificationToken: json['uniqueNotificationToken'] as String,
-      role: Role.values.firstWhere((e) => e.toString() == 'Role.' + json['role']),
-      age: json['age'] as int,
-      email: json['email'] as String,
-      weight: (json['weight'] as num).toDouble(),
-      height: (json['height'] as num).toDouble(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'username': username,
-      'mail': mail,
-      'uniqueNotificationToken': uniqueNotificationToken,
-      'role': role.toString().split('.')[1],
-      'age': age,
-      'email': email,
-      'weight': weight,
-      'height': height,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "username": username,
+    "uniqueNotificationToken": uniqueNotificationToken,
+    "role": role,
+    "age": age,
+    "email": email,
+    "weight": weight,
+    "height": height,
+  };
 }
