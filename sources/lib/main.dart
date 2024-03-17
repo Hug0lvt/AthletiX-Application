@@ -1,3 +1,5 @@
+import 'package:AthletiX/model/authentification/login/loginResponse.dart';
+import 'package:AthletiX/model/authentification/login/refresh.dart';
 import 'package:AthletiX/page/home.dart';
 import 'package:AthletiX/page/login/createProfile.dart';
 import 'package:AthletiX/page/login/login.dart';
@@ -7,11 +9,16 @@ import 'package:AthletiX/page/profilePrivate.dart';
 import 'package:AthletiX/page/profilePublic.dart';
 import 'package:AthletiX/providers/api/clientApi.dart';
 import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
+import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'package:get_it/get_it.dart';
 
+import 'model/profile.dart';
+
+String firstPage = '/start';
 final getIt = GetIt.instance;
 void setupLocator() {
   getIt.registerSingleton<ClientApi>(
@@ -23,9 +30,31 @@ void setupLocator() {
       ProfileClientApi(getIt<ClientApi>()));
 }
 
+Future<void> isAuthanticated() async {
+  String? token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
+  String? refreshToken = await AuthManager.getToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name);
+  Profile? profile = await AuthManager.getProfile();
+  DateTime? expireAt = DateTime.tryParse(await AuthManager.getToken(AuthKeys.ATH_END_OF_BEARER_TOKEN_API.name) ?? "");
+
+  if(token != null && refreshToken != null && profile != null){
+    if(expireAt != null && expireAt.isBefore(DateTime.now())){
+      try {
+        LoginResponse loginResponse = await getIt<ClientApi>().authClientApi.refreshToken(Refresh(refreshToken: refreshToken));
+        await AuthManager.setToken(AuthKeys.ATH_BEARER_TOKEN_API.name, loginResponse.accessToken);
+        await AuthManager.setToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name, loginResponse.refreshToken);
+        await AuthManager.setToken(AuthKeys.ATH_END_OF_BEARER_TOKEN_API.name, DateTime.now().add(const Duration(seconds: 3500)).toString());
+        firstPage = '/home';
+      } catch (ignored) {}
+    }else{
+      firstPage = '/home';
+    }
+  }
+}
+
 Future<void> initApp() async{
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator(); // DI (usage : final clientApi = getIt<ClientApi>(); ...)
+  await isAuthanticated();
 }
 
 Future<void> main() async {
@@ -46,7 +75,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/start',
+      initialRoute: firstPage,
       routes: {
         '/start': (context) => StartPage(),
         '/register': (context) => const RegisterForm(),

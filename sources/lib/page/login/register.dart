@@ -163,6 +163,7 @@ class RegisterPage extends State<RegisterForm> {
       final loginResponse = await clientApi.authClientApi.login(Login(email: email, password: password));
       AuthManager.setToken(AuthKeys.ATH_BEARER_TOKEN_API.name, loginResponse.accessToken);
       AuthManager.setToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name, loginResponse.refreshToken);
+      AuthManager.setToken(AuthKeys.ATH_END_OF_BEARER_TOKEN_API.name, DateTime.now().add(const Duration(seconds: 3500)).toString());
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Registered and Connected !'),
@@ -182,8 +183,6 @@ class RegisterPage extends State<RegisterForm> {
       );
       return;
     }
-
-
   }
 
 
