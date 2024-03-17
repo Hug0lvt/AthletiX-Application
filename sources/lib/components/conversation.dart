@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sources/utils/appColors.dart';
+
+import '../utils/appColors.dart';
 
 
 class ConversationWidget extends StatelessWidget {
