@@ -1,9 +1,13 @@
 import 'package:AthletiX/model/authentification/register.dart';
+import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../main.dart';
+import '../../model/authentification/login/login.dart';
 import '../../providers/api/clientApi.dart';
+import '../../providers/localstorage/secure/authKeys.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -126,16 +130,16 @@ class RegisterPage extends State<RegisterForm> {
     );
   }
 
-  void register(){
+  void register() async {
     String email = emailController.value.text;
     String username = usernameController.value.text;
     String password = passwordController.value.text;
     String confirmPassword = confirmPasswordController.value.text;
 
-    if(email.isEmpty || password.isEmpty || username.isEmpty || confirmPassword.isEmpty){
+    if ([email, username, password, confirmPassword].any((element) => element.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('At least one of the fields is empty !'),
+          content: Text('At least one of the fields is empty!'),
           backgroundColor: Colors.orange,
           duration: Duration(seconds: 5),
         ),
@@ -143,10 +147,10 @@ class RegisterPage extends State<RegisterForm> {
       return;
     }
 
-    if(!password.compareTo(confirmPassword).isEven){
+    if (password != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Passwords are different !'),
+          content: Text('Passwords do not match!'),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 5),
         ),
@@ -154,41 +158,33 @@ class RegisterPage extends State<RegisterForm> {
       return;
     }
 
-    clientApi.authClientApi.register(Register(email: email, password: password))
-        .then((loginResponse) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registered !'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 5),
-            ),
-          );
-          Navigator.pushNamed(context, '/createProfile');
-          return;
-        })
-        .catchError((error) {
-          switch(error.runtimeType){
-            case Exception:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(error.toString()),
-                  backgroundColor: Colors.red,
-                  duration: Duration(seconds: 5),
-                ),
-              );
-              return;
-            default:
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('An error occurred !'),
-                  backgroundColor: Colors.red,
-                  duration: Duration(seconds: 5),
-                ),
-              );
-              return;
-          }
-        });
+    try {
+      await clientApi.authClientApi.register(Register(email: email, password: password));
+      final loginResponse = await clientApi.authClientApi.login(Login(email: email, password: password));
+      AuthManager.setToken(AuthKeys.ATH_BEARER_TOKEN_API.name, loginResponse.accessToken);
+      AuthManager.setToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name, loginResponse.refreshToken);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Registered and Connected !'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 5),
+        ),
+      );
+      AuthManager.setProfile(Profile(username: username, email: email));
+      Navigator.pushNamed(context, '/createProfile');
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+      return;
+    }
+
 
   }
+
 
 }

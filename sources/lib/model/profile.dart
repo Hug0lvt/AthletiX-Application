@@ -5,24 +5,24 @@ Profile profileFromJson(String str) => Profile.fromJson(json.decode(str));
 String profileToJson(Profile data) => json.encode(data.toJson());
 
 class Profile {
-  int id;
-  String username;
-  String uniqueNotificationToken;
-  int role;
-  int age;
-  String email;
-  int weight;
-  int height;
+  int? id;
+  String? username;
+  String? uniqueNotificationToken;
+  int? role;
+  int? age;
+  String? email;
+  int? weight;
+  int? height;
 
   Profile({
-    required this.id,
-    required this.username,
-    required this.uniqueNotificationToken,
-    required this.role,
-    required this.age,
-    required this.email,
-    required this.weight,
-    required this.height,
+    this.id,
+    this.username,
+    this.uniqueNotificationToken,
+    this.role,
+    this.age,
+    this.email,
+    this.weight,
+    this.height,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(

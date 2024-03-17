@@ -13,9 +13,15 @@ class AuthManager {
     await _storage.write(key: key, value: token);
   }
 
-  static Future<Profile> getProfile() async {
-    return profileFromJson(_storage.read(key: AuthKeys.ATH_PROFILE.name).toString());
+  static Future<Profile?> getProfile() async {
+    String? profileJson = await _storage.read(key: AuthKeys.ATH_PROFILE.name);
+    if (profileJson != null) {
+      return profileFromJson(profileJson);
+    } else {
+      return null;
+    }
   }
+
 
   static Future<void> setProfile(Profile profile) async {
     await _storage.write(key: AuthKeys.ATH_PROFILE.name, value: profileToJson(profile));

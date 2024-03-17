@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:AthletiX/exceptions/not_found_exception.dart';
 import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:http/http.dart' as http;
@@ -21,12 +22,12 @@ class ClientApi {
     };
     final token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
     if (token != null) {
-      headers['Authorization'] = token;
+      headers['Authorization'] = 'Bearer $token';
     }
     return headers;
   }
 
-  Future<dynamic> getData(String endpoint) async {
+  Future<String> getData(String endpoint) async {
     final headers = await _buildHeaders();
     final response = await http.get(
       Uri.parse('$_baseUrl/$endpoint'),
@@ -38,12 +39,14 @@ class ClientApi {
         return response.body;
       case 401:
         throw UnauthorizedException('Unauthorized');
+      case 404:
+        throw NotFoundException('Not Found');
       default:
         throw Exception('Failed to load data');
     }
   }
 
-  Future<dynamic> getDataById(String endpoint, int id) async {
+  Future<String> getDataById(String endpoint, int id) async {
     final headers = await _buildHeaders();
     final response = await http.get(
       Uri.parse('$_baseUrl/$endpoint/$id'),
@@ -55,12 +58,14 @@ class ClientApi {
         return response.body;
       case 401:
         throw UnauthorizedException('Unauthorized');
+      case 404:
+        throw NotFoundException('Not Found');
       default:
         throw Exception('Failed to load data');
     }
   }
 
-  Future<dynamic> postData(String endpoint, String data) async {
+  Future<String> postData(String endpoint, String data) async {
     final headers = await _buildHeaders();
     final response = await http.post(
       Uri.parse('$_baseUrl/$endpoint'),
@@ -69,16 +74,19 @@ class ClientApi {
     );
 
     switch (response.statusCode) {
+      case 200:
       case 201:
         return response.body;
       case 401:
         throw UnauthorizedException('Unauthorized');
+      case 404:
+        throw NotFoundException('Not Found');
       default:
         throw Exception('Failed to post data');
     }
   }
 
-  Future<dynamic> putData(String endpoint, String data) async {
+  Future<String> putData(String endpoint, String data) async {
     final headers = await _buildHeaders();
     final response = await http.put(
       Uri.parse('$_baseUrl/$endpoint'),
@@ -91,12 +99,14 @@ class ClientApi {
         return response.body;
       case 401:
         throw UnauthorizedException('Unauthorized');
+      case 404:
+        throw NotFoundException('Not Found');
       default:
         throw Exception('Failed to put data');
     }
   }
 
-  Future<dynamic> deleteData(String endpoint) async {
+  Future<String> deleteData(String endpoint) async {
     final headers = await _buildHeaders();
     final response = await http.delete(
       Uri.parse('$_baseUrl/$endpoint'),
@@ -108,12 +118,14 @@ class ClientApi {
         return response.body;
       case 401:
         throw UnauthorizedException('Unauthorized');
+      case 404:
+        throw NotFoundException('Not Found');
       default:
         throw Exception('Failed to delete data');
     }
   }
 
-  Future<dynamic> patchData(String endpoint, String data) async {
+  Future<String> patchData(String endpoint, String data) async {
     final headers = await _buildHeaders();
     final response = await http.patch(
       Uri.parse('$_baseUrl/$endpoint'),
@@ -126,6 +138,8 @@ class ClientApi {
         return response.body;
       case 401:
         throw UnauthorizedException('Unauthorized');
+      case 404:
+        throw NotFoundException('Not Found');
       default:
         throw Exception('Failed to patch data');
     }

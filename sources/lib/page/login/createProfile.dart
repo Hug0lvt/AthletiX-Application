@@ -85,7 +85,6 @@ class CreateProfilePage extends State<CreateProfileForm> {
                 child: TextFormField(
                   controller: heightController,
                   keyboardType: TextInputType.number,
-                  obscureText: true,
                   decoration: const InputDecoration(
                     labelText: 'Height (Cm)',
                     fillColor: Colors.white,
@@ -107,15 +106,15 @@ class CreateProfilePage extends State<CreateProfileForm> {
     );
   }
 
-  void createProfile(){
+  void createProfile() async {
     int? age = int.tryParse(ageController.value.text);
     int? weight = int.tryParse(weightController.value.text);
     int? height = int.tryParse(heightController.value.text);
 
-    if(age == null || weight == null || height == null){
+    if (age == null || weight == null || height == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('At least one of the fields is empty !'),
+          content: Text('At least one of the fields is empty!'),
           backgroundColor: Colors.orange,
           duration: Duration(seconds: 5),
         ),
@@ -123,57 +122,40 @@ class CreateProfilePage extends State<CreateProfileForm> {
       return;
     }
 
-    AuthManager.getProfile()
-        .then((profile) {
-          profileClientApi.createProfile(Profile(
-              id: 0,
-              email: profile.email,
-              age: age,
-              height: height,
-              weight: weight,
-              role: 0,
-              uniqueNotificationToken: "",
-              username: profile.username
-          ));// TODO A FINIR ! notif token et tout... verif si créer ou pas ?
-        });
-
-
-
-    /*clientApi.authClientApi.register(Register(email: email, password: password))
-        .then((loginResponse) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registered !'),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 5),
-            ),
-          );
-          Navigator.pushNamed(context, '/login'); // TODO allé sur la page de créa de profile avant
-          return;
-        })
-        .catchError((error) {
-          switch(error.runtimeType){
-            case Exception:
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(error.toString()),
-                  backgroundColor: Colors.red,
-                  duration: Duration(seconds: 5),
-                ),
-              );
-              return;
-            default:
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('An error occurred !'),
-                  backgroundColor: Colors.red,
-                  duration: Duration(seconds: 5),
-                ),
-              );
-              return;
-          }
-        });*/
-
+    try {
+      final profile = await AuthManager.getProfile();
+      if (profile != null && profile.email != null && profile.username != null) {
+        final newProfile = await profileClientApi.createProfile(Profile(
+          id: 0,
+          email: profile.email,
+          age: age,
+          height: height,
+          weight: weight,
+          role: 0,
+          uniqueNotificationToken: "",
+          username: profile.username,
+        ));
+        AuthManager.setProfile(newProfile);
+        Navigator.pushNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error with profile !'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 5),
+          ),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('An error occurred!'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    }
   }
+
 
 }
