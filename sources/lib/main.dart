@@ -15,6 +15,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'model/profile.dart';
 
@@ -59,9 +60,11 @@ Future<void> initApp() async{
 
 Future<void> main() async {
   // For start application
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await initApp();
   runApp(const MyApp());
+  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {
