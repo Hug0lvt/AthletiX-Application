@@ -136,7 +136,7 @@ class CreateProfilePage extends State<CreateProfileForm> {
           username: profile.username,
         ));
         AuthManager.setProfile(newProfile);
-        Navigator.pushNamed(context, '/home');
+        Navigator.pushNamed(context, '/navbar');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

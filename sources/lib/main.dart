@@ -13,6 +13,7 @@ import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'components/navBar/BottomNavigationBar.dart';
 import 'firebase_options.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -44,10 +45,10 @@ Future<void> isAuthanticated() async {
         await AuthManager.setToken(AuthKeys.ATH_BEARER_TOKEN_API.name, loginResponse.accessToken);
         await AuthManager.setToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name, loginResponse.refreshToken);
         await AuthManager.setToken(AuthKeys.ATH_END_OF_BEARER_TOKEN_API.name, DateTime.now().add(const Duration(seconds: 3500)).toString());
-        firstPage = '/home';
+        firstPage = '/navbar';
       } catch (ignored) {}
     }else{
-      firstPage = '/home';
+      firstPage = '/navbar';
     }
   }
 }
@@ -80,10 +81,14 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: firstPage,
       routes: {
+        // Pour la phase de login et inscription
         '/start': (context) => StartPage(),
         '/register': (context) => const RegisterForm(),
         '/login': (context) => const LoginForm(),
         '/createProfile': (context) => const CreateProfileForm(),
+        // NavBar
+        '/navbar': (context) => const DefaultBottomNavigationBar(),
+        // Navigation
         '/home': (context) => HomePage(),
         '/profile/public': (context) => ProfilePublicPage(),
         '/profile/private': (context) => ProfilePrivatePage(),

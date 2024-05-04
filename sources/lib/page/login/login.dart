@@ -148,7 +148,7 @@ class LoginPage extends State<LoginForm> {
               duration: Duration(seconds: 5),
             ),
           );
-          Navigator.pushNamed(context, '/home');
+          Navigator.pushNamed(context, '/navbar');
           return;
         })
         .catchError((error) {
