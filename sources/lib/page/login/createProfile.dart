@@ -1,4 +1,3 @@
-import 'package:AthletiX/model/authentification/register.dart';
 import 'package:AthletiX/model/profile.dart';
 import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../main.dart';
-import '../../providers/api/clientApi.dart';
 
 class CreateProfileForm extends StatefulWidget {
   const CreateProfileForm({super.key});
@@ -136,7 +134,7 @@ class CreateProfilePage extends State<CreateProfileForm> {
           username: profile.username,
         ));
         AuthManager.setProfile(newProfile);
-        Navigator.pushNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(context, '/navbar', (route) => false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
