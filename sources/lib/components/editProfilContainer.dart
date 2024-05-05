@@ -1,12 +1,7 @@
+import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
 import 'package:flutter/material.dart';
-import 'package:sources/providers/api/api_client.dart';
-import 'package:sources/providers/api/profile_api_client.dart';
-import 'package:sources/model/profile.dart';
-import 'package:sources/model/enums/role.dart';
+import '../main.dart';
 
-class EditProfileApiClient extends ApiClient with ProfileApiClient {
-  EditProfileApiClient(String baseUrl) : super(baseUrl);
-}
 
 class EditProfileContainer extends StatefulWidget {
   final VoidCallback onClose;
@@ -22,13 +17,10 @@ class _EditProfileContainerState extends State<EditProfileContainer> {
   final TextEditingController heightController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
 
-  late final ProfileApiClient profileApiClient; // Declare a late final variable
-
   @override
   void initState() {
     super.initState();
-    // Instantiate the ProfileApiClient here
-    profileApiClient = EditProfileApiClient('https://codefirst.iut.uca.fr/container/AthletiX-ath-api/'); // Replace with your actual base URL
+    final profileClientApi = getIt<ProfileClientApi>();
   }
 
   @override
@@ -120,7 +112,8 @@ class _EditProfileContainerState extends State<EditProfileContainer> {
   }
 
   void submitForm() async {
-    Profile updatedProfile = Profile(
+    // TODO a finir (await AuthManager.getProfile)
+    /*Profile updatedProfile = Profile(
       id: 0, // localStorageUser.id
       username: pseudoController.text,
       mail: '', // localStorageUser.mail
@@ -141,6 +134,6 @@ class _EditProfileContainerState extends State<EditProfileContainer> {
       print("Error updating profile: $e");
       widget.onClose();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error updating profile: $e')));
-    }
+    }*/
   }
 }

@@ -28,8 +28,7 @@ void setupLocator() {
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/api',
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api'
       ));
-  getIt.registerSingleton<ProfileClientApi>(
-      ProfileClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
 }
 
 Future<void> isAuthanticated() async {
