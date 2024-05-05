@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../main.dart';
-import '../../model/profile.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -148,7 +147,7 @@ class LoginPage extends State<LoginForm> {
               duration: Duration(seconds: 5),
             ),
           );
-          Navigator.pushNamed(context, '/navbar');
+          Navigator.pushNamedAndRemoveUntil(context, '/navbar', (route) => false);
           return;
         })
         .catchError((error) {
