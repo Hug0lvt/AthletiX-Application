@@ -1,52 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sources/model/profile.dart';
-import 'package:sources/providers/api/api_client.dart';
-import 'package:sources/providers/api/profile_api_client.dart';
 import '../components/buttonProfilePage.dart';
 import '../components/editProfilContainer.dart';
-
-class ProfilePrivateApiClient extends ApiClient with ProfileApiClient {
-  ProfilePrivateApiClient(String baseUrl) : super(baseUrl);
-}
+import '../model/profile.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 
 class ProfilePrivatePage extends StatefulWidget {
-  const ProfilePrivatePage({super.key});
   @override
-  State<ProfilePrivatePage> createState() => _ProfilePrivatePage();
+  _ProfilePrivatePageState createState() => _ProfilePrivatePageState();
 }
 
-
-class _ProfilePrivatePage extends State<ProfilePrivatePage> {
-
-  @override
-  // TODO: implement baseUrl
-  String get baseUrl => throw UnimplementedError();
-
-  //final ProfilePrivateApiClient apiClient = ProfilePrivateApiClient("https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/");
-  final ProfilePrivateApiClient apiClient = ProfilePrivateApiClient("https://localhost:7028/api");
-  late Future<Profile> FutureProfile = fetchData();
+class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
+  Profile? _profile;
 
   @override
   void initState() {
     super.initState();
-    //FutureProfile = apiClient.getProfileByEmail("zaky@gmail.com");
-    //FutureProfile = apiClient.getProfileById(1);
-    //fetchData();
+    fetchProfile();
   }
 
-  Future<Profile> fetchData() async {
-    try {
-      // Utilisation de votre API client pour récupérer le profil par son ID
-      final Profile profile = await apiClient.getProfileById(1);
+  void fetchProfile() async {
+    // Call your method to fetch the profile
+    Profile? profile = await AuthManager.getProfile();
 
-      return profile;
-    } catch (error) {
-      // Gérer les erreurs ici
-      print('Error fetching profile: $error');
-      // Vous pouvez renvoyer une valeur par défaut ou une instance de Profile avec des valeurs par défaut ici
-      throw Exception('Failed to fetch profile');
-    }
+    setState(() {
+      _profile = profile;
+    });
   }
 
   @override
@@ -96,7 +75,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      margin: const  EdgeInsets.symmetric(vertical: 35.0),
+                      margin: const  EdgeInsets.symmetric(vertical: 15.0),
                       constraints: BoxConstraints.expand(
                         width: screenWidth * 0.9,
                         height: screenHeight * 0.2,
@@ -105,32 +84,12 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                         color: const Color(0xFF1A1A1A).withOpacity(0.7),
                         borderRadius: BorderRadius.circular(25.0),
                       ),
-                      child:
-                      FutureBuilder<Profile>(
-                        future: FutureProfile,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            // Affiche un indicateur de chargement pendant que les données sont récupérées
-                            return CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            // Affiche une erreur si la récupération des données échoue
-                            return Text('Error: ${snapshot.error}');
-                          } else if (!snapshot.hasData) {
-                            // Affiche un message si les données ne sont pas disponibles
-                            return Text('No data available');
-                          } else {
-                            print(snapshot.data!);
-                            // Affiche les données de FutureProfile
-                            Profile profile = snapshot.data!;
-                            return
-
-
-                      Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            profile.username,
+                            _profile?.username.toString() ?? 'Unknown',
                             style: TextStyle(
                               fontSize: ((screenWidth + screenHeight) / 2) * 0.040,
                               color: Colors.white,
@@ -155,7 +114,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                                     ),
                                   ),
                                   Text(
-                                    profile.age.toString(),
+                                    _profile?.age.toString() ?? 'Unknown',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
@@ -173,7 +132,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                                     ),
                                   ),
                                   Text(
-                                    profile.height.toString(),
+                                    (_profile?.height.toString() ?? '0') + ' cm',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
@@ -191,7 +150,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                                     ),
                                   ),
                                   Text(
-                                    profile.weight.toString(),
+                                    (_profile?.weight.toString() ?? '0') + ' kg',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
@@ -202,10 +161,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                             ],
                           ),
                         ],
-                      );
-
-                          }},),
-
+                      ),
                     ),
                     Positioned(
                       top: 50.0,
@@ -237,7 +193,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Posts',
                       imagePath: 'assets/PostIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -245,7 +201,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                       screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Favorite Posts',
                       imagePath: 'assets/HeartIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -253,7 +209,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                       screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Statistics',
                       imagePath: 'assets/StatisticsIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -261,7 +217,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                       screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Exercises',
                       imagePath: 'assets/DoubleHaltereIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -269,7 +225,7 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
                       screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Settings',
                       imagePath: 'assets/SettingsIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -285,7 +241,6 @@ class _ProfilePrivatePage extends State<ProfilePrivatePage> {
       ),
     );
   }
+
+
 }
-
-
-

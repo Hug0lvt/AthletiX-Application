@@ -13,6 +13,7 @@ import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'components/editProfilContainer.dart';
 import 'components/navBar/BottomNavigationBar.dart';
 import 'firebase_options.dart';
 import 'package:get_it/get_it.dart';
@@ -87,10 +88,6 @@ class MyApp extends StatelessWidget {
         '/createProfile': (context) => const CreateProfileForm(),
         // NavBar
         '/navbar': (context) => const DefaultBottomNavigationBar(),
-        // Navigation
-        '/home': (context) => HomePage(),
-        '/profile/public': (context) => ProfilePublicPage(),
-        '/profile/private': (context) => ProfilePrivatePage(),
       },
     );
   }
