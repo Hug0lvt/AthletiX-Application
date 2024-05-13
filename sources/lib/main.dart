@@ -11,7 +11,6 @@ import 'package:AthletiX/providers/api/clientApi.dart';
 import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
 import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
-//import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'components/navBar/BottomNavigationBar.dart';
 import 'package:get_it/get_it.dart';
@@ -53,7 +52,6 @@ Future<void> isAuthanticated() async {
 }
 
 Future<void> initApp() async{
-  //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator(); // DI (usage : final clientApi = getIt<ClientApi>(); ...)
   await isAuthanticated();
 }
@@ -80,10 +78,14 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: firstPage,
       routes: {
+        // Pour la phase de login et inscription
         '/start': (context) => StartPage(),
         '/register': (context) => const RegisterForm(),
         '/login': (context) => const LoginForm(),
         '/createProfile': (context) => const CreateProfileForm(),
+        // NavBar
+        '/navbar': (context) => const DefaultBottomNavigationBar(),
+        // Navigation
         '/home': (context) => HomePage(),
         '/profile/public': (context) => ProfilePublicPage(),
         '/profile/private': (context) => ProfilePrivatePage(),

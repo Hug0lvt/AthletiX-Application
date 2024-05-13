@@ -2,7 +2,7 @@ name: AthletiX
 description: AthletiX - Votre compagnon pour une vie plus saine et active
 
 android: app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
-ios: Runner/Assets.xcassets/AppIcon.appiconset/AppIcon.png
+ios: Runner/Assets.xcassets/AppIcon.appiconset/ic_launcher.png
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
