@@ -12,9 +12,9 @@ import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
 import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
-import 'components/navBar/BottomNavigationBar.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'components/navBar/BottomNavigationBar.dart';
 
 import 'model/profile.dart';
 
@@ -52,8 +52,9 @@ Future<void> isAuthanticated() async {
 }
 
 Future<void> initApp() async{
+  //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator(); // DI (usage : final clientApi = getIt<ClientApi>(); ...)
-  await isAuthanticated();
+  isAuthanticated();
 }
 
 Future<void> main() async {
