@@ -31,6 +31,34 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void onPressed() {
+    showModalBottomSheet<int>(
+      showDragHandle: true,
+      isScrollControlled: true,
+      backgroundColor: Colors.black87,
+      context: context,
+      builder: (context) {
+        return Container (
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.85,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    CommentCard(),
+                    CommentCard(),
+                    CommentCard(),
+                    CommentCard(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +75,14 @@ class _HomePageState extends State<HomePage> {
                       ? FittedBox(
                     fit: BoxFit.cover,
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height,
                       child: VideoPlayer(_controller),
                     ),
                   )
@@ -58,116 +92,97 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Align(
-                alignment: Alignment.bottomLeft,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  height: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const SizedBox(height: 10.0),
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        decoration: BoxDecoration(
-                            color: const Color(0xFF202020).withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(1000),
-                        ),
-                        width: 60,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              child: ClipOval(
-                                child: Container(
-                                  child: Center(
-                                    child: SvgPicture.asset(
-                                      'assets/EditIcon.svg',
-                                      width: 50,
-                                    ),
-                                  ),
+            alignment: Alignment.bottomLeft,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.75,
+              height: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const SizedBox(height: 10.0),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF202020).withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(1000),
+                    ),
+                    width: 60,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          child: ClipOval(
+                            child: Container(
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  'assets/EditIcon.svg',
+                                  width: 50,
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10.0),
-                            Column(
-                              children: [
-                                SvgPicture.asset('assets/LikeIcon.svg', color: Colors.white, width: 45,),
-                                const SizedBox(width: 5.0),
-                                const Text('123', style: TextStyle(color: Colors.white)),
-                              ],
-                            ),
-                            const SizedBox(height: 5.0),
-                            Column(
-                              children: [
-                                SvgPicture.asset('assets/DoubleHaltereIcon.svg', width: 45,),
-                                const SizedBox(width: 10.0),
-                                const Text('456', style: TextStyle(color: Colors.white)),
-                              ],
-                            ),
-                            const SizedBox(height: 5.0),
-                            Column(
-                              children: [
-                                SvgPicture.asset('assets/CommentIcon.svg', width: 35,),
-                                const SizedBox(width: 10.0),
-                                const Text('789', style: TextStyle(color: Colors.white)),
-                              ],
-                            ),
-                            const SizedBox(height: 5.0),
+                          ),
+                        ),
+                        const SizedBox(height: 10.0),
+                        Column(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/LikeIcon.svg', color: Colors.white,
+                              width: 45,),
+                            const SizedBox(width: 5.0),
+                            const Text(
+                                '123', style: TextStyle(color: Colors.white)),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 10.0),
-                      const Text(
-                        'Description de la vidéo',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // ------------------------ Partie Commentaire ----------------------------
-
-          /*Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.90,
-              decoration: BoxDecoration(
-                color: const Color(0xFF202020).withOpacity(0.9),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
-                ),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-                  Container(
-                    height: 2,
-                    width: MediaQuery.of(context).size.width * 0.50,
-                    color: Colors.white,
-                  ),
-                  const SizedBox(height: 16),
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        CommentCard(),
-                        CommentCard(),
-                        CommentCard(),
-                        CommentCard(),
+                        const SizedBox(height: 5.0),
+                        Column(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/DoubleHaltereIcon.svg', width: 45,),
+                            const SizedBox(width: 10.0),
+                            const Text(
+                                '456', style: TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                        const SizedBox(height: 5.0),
+                        Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                onPressed();
+                              },
+                              child: SvgPicture.asset(
+                                'assets/CommentIcon.svg',
+                                width: 35,
+                              ),
+                            ),
+                            const SizedBox(width: 10.0),
+                            const Text(
+                              '789',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5.0),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  const Text(
+                    'Description de la vidéo',
+                    style: TextStyle(color: Colors.white),
                   ),
                 ],
               ),
             ),
-          ),*/
-            ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 
