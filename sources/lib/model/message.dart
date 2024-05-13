@@ -1,4 +1,10 @@
-import 'profile.dart';
+import 'dart:convert';
+
+import 'package:AthletiX/model/profile.dart';
+
+List<Message> messageListFromJson(String str) => List<Message>.from(json.decode(str).map((x) => Message.fromJson(x)));
+Message messageFromJson(String str) => Message.fromJson(json.decode(str));
+String messageToJson(Message data) => json.encode(data.toJson());
 
 class Message {
   int id;
@@ -13,31 +19,17 @@ class Message {
     required this.sender,
   });
 
-  Message.partial({
-    int? id,
-    String? content,
-    DateTime? dateSent,
-    Profile? sender,
-  })  : id = id ?? 0,
-        content = content ?? '',
-        dateSent = dateSent ?? DateTime.now(),
-        sender = sender ?? Profile.partial();
+  factory Message.fromJson(Map<String, dynamic> json) => Message(
+    id: json["id"],
+    content: json["content"],
+    dateSent: DateTime.parse(json["dateSent"]),
+    sender: Profile.fromJson(json["sender"]),
+  );
 
-  factory Message.fromJson(Map<String, dynamic> json) {
-    return Message(
-      id: json['id'] as int,
-      content: json['content'] as String,
-      dateSent: DateTime.parse(json['dateSent'] as String),
-      sender: Profile.fromJson(json['sender'] as Map<String, dynamic>),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'content': content,
-      'dateSent': dateSent.toIso8601String(),
-      'sender': sender.toJson(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "content": content,
+    "dateSent": dateSent.toIso8601String(),
+    "sender": sender.toJson(),
+  };
 }

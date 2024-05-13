@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:sources/utils/appColors.dart';
 
 import '../components/bubbleMessage.dart';
+import '../utils/appColors.dart';
 
 class MessagePage extends StatefulWidget {
   @override

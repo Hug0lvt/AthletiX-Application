@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sources/utils/appColors.dart';
 
 import '../components/conversation.dart';
+import '../utils/appColors.dart';
 
 class ConversationPage extends StatefulWidget {
   @override

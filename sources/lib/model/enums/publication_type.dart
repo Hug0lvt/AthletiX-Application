@@ -1,4 +1,0 @@
-enum PublicationType {
-  image,
-  video,
-}

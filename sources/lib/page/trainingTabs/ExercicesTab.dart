@@ -11,7 +11,6 @@ class ExercicesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-
     void onPressed() {
       showModalBottomSheet<int>(
         showDragHandle: true,

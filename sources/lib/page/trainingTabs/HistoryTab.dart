@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sources/providers/api/api_client.dart';
+import 'package:AthletiX/providers/api/clientApi.dart';
 
-import '../../components/ProgramContainer.dart';
-import '../../model/session.dart';
-import '../../providers/api/session_api_client.dart';
+import 'package:AthletiX/components/ProgramContainer.dart';
+import 'package:AthletiX/model/session.dart';
 
-class HistoryApiClient extends ApiClient with SessionApiClient {
+class HistoryApiClient extends clientApi with SessionApiClient {
   HistoryApiClient(String baseUrl) : super(baseUrl);
 }
 
