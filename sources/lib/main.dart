@@ -43,18 +43,20 @@ Future<void> isAuthanticated() async {
         await AuthManager.setToken(AuthKeys.ATH_BEARER_TOKEN_API.name, loginResponse.accessToken);
         await AuthManager.setToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name, loginResponse.refreshToken);
         await AuthManager.setToken(AuthKeys.ATH_END_OF_BEARER_TOKEN_API.name, DateTime.now().add(const Duration(seconds: 3500)).toString());
-        firstPage = '/home';
+        firstPage = '/navbar';
       } catch (ignored) {}
     }else{
-      firstPage = '/home';
+      firstPage = '/navbar';
     }
+  } else {
+    firstPage = '/start';
   }
 }
 
 Future<void> initApp() async{
   //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator(); // DI (usage : final clientApi = getIt<ClientApi>(); ...)
-  isAuthanticated();
+  await isAuthanticated();
 }
 
 Future<void> main() async {
