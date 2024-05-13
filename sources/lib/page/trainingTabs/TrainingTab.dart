@@ -20,7 +20,7 @@ class _TrainingTab extends State<TrainingTab> {
   get onPressed => null;
 
   final TrainingApiClient apiClient =
-  TrainingApiClient("https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/");
+  TrainingApiClient("https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/api");
   late Future<List<Session>> FutureSessions;
 
   String searchQuery = ''; // Add this line to store the search query
@@ -102,6 +102,7 @@ class _TrainingTab extends State<TrainingTab> {
               future: FutureSessions,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  print("HAS DATA");
                   List<Session> allSessions = snapshot.data!;
                   List<Session> filteredSessions = allSessions
                       .where((session) =>
@@ -120,7 +121,13 @@ class _TrainingTab extends State<TrainingTab> {
                     },
                   );
                 }
-                return const CircularProgressIndicator();
+                return Text(
+                  "No Sessions Found"
+                  ,style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Mulish',
+                  ),
+                );
               },
             ),
           ],
