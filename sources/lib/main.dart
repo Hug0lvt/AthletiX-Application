@@ -8,6 +8,7 @@ import 'package:AthletiX/page/login/start.dart';
 import 'package:AthletiX/page/profilePrivate.dart';
 import 'package:AthletiX/page/profilePublic.dart';
 import 'package:AthletiX/providers/api/clientApi.dart';
+import 'package:AthletiX/providers/api/utils/commentsClientApi.dart';
 import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
 import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
@@ -28,6 +29,8 @@ void setupLocator() {
       ));
   getIt.registerSingleton<ProfileClientApi>(
       ProfileClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<CommentsClientApi>(
+      CommentsClientApi(getIt<ClientApi>()));
 }
 
 Future<void> isAuthanticated() async {

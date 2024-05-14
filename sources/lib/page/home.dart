@@ -1,6 +1,9 @@
+import 'package:AthletiX/model/comment.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:AthletiX/providers/api/utils/commentsClientApi.dart';
+import '../main.dart';
 
 import '../components/commentCard.dart';
 
@@ -10,6 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final commentClientApi = getIt<CommentsClientApi>();
   late VideoPlayerController _controller;
 
   @override
@@ -31,7 +36,8 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void onPressed() {
+  void onPressed() async {
+    List<Comment> comments = await commentClientApi.getComments();
     showModalBottomSheet<int>(
       showDragHandle: true,
       isScrollControlled: true,
@@ -46,10 +52,14 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: ListView(
                   children: [
-                    CommentCard(),
-                    CommentCard(),
-                    CommentCard(),
-                    CommentCard(),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: comments.length,
+                        itemBuilder: (context, index) {
+                          return CommentCard();
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
