@@ -39,7 +39,7 @@ class _TrainingTab extends State<TrainingTab> {
         return const CircularProgressIndicator();
       },
     );
-    FutureSessions = clientApi.getSessionsOfUser(profileId!);
+    FutureSessions = clientApi.getSessionsOfUser(profileId);
   }
 
   @override
@@ -118,7 +118,6 @@ class _TrainingTab extends State<TrainingTab> {
                       .where((session) =>
                       session.name.toLowerCase().contains(searchQuery.toLowerCase()))
                       .toList();
-
                   return ListView.builder(
                     shrinkWrap: true,
                     itemCount: filteredSessions.length,
@@ -130,14 +129,17 @@ class _TrainingTab extends State<TrainingTab> {
                       );
                     },
                   );
+                } else {
+                  return const Center(
+                    child: Text(
+                      "No Programs Found",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Mulish',
+                      ),
+                    ),
+                  );
                 }
-                return const Text(
-                  "No Sessions Found"
-                  ,style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Mulish',
-                  ),
-                );
               },
             ),
           ],

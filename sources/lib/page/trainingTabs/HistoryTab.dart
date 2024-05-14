@@ -38,7 +38,8 @@ class _HistoryTab extends State<HistoryTab> {
           return const CircularProgressIndicator();
         },
     );
-      FutureSessions = clientApi.getSessionsOfUser(profileId!);
+    FutureSessions = clientApi.getSessionsOfUser(profileId);
+
   }
 
   @override
@@ -86,7 +87,15 @@ class _HistoryTab extends State<HistoryTab> {
                       );
                     }
                   }
-                  return const CircularProgressIndicator();
+                  return const Center(
+                    child: Text(
+                      "No Past Sessions Found",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Mulish',
+                      ),
+                    ),
+                  ) ;
                 },
               )
           ],
