@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sources/model/exercise.dart';
+import 'package:AthletiX/model/exercise.dart';
 
 class ProgramContainer extends StatelessWidget {
   final String title;

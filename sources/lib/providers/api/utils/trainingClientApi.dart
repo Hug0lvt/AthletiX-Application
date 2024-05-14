@@ -1,5 +1,5 @@
 import 'package:AthletiX/providers/api/clientApi.dart';
-import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/model/session.dart';
 
 class TrainingClientApi{
   late final ClientApi _clientApi;
@@ -9,8 +9,8 @@ class TrainingClientApi{
     _clientApi = cli;
   }
 
-  Future<Profile> getSessionsOfUser(int profileId) async {
-    return profileFromJson(await _clientApi.getDataById(_endpoint, profileId));
+  Future<List<Session>> getSessionsOfUser(int profileId) async {
+    return sessionListFromJson(await _clientApi.getDataById(_endpoint, profileId));
   }
 
 /*  Future<Profile> createProfile(Profile profile) async {

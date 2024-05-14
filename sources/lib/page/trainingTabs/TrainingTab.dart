@@ -1,14 +1,12 @@
+import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
-import 'package:sources/providers/api/api_client.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
+import 'package:AthletiX/components/ProgramContainer.dart';
+import 'package:AthletiX/model/session.dart';
+import 'package:AthletiX/main.dart';
 
-import '../../components/ProgramContainer.dart';
-import '../../model/session.dart';
-import '../../providers/api/session_api_client.dart';
-
-class TrainingApiClient extends ApiClient with SessionApiClient {
-  TrainingApiClient(String baseUrl) : super(baseUrl);
-}
 
 class TrainingTab extends StatefulWidget {
   const TrainingTab({super.key});
@@ -17,18 +15,31 @@ class TrainingTab extends StatefulWidget {
 }
 
 class _TrainingTab extends State<TrainingTab> {
+
+  final clientApi = getIt<TrainingClientApi>();
+
   get onPressed => null;
 
-  final TrainingApiClient apiClient =
-  TrainingApiClient("https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/api");
   late Future<List<Session>> FutureSessions;
 
-  String searchQuery = ''; // Add this line to store the search query
+  String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    FutureSessions = apiClient.getAllSessions();
+    int? profileId;
+    Future<Profile?> profileFuture = AuthManager.getProfile();
+    FutureBuilder<Profile?>(
+      future: profileFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          Profile? profile = snapshot.data!;
+          profileId = profile.id;
+        }
+        return const CircularProgressIndicator();
+      },
+    );
+    FutureSessions = clientApi.getSessionsOfUser(profileId!);
   }
 
   @override
@@ -102,7 +113,6 @@ class _TrainingTab extends State<TrainingTab> {
               future: FutureSessions,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  print("HAS DATA");
                   List<Session> allSessions = snapshot.data!;
                   List<Session> filteredSessions = allSessions
                       .where((session) =>
@@ -121,7 +131,7 @@ class _TrainingTab extends State<TrainingTab> {
                     },
                   );
                 }
-                return Text(
+                return const Text(
                   "No Sessions Found"
                   ,style: TextStyle(
                     color: Colors.white,

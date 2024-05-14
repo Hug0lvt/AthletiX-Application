@@ -1,12 +1,11 @@
+import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
-import 'package:AthletiX/providers/api/clientApi.dart';
-
 import 'package:AthletiX/components/ProgramContainer.dart';
 import 'package:AthletiX/model/session.dart';
 
-class HistoryApiClient extends clientApi with SessionApiClient {
-  HistoryApiClient(String baseUrl) : super(baseUrl);
-}
+import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
+import 'package:AthletiX/main.dart';
 
 class HistoryTab extends StatefulWidget {
   const HistoryTab({super.key});
@@ -15,13 +14,31 @@ class HistoryTab extends StatefulWidget {
 }
 
 class _HistoryTab extends State<HistoryTab> {
-  final HistoryApiClient apiClient = HistoryApiClient("https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/");
+
+  final clientApi = getIt<TrainingClientApi>();
+
+  get onPressed => null;
+
   late Future<List<Session>> FutureSessions;
+
+  String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    FutureSessions = apiClient.getAllSessions();
+    int? profileId;
+    Future<Profile?> profileFuture = AuthManager.getProfile();
+    FutureBuilder<Profile?>(
+      future: profileFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            Profile? profile = snapshot.data!;
+            profileId = profile.id;
+          }
+          return const CircularProgressIndicator();
+        },
+    );
+      FutureSessions = clientApi.getSessionsOfUser(profileId!);
   }
 
   @override
