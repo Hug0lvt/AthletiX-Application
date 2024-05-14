@@ -48,6 +48,7 @@ flutter:
   - assets/Benchpress.png
   - assets/LetsGo.svg
   - assets/doigby.mp4
+  - assets/airsoft.mp4
   - assets/Logo.png
 
 # Gen Splash Screen "flutter pub run flutter_native_splash:create"
