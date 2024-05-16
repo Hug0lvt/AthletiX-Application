@@ -1,3 +1,4 @@
+import 'package:AthletiX/page/addTraining.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -5,8 +6,6 @@ import '../../components/ProgramContainer.dart';
 
 class TrainingTab extends StatelessWidget {
   const TrainingTab({super.key});
-
-  get onPressed => null;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +62,14 @@ class TrainingTab extends StatelessWidget {
                     height: 1.0,
                   ),
                 ),
-                IconButton(onPressed: onPressed, icon: SvgPicture.asset('assets/AddPlus.svg'),)
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddTrainingPage()),
+                    );
+                  },
+                  icon: SvgPicture.asset('assets/AddPlus.svg'),)
               ],
             ),
             const SizedBox(height: 8.0),
