@@ -8,7 +8,15 @@ import 'package:AthletiX/page/login/start.dart';
 import 'package:AthletiX/page/profilePrivate.dart';
 import 'package:AthletiX/page/profilePublic.dart';
 import 'package:AthletiX/providers/api/clientApi.dart';
+import 'package:AthletiX/providers/api/utils/categoryClientApi.dart';
+import 'package:AthletiX/providers/api/utils/commentClientApi.dart';
+import 'package:AthletiX/providers/api/utils/conversationClientApi.dart';
+import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
+import 'package:AthletiX/providers/api/utils/messageClientApi.dart';
+import 'package:AthletiX/providers/api/utils/postClientApi.dart';
 import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
+import 'package:AthletiX/providers/api/utils/sessionClientApi.dart';
+import 'package:AthletiX/providers/api/utils/setClientApi.dart';
 import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
 import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
@@ -31,6 +39,15 @@ void setupLocator() {
       ProfileClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<TrainingClientApi>(
       TrainingClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<CategoryClientApi>(CategoryClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ConversationClientApi>(ConversationClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ExerciseClientApi>(ExerciseClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<MessageClientApi>(MessageClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<PostClientApi>(PostClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<SessionClientApi>(SessionClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<SetClientApi>(SetClientApi(getIt<ClientApi>()));
 }
 
 Future<void> isAuthanticated() async {
