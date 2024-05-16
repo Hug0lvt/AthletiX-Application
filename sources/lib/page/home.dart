@@ -21,6 +21,9 @@ class _HomePageState extends State<HomePage> {
     "assets/doigby.mp4",
   ];
 
+  // TODO a brancher avec l'objet récup par api
+  bool _isLiked = false;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +41,12 @@ class _HomePageState extends State<HomePage> {
     } else {
       _controller.play();
     }
+  }
+
+  void onPressedLiked() {
+    setState(() {
+      _isLiked = !_isLiked;
+    });
   }
 
   void onPressed() async {
@@ -98,7 +107,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _updateVideoController() {
-    _controller.pause(); // Pause la vidéo actuelle
+    _controller.pause();
     _controller = VideoPlayerController.asset(_videoAssets[_currentVideoIndex])
       ..initialize().then((_) {
         _controller.setLooping(true);
@@ -132,8 +141,8 @@ class _HomePageState extends State<HomePage> {
         ),
         if (_currentVideoIndex != index)
           AnimatedOpacity(
-            duration: Duration(milliseconds: 500),
-            opacity: 1 - (_controller.value.position.inSeconds / _controller.value.duration.inSeconds),
+            duration: Duration(milliseconds: 250),
+            opacity: (_controller.value.position.inSeconds / _controller.value.duration.inSeconds).clamp(0.0, 1.0),
             child: VideoPlayer(_controller),
           ),
         Align(
@@ -170,21 +179,20 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10.0),
-                      Column(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/LikeIcon.svg',
-                            color: Colors.white,
-                            width: 45,
-                          ),
-                          const SizedBox(width: 5.0),
-                          const Text(
-                            '123',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
+                        const SizedBox(height: 10.0),
+                        GestureDetector(
+                          onTap: onPressedLiked,
+                            child: SvgPicture.asset(
+                              'assets/LikeIcon.svg',
+                              color: _isLiked ? null : Colors.white,
+                              width: 45,
+                            ),
+                        ),
+                        const SizedBox(width: 5.0),
+                        const Text(
+                        '123',
+                        style: TextStyle(color: Colors.white),
+                        ),
                       const SizedBox(height: 5.0),
                       Column(
                         children: [

@@ -38,6 +38,7 @@ flutter:
 
   assets:
   - .env
+  - assets/EditIcon.svg
   - assets/AthletiX.svg
   - assets/LikeIcon.svg
   - assets/DoubleHaltereIcon.svg
