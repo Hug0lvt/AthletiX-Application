@@ -1,7 +1,8 @@
+import 'package:AthletiX/model/category.dart';
 import 'package:flutter/material.dart';
 
 class FilterContainer extends StatelessWidget {
-  final List<String> filters;
+  final List<Category> filters;
   final Color color;
 
   FilterContainer({
@@ -15,7 +16,7 @@ class FilterContainer extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double dynamicWidth = screenWidth * 0.2;
 
-    Widget buildFilterItem(String filter) {
+    Widget buildFilterItem(Category filter) {
       return GestureDetector(
         onTap: () {
             filters.remove(filter);
@@ -46,7 +47,7 @@ class FilterContainer extends StatelessWidget {
                   width: dynamicWidth * 0.833,
                   height: dynamicWidth * 0.91,
                   child: Text(
-                    filter,
+                    filter.title,
                     softWrap: true,
                     textAlign: TextAlign.center,
                     style: TextStyle(

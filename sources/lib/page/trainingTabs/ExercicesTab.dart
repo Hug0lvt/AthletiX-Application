@@ -1,5 +1,8 @@
+import 'package:AthletiX/exceptions/not_found_exception.dart';
 import 'package:AthletiX/main.dart';
+import 'package:AthletiX/model/category.dart';
 import 'package:AthletiX/model/exercise.dart';
+import 'package:AthletiX/providers/api/utils/categoryClientApi.dart';
 import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -15,10 +18,12 @@ class ExercicesTab extends StatefulWidget {
 
 class _ExercicesTab extends State<ExercicesTab> {
   final clientApi = getIt<ExerciseClientApi>();
+  final clientCategoryApi = getIt<CategoryClientApi>();
 
   get onPressed => null;
 
   late List<Exercise> exercices;
+  late List<Category> categories;
 
   bool isLoading = false;
 
@@ -27,33 +32,35 @@ class _ExercicesTab extends State<ExercicesTab> {
 
   @override
   void initState() {
+    categories = [];
     exercices = [];
     filteredExercices = [];
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_){
-      _loadExercices();
+      _loadExercicesAndCategories();
     });
 
   }
-  void _loadExercices() async {
+  void _loadExercicesAndCategories() async {
     setState(() {
       isLoading = true;
     });
     try {
-      List<Exercise> fetchedExercices = await clientApi.getEx;
-      List<Session> filterExercices = fetchedExercices
+      List<Exercise> fetchedExercices = await clientApi.getExercises();
+      //List<Exercise> fetchedCategories = await clientCategoryApi.getCategories();
+      List<Exercise> filterExercices = fetchedExercices
           .where((session) =>
           session.name.toLowerCase().contains(searchQuery.toLowerCase()))
           .toList();
       setState(() {
-        filterSessions = filteredSessions;
-        sessions = fetchedSessions;
+        filterExercices = filteredExercices;
+        exercices = fetchedExercices;
         isLoading = false;
       });
     } on NotFoundException catch (_) {
       // Gère spécifiquement la NotFoundException
       setState(() {
-        sessions = []; // Aucune session trouvée
+        exercices = []; // Aucune session trouvée
         isLoading = false;
       });
     }
@@ -83,7 +90,7 @@ class _ExercicesTab extends State<ExercicesTab> {
                     ),
                   ),
                 FilterContainer(
-                    filters: ['Chest', 'Back', 'Arms', 'Legs', 'Abs', 'Biceps'],
+                    filters: categories,
                     color: Colors.white24,
                 ),
             ],
@@ -108,6 +115,11 @@ class _ExercicesTab extends State<ExercicesTab> {
                 child: Stack(
                   children: [
                     TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          searchQuery = value;
+                        });
+                      },
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         hintText: 'Search',
@@ -155,41 +167,33 @@ class _ExercicesTab extends State<ExercicesTab> {
             ),
             const SizedBox(height: 8.0),
             Expanded(
-              child: ListView(
+              child:
+              ListView(
                 shrinkWrap: true,
                 children: [
-                  ExerciseContainer(
-                    name: 'Dumbbell Benchpress',
-                    icon: 'assets/Benchpress.png'
+                  isLoading
+                      ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                      : filteredExercices.isEmpty
+                      ? const Center(
+                    child: Text(
+                      "No Exercises Found",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Mulish',
+                      ),
+                    ),
+                  )
+                      : ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filteredExercices.length,
+                    itemBuilder: (context, index) {
+                      return ExerciseContainer(
+                          exercice: filteredExercices[index],
+                      );
+                    },
                   ),
-                  ExerciseContainer(
-                      name: 'Dumbbell Benchpress',
-                      icon: 'assets/Benchpress.png'
-                  ),
-                  ExerciseContainer(
-                      name: 'Dumbbell Benchpress',
-                      icon: 'assets/Benchpress.png'
-                  ),
-                  ExerciseContainer(
-                      name: 'Dumbbell Benchpress',
-                      icon: 'assets/Benchpress.png'
-                  ),ExerciseContainer(
-                      name: 'Dumbbell Benchpress',
-                      icon: 'assets/Benchpress.png'
-                  ),ExerciseContainer(
-                      name: 'Dumbbell Benchpress',
-                      icon: 'assets/Benchpress.png'
-                  ),ExerciseContainer(
-                      name: 'Dumbbell Benchpress',
-                      icon: 'assets/Benchpress.png'
-                  ),ExerciseContainer(
-                      name: 'Dumbbell Benchpress',
-                      icon: 'assets/Benchpress.png'
-                  ),
-
-
-
-
                 ],
               ),
             ),

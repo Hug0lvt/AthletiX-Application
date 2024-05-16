@@ -141,10 +141,10 @@ class _TrainingTab extends State<TrainingTab> {
                     ? const Center(
                   child: CircularProgressIndicator(),
                 )
-                    : sessions.isEmpty
+                    : filteredSessions.isEmpty
                     ? const Center(
                   child: Text(
-                    "No Past Sessions Found",
+                    "No Programs Found",
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Mulish',

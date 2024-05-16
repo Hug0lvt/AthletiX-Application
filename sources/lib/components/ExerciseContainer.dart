@@ -1,12 +1,11 @@
+import 'package:AthletiX/model/exercise.dart';
 import 'package:flutter/material.dart';
 
 class ExerciseContainer extends StatelessWidget {
-  final String icon;
-  final String name;
+  final Exercise exercice;
 
   ExerciseContainer({
-    required this.icon,
-    required this.name,
+    required this.exercice,
   });
 
   @override
@@ -68,14 +67,14 @@ class ExerciseContainer extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(25.0),
                     child: Image.asset(
-                      icon,
+                      exercice.image,
                       height: 50,
                       width: 50,
                     ),
                   ),
                   SizedBox(width: dynamicSpacing),
                   Text(
-                    name,
+                    exercice.name,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
