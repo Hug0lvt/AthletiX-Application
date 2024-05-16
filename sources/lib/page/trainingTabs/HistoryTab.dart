@@ -45,7 +45,7 @@ class _HistoryTab extends State<HistoryTab> {
       profileId = profile.id;
     }
     try {
-      List<Session> fetchedSessions = await clientApi.getSessionsOfUser(profileId);
+      List<Session> fetchedSessions = await clientApi.getPastSessionsOfUser(profileId);
       setState(() {
         sessions = fetchedSessions;
         isLoading = false;

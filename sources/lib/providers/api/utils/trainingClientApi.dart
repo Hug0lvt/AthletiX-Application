@@ -9,7 +9,14 @@ class TrainingClientApi{
     _clientApi = cli;
   }
 
-  Future<List<Session>> getSessionsOfUser(int? profileId) async {
+  Future<List<Session>> getPastSessionsOfUser(int? profileId) async {
+    if(profileId != null) {
+      return sessionListFromJson(
+          await _clientApi.getDataById(_endpoint, profileId!));
+    }
+    return [];
+  }
+  Future<List<Session>> getProgramsOfUser(int? profileId) async {
     if(profileId != null) {
       return sessionListFromJson(
           await _clientApi.getDataById(_endpoint, profileId!));
