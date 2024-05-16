@@ -17,8 +17,8 @@ class ExerciseClientApi{
     return exerciseFromJson(await _clientApi.getDataById(_endpoint, exerciseId));
   }
   
-  Future<Exercise> getExercise() async {
-    return exerciseFromJson(await _clientApi.getData(_endpoint));
+  Future<List<Exercise>> getExercises() async {
+    return exerciseListFromJson(await _clientApi.getData(_endpoint));
   }
   // TODO LIST BY CATEGORY
   Future<Exercise> getExerciseByCategory(String exerciseEmail) async {
