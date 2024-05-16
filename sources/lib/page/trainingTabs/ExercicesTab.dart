@@ -1,11 +1,63 @@
+import 'package:AthletiX/main.dart';
+import 'package:AthletiX/model/exercise.dart';
+import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../components/ExerciseContainer.dart';
-import '../../components/FilterContainer.dart';
+import 'package:AthletiX/components/ExerciseContainer.dart';
+import 'package:AthletiX/components/FilterContainer.dart';
 
-class ExercicesTab extends StatelessWidget {
+class ExercicesTab extends StatefulWidget {
   const ExercicesTab({super.key});
+  @override
+  State<ExercicesTab> createState() => _ExercicesTab();
+}
+
+class _ExercicesTab extends State<ExercicesTab> {
+  final clientApi = getIt<ExerciseClientApi>();
+
+  get onPressed => null;
+
+  late List<Exercise> exercices;
+
+  bool isLoading = false;
+
+  late List<Exercise> filteredExercices;
+  String searchQuery = '';
+
+  @override
+  void initState() {
+    exercices = [];
+    filteredExercices = [];
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _loadExercices();
+    });
+
+  }
+  void _loadExercices() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      List<Exercise> fetchedExercices = await clientApi.getEx;
+      List<Session> filterExercices = fetchedExercices
+          .where((session) =>
+          session.name.toLowerCase().contains(searchQuery.toLowerCase()))
+          .toList();
+      setState(() {
+        filterSessions = filteredSessions;
+        sessions = fetchedSessions;
+        isLoading = false;
+      });
+    } on NotFoundException catch (_) {
+      // Gère spécifiquement la NotFoundException
+      setState(() {
+        sessions = []; // Aucune session trouvée
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
