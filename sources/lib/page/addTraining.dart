@@ -1,7 +1,10 @@
+import 'package:AthletiX/model/session.dart';
+import 'package:AthletiX/page/modifTraining.dart';
 import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../model/profile.dart';
 import '../providers/localstorage/secure/authKeys.dart';
 import '../providers/localstorage/secure/authManager.dart';
 
@@ -13,6 +16,21 @@ class AddTrainingPage extends StatefulWidget {
 class _AddTrainingPageState extends State<AddTrainingPage> {
   TextEditingController _controller = TextEditingController();
   bool _isButtonEnabled = false;
+  Profile? _profile;
+  late Session sessionToCreate;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    Profile? profile = await AuthManager.getProfile();
+    setState(() {
+      _profile = profile;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,27 +69,40 @@ class _AddTrainingPageState extends State<AddTrainingPage> {
                   });
                 },
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 22.0,
                 ),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   focusColor: Colors.white,
                 ),
               ),
             ),
 
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _isButtonEnabled
                   ? () async {
+                final navigator = Navigator.of(context);
                 String? token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
-                print(token);
                 String programName = _controller.text;
+                print(_profile!.email);
+                sessionToCreate = Session(
+                    id: 213,
+                    profile: _profile!,
+                    name: programName,
+                    date: DateTime.now(),
+                    duration: const Duration(minutes: 1),
+                    exercises: []);
+                navigator.push(
+                  MaterialPageRoute(
+                    builder: (context) => ModifTrainingPage(session: sessionToCreate),
+                  ),
+                );
               }
                   : null,
               child:
-              Text(
+              const Text(
                 'Create',
                 style: TextStyle(
                   fontSize: 18,
