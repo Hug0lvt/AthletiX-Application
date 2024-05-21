@@ -34,12 +34,7 @@ void setupLocator() {
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/api',
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api'
       ));
-  getIt.registerSingleton<ProfileClientApi>(
-      ProfileClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<CommentClientApi>(
-      CommentClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<TrainingClientApi>(
-      TrainingClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<TrainingClientApi>(TrainingClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<CategoryClientApi>(CategoryClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>()));

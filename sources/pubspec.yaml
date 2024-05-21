@@ -42,6 +42,7 @@ flutter:
   - assets/EditIcon.svg
   - assets/AthletiX.svg
   - assets/LikeIcon.svg
+  - assets/EditIcon.svg
   - assets/DoubleHaltereIcon.svg
   - assets/CommentIcon.svg
   - assets/AddPlus.svg
