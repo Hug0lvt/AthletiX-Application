@@ -6,7 +6,6 @@ import 'package:AthletiX/providers/api/utils/categoryClientApi.dart';
 import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:AthletiX/components/ExerciseContainer.dart';
 import 'package:AthletiX/components/FilterContainer.dart';
 
@@ -26,6 +25,7 @@ class _ExercicesTab extends State<ExercicesTab> {
   late List<Category> categories;
 
   bool isLoading = false;
+  bool isLoadingCat = false;
 
   late List<Exercise> filteredExercices;
   String searchQuery = '';
@@ -37,11 +37,12 @@ class _ExercicesTab extends State<ExercicesTab> {
     filteredExercices = [];
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_){
-      _loadExercicesAndCategories();
+      _loadExercices();
+      _loadCategories();
     });
 
   }
-  void _loadExercicesAndCategories() async {
+  void _loadExercices() async {
     setState(() {
       isLoading = true;
     });
@@ -62,6 +63,25 @@ class _ExercicesTab extends State<ExercicesTab> {
       setState(() {
         exercices = []; // Aucune session trouvée
         isLoading = false;
+      });
+    }
+  }
+
+  void _loadCategories() async {
+    setState(() {
+      isLoadingCat = true;
+    });
+    try {
+      List<Category> fetchedCategories = await clientCategoryApi.getCategories();
+      setState(() {
+        categories = fetchedCategories;
+        isLoadingCat = false;
+      });
+    } on NotFoundException catch (_) {
+      // Gère spécifiquement la NotFoundException
+      setState(() {
+        categories = []; // Aucune catégorie trouvée
+        isLoadingCat = false;
       });
     }
   }

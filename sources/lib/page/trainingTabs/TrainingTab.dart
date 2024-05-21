@@ -32,6 +32,7 @@ class _TrainingTab extends State<TrainingTab> {
   @override
   void initState() {
     sessions = [];
+    filteredSessions = [];
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_){
       _loadSessions();
