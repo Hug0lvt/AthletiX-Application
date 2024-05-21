@@ -82,7 +82,7 @@ class PublishPostPage extends StatelessWidget {
                   ],
                 ),
                 child: TextFormField(
-                  style: TextStyle(color: Colors.black87), // Texte en gris foncé
+                  style: TextStyle(color: Colors.white), // Texte en gris foncé
                   maxLines: null, // Permet à l'utilisateur d'entrer plusieurs lignes de texte
                   decoration: InputDecoration(
                     hintText: 'Description', // Placeholder
@@ -114,7 +114,7 @@ class PublishPostPage extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        style: TextStyle(color: Colors.black87), // Texte en gris foncé
+                        style: TextStyle(color: Colors.white), // Texte en gris foncé
                         decoration: InputDecoration(
                           hintText: 'Votre texte ici', // Placeholder
                           hintStyle: TextStyle(color: Colors.grey), // Couleur du placeholder

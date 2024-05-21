@@ -3,7 +3,7 @@ import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../components/commentCard.dart';
 import '../model/comment.dart';
-import '../providers/api/utils/commentsClientApi.dart';
+import '../providers/api/utils/commentClientApi.dart';
 import '../main.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final commentClientApi = getIt<CommentsClientApi>();
+  final commentClientApi = getIt<CommentClientApi>();
   late VideoPlayerController _controller;
   int _currentVideoIndex = 0;
   List<String> _videoAssets = [
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onPressed() async {
-    List<Comment> comments = await commentClientApi.getComments();
+    List<Comment> comments = await commentClientApi.getComment();
     showModalBottomSheet<int>(
       showDragHandle: true,
       isScrollControlled: true,

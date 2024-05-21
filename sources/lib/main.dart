@@ -8,7 +8,6 @@ import 'package:AthletiX/page/login/start.dart';
 import 'package:AthletiX/page/profilePrivate.dart';
 import 'package:AthletiX/page/profilePublic.dart';
 import 'package:AthletiX/providers/api/clientApi.dart';
-import 'package:AthletiX/providers/api/utils/commentsClientApi.dart';
 import 'package:AthletiX/providers/api/utils/categoryClientApi.dart';
 import 'package:AthletiX/providers/api/utils/commentClientApi.dart';
 import 'package:AthletiX/providers/api/utils/conversationClientApi.dart';
@@ -23,7 +22,6 @@ import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'components/navBar/BottomNavigationBar.dart';
 
 import 'model/profile.dart';
@@ -38,8 +36,8 @@ void setupLocator() {
       ));
   getIt.registerSingleton<ProfileClientApi>(
       ProfileClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<CommentsClientApi>(
-      CommentsClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<CommentClientApi>(
+      CommentClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<TrainingClientApi>(
       TrainingClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
@@ -84,11 +82,8 @@ Future<void> initApp() async{
 
 Future<void> main() async {
   // For start application
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  await initApp();
+  initApp();
   runApp(const MyApp());
-  FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {

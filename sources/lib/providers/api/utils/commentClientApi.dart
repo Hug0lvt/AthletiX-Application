@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:AthletiX/providers/api/clientApi.dart';
 import '../../../model/comment.dart';
 
@@ -18,8 +20,10 @@ class CommentClientApi{
   }
 
   // TODO LIST
-  Future<Comment> getComment(String commentEmail) async {
-    return commentFromJson(await _clientApi.getData(_endpoint));
+  Future<List<Comment>> getComment() async {
+    String commentsJsonString = await _clientApi.getData(_endpoint);
+    List<dynamic> commentsJson = jsonDecode(commentsJsonString);
+    return commentsJson.map((json) => commentFromJson(json)).toList();
   }
 
   Future<Comment> updateComment(int commentId, Comment updatedComment) async {
