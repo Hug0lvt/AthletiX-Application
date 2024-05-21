@@ -6,7 +6,7 @@ import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../main.dart';
+import 'package:AthletiX/main.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
