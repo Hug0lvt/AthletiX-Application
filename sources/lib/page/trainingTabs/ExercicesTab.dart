@@ -1,16 +1,17 @@
-import 'package:AthletiX/exceptions/not_found_exception.dart';
-import 'package:AthletiX/main.dart';
-import 'package:AthletiX/model/category.dart';
-import 'package:AthletiX/model/exercise.dart';
-import 'package:AthletiX/providers/api/utils/categoryClientApi.dart';
-import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:AthletiX/components/ExerciseContainer.dart';
 import 'package:AthletiX/components/FilterContainer.dart';
+import 'package:AthletiX/exceptions/not_found_exception.dart';
+import 'package:AthletiX/model/category.dart';
+import 'package:AthletiX/model/exercise.dart';
+import 'package:AthletiX/providers/api/utils/categoryClientApi.dart';
+import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
+import 'package:AthletiX/main.dart';
 
 class ExercicesTab extends StatefulWidget {
-  const ExercicesTab({super.key});
+  const ExercicesTab({Key? key}) : super(key: key);
+
   @override
   State<ExercicesTab> createState() => _ExercicesTab();
 }
@@ -18,8 +19,6 @@ class ExercicesTab extends StatefulWidget {
 class _ExercicesTab extends State<ExercicesTab> {
   final clientApi = getIt<ExerciseClientApi>();
   final clientCategoryApi = getIt<CategoryClientApi>();
-
-  get onPressed => null;
 
   late List<Exercise> exercices;
   late List<Category> categories;
@@ -36,32 +35,51 @@ class _ExercicesTab extends State<ExercicesTab> {
     exercices = [];
     filteredExercices = [];
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       _loadExercices();
       _loadCategories();
     });
-
   }
+
   void _loadExercices() async {
     setState(() {
       isLoading = true;
     });
     try {
-      List<Exercise> fetchedExercices = await clientApi.getExercises();
-      //List<Exercise> fetchedCategories = await clientCategoryApi.getCategories();
+       List<Exercise> fetchedExercices = await clientApi.getExercises();
+      /*List<Exercise> fetchedExercices = [
+        Exercise(
+          id: 0,
+          name: "Push-ups",
+          description: "Perform 3 sets of 15 push-ups",
+          image: "",
+          category: Category(id: 0, title: "Chest"),
+          sets: [],
+        ),
+        Exercise(
+          id: 1,
+          name: "Dumbell press",
+          description: "Perform 3 sets of 15 push-ups",
+          image: "",
+          category: Category(id: 1, title: "Chest 2"),
+          sets: [],
+        )
+      ];*/
+
       List<Exercise> filterExercices = fetchedExercices
-          .where((session) =>
-          session.name.toLowerCase().contains(searchQuery.toLowerCase()))
+          .where((exerc) =>
+          exerc.name.toLowerCase().contains(searchQuery.toLowerCase()))
           .toList();
+
       setState(() {
-        filterExercices = filteredExercices;
+        filteredExercices = filterExercices;
         exercices = fetchedExercices;
         isLoading = false;
       });
     } on NotFoundException catch (_) {
-      // Gère spécifiquement la NotFoundException
+      // Handle NotFoundException
       setState(() {
-        exercices = []; // Aucune session trouvée
+        exercices = []; // No exercises found
         isLoading = false;
       });
     }
@@ -72,15 +90,16 @@ class _ExercicesTab extends State<ExercicesTab> {
       isLoadingCat = true;
     });
     try {
-      List<Category> fetchedCategories = await clientCategoryApi.getCategories();
+      List<Category> fetchedCategories =
+      await clientCategoryApi.getCategories();
       setState(() {
         categories = fetchedCategories;
         isLoadingCat = false;
       });
     } on NotFoundException catch (_) {
-      // Gère spécifiquement la NotFoundException
+      // Handle NotFoundException
       setState(() {
-        categories = []; // Aucune catégorie trouvée
+        categories = []; // No categories found
         isLoadingCat = false;
       });
     }
@@ -101,19 +120,19 @@ class _ExercicesTab extends State<ExercicesTab> {
             child: Column(
               children: [
                 Text(
-                    'Filters',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: screenWidth * 0.1,
-                      fontFamily: 'Mulish',
-                    ),
+                  'Filters',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: screenWidth * 0.1,
+                    fontFamily: 'Mulish',
                   ),
-                FilterContainer(
-                    filters: categories,
-                    color: Colors.white24,
                 ),
-            ],
+                FilterContainer(
+                  filters: categories,
+                  color: Colors.white24,
+                ),
+              ],
             ),
           );
         },
@@ -121,49 +140,57 @@ class _ExercicesTab extends State<ExercicesTab> {
     }
 
     return Scaffold(
-      body:
-      Container(
+      body: Container(
         color: const Color(0xFF282828),
-        child:
-        Column(
+        child: Column(
           children: [
             const SizedBox(height: 8.0),
-            Row( children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(screenWidth * 0.045,0,screenWidth * 0.02,0),
-                width: screenWidth * 0.8,
-                child: Stack(
-                  children: [
-                    TextField(
-                      onChanged: (value) {
-                        setState(() {
-                          searchQuery = value;
-                        });
-                      },
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Search',
-                        hintStyle: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
-                        ),
-                        filled: true,
-                        fillColor: const Color(0xFF1A1A1A),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(15.0), // Adjust padding as needed
-                          child: SvgPicture.asset(
-                            'assets/MagGlass.svg',
+            Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(
+                      screenWidth * 0.045, 0, screenWidth * 0.02, 0),
+                  width: screenWidth * 0.8,
+                  child: Stack(
+                    children: [
+                      TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            searchQuery = value;
+                            // Update the filtered list of exercises based on the search query
+                            filteredExercices = exercices.where((exerc) =>
+                                exerc.name.toLowerCase().contains(searchQuery.toLowerCase())
+                            ).toList();
+                          });
+                        },
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: 'Search',
+                          hintStyle: TextStyle(
+                            color: Colors.white.withOpacity(0.5),
                           ),
+                          filled: true,
+                          fillColor: const Color(0xFF1A1A1A),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: SvgPicture.asset(
+                              'assets/MagGlass.svg',
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              IconButton(onPressed: onPressed, icon: SvgPicture.asset('assets/Filter.svg'), padding: EdgeInsets.fromLTRB(0, screenWidth * 0.01, screenWidth * 0.02, 0))
+                IconButton(
+                    onPressed: onPressed,
+                    icon: SvgPicture.asset('assets/Filter.svg'),
+                    padding:
+                    EdgeInsets.fromLTRB(0, screenWidth * 0.01, 0, 0))
               ],
             ),
             Row(
@@ -187,8 +214,7 @@ class _ExercicesTab extends State<ExercicesTab> {
             ),
             const SizedBox(height: 8.0),
             Expanded(
-              child:
-              ListView(
+              child: ListView(
                 shrinkWrap: true,
                 children: [
                   isLoading
@@ -210,7 +236,7 @@ class _ExercicesTab extends State<ExercicesTab> {
                     itemCount: filteredExercices.length,
                     itemBuilder: (context, index) {
                       return ExerciseContainer(
-                          exercice: filteredExercices[index],
+                        exercice: filteredExercices[index],
                       );
                     },
                   ),
