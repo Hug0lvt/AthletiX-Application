@@ -1,3 +1,4 @@
+import 'package:AthletiX/page/profilePublic.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -142,7 +143,9 @@ class _HomePageState extends State<HomePage> {
         if (_currentVideoIndex != index)
           AnimatedOpacity(
             duration: Duration(milliseconds: 250),
-            opacity: (_controller.value.position.inSeconds / _controller.value.duration.inSeconds).clamp(0.0, 1.0),
+            opacity: (_controller.value.position.inSeconds /
+                _controller.value.duration.inSeconds)
+                .clamp(0.0, 1.0),
             child: VideoPlayer(_controller),
           ),
         Align(
@@ -165,34 +168,44 @@ class _HomePageState extends State<HomePage> {
                   width: 60,
                   child: Column(
                     children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        child: ClipOval(
-                          child: Container(
-                            child: Center(
-                              child: SvgPicture.asset(
-                                'assets/EditIcon.svg',
-                                width: 50,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePublicPage(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          child: ClipOval(
+                            child: Container(
+                              child: Center(
+                                child: SvgPicture.asset(
+                                  'assets/EditIcon.svg',
+                                  width: 50,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                        const SizedBox(height: 10.0),
-                        GestureDetector(
-                          onTap: onPressedLiked,
-                            child: SvgPicture.asset(
-                              'assets/LikeIcon.svg',
-                              color: _isLiked ? null : Colors.white,
-                              width: 45,
-                            ),
+                      const SizedBox(height: 10.0),
+                      GestureDetector(
+                        onTap: onPressedLiked,
+                        child: SvgPicture.asset(
+                          'assets/LikeIcon.svg',
+                          color: _isLiked ? null : Colors.white,
+                          width: 45,
                         ),
-                        const SizedBox(width: 5.0),
-                        const Text(
+                      ),
+                      const SizedBox(width: 5.0),
+                      const Text(
                         '123',
                         style: TextStyle(color: Colors.white),
-                        ),
+                      ),
                       const SizedBox(height: 5.0),
                       Column(
                         children: [
