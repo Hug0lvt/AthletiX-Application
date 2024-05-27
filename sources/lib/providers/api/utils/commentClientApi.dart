@@ -21,9 +21,13 @@ class CommentClientApi{
 
   // TODO LIST
   Future<List<Comment>> getComment() async {
-    String commentsJsonString = await _clientApi.getData(_endpoint);
-    List<dynamic> commentsJson = jsonDecode(commentsJsonString);
-    return commentsJson.map((json) => commentFromJson(json)).toList();
+    try {
+      String commentsJsonString = await _clientApi.getData(_endpoint);
+      List<dynamic> commentsJson = jsonDecode(commentsJsonString);
+      return commentsJson.map((json) => Comment.fromJson(json as Map<String, dynamic>)).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   Future<Comment> updateComment(int commentId, Comment updatedComment) async {
