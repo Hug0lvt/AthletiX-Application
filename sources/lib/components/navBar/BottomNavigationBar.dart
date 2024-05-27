@@ -1,6 +1,7 @@
 import 'package:AthletiX/page/TrainingHome.dart';
 import 'package:AthletiX/page/conversations.dart';
 import 'package:AthletiX/page/home.dart';
+import 'package:AthletiX/page/publishPost.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,8 +20,8 @@ class _DefaultBottomNavigationBarState extends State<DefaultBottomNavigationBar>
   int _selectedIndex = 0;
   static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    HomePage(),
     TrainingHome(),
+    PublishPostPage(),
     ConversationPage(),
     ProfilePrivatePage(),
   ];
