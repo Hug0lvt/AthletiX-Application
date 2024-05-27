@@ -8,9 +8,10 @@ class ButtonProfilePage extends StatelessWidget {
   final double height;
   final double screenWidth;
   final double screenHeight;
+  final String? route;
 
 
-  ButtonProfilePage({required this.text, required this.imagePath, required this.width, required this.height, required this.screenWidth, required this.screenHeight});
+  ButtonProfilePage({required this.text, required this.imagePath, required this.width, required this.height, required this.screenWidth, required this.screenHeight, this.route});
 
   @override
   Widget build(BuildContext context) {
