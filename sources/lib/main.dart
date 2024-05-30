@@ -22,7 +22,6 @@ import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-//import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'components/navBar/BottomNavigationBar.dart';
 
 import 'model/profile.dart';
@@ -35,7 +34,12 @@ void setupLocator() {
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/api',
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api'
       ));
-  getIt.registerSingleton<TrainingClientApi>(TrainingClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ProfileClientApi>(
+      ProfileClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<CommentClientApi>(
+      CommentClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<TrainingClientApi>(
+      TrainingClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<CategoryClientApi>(CategoryClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>()));
@@ -78,11 +82,8 @@ Future<void> initApp() async{
 
 Future<void> main() async {
   // For start application
-  //WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  //FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-   initApp();
+  initApp();
   runApp(const MyApp());
-  //FlutterNativeSplash.remove();
 }
 
 class MyApp extends StatelessWidget {
