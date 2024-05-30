@@ -1,11 +1,13 @@
+import 'dart:convert';
+
 import 'package:AthletiX/providers/api/clientApi.dart';
 import '../../../model/post.dart';
 
-class PostClientApi{
+class PostClientApi {
   late final ClientApi _clientApi;
   final String _endpoint = 'posts';
 
-  PostClientApi(ClientApi cli){
+  PostClientApi(ClientApi cli) {
     _clientApi = cli;
   }
 
@@ -17,14 +19,10 @@ class PostClientApi{
     return postFromJson(await _clientApi.getDataById(_endpoint, postId));
   }
 
-  // TODO LIST BY CATEGORY
-  Future<Post> getPostByCategory(String categoryId) async {
-    return postFromJson(await _clientApi.getData('$_endpoint/category/$categoryId'));
-  }
-
-  // TODO LIST BY USER
-  Future<Post> getPostByUser(String profileId) async {
-    return postFromJson(await _clientApi.getData('$_endpoint/user/$profileId'));
+  Future<List<Post>> getPostsByUser(String profileId) async {
+    final response = await _clientApi.getData('$_endpoint/user/$profileId');
+    final data = json.decode(response) as Map<String, dynamic>;
+    return (data['items'] as List).map((item) => Post.fromJson(item)).toList();
   }
 
   Future<Post> updatePost(int postId, Post updatedPost) async {

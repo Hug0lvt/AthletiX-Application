@@ -4,8 +4,10 @@ import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../components/commentCard.dart';
 import '../model/comment.dart';
+import '../model/post.dart';
 import '../providers/api/utils/commentClientApi.dart';
 import '../main.dart';
+import '../providers/api/utils/postClientApi.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,21 +16,36 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final commentClientApi = getIt<CommentClientApi>();
+  final postClientApi = getIt<PostClientApi>(); // Initialiser PostClientApi
   late VideoPlayerController _controller;
   int _currentVideoIndex = 0;
-  List<String> _videoAssets = [
-    "assets/doigby.mp4",
-    "assets/airsoft.mp4",
-    "assets/doigby.mp4",
-  ];
+  List<String> _videoAssets = [];
 
-  // TODO a brancher avec l'objet récup par api
+  // TODO à brancher avec l'objet récup par API
   bool _isLiked = false;
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset(_videoAssets[_currentVideoIndex])
+    fetchVideos();
+  }
+
+  Future<void> fetchVideos() async {
+    try {
+      List<Post> posts = await postClientApi.getPostsByUser('1');
+      setState(() {
+        _videoAssets = posts.map((post) => post.content).toList();
+        if (_videoAssets.isNotEmpty) {
+          _initializeVideoController();
+        }
+      });
+    } catch (e) {
+      print('Failed to load videos: $e');
+    }
+  }
+
+  void _initializeVideoController() {
+    _controller = VideoPlayerController.network(_videoAssets[_currentVideoIndex])
       ..initialize().then((_) {
         _controller.setLooping(true);
         _controller.play();
@@ -88,7 +105,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView.builder(
+      body: _videoAssets.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : PageView.builder(
         scrollDirection: Axis.vertical,
         itemCount: _videoAssets.length,
         controller: PageController(initialPage: _currentVideoIndex),
@@ -109,7 +128,7 @@ class _HomePageState extends State<HomePage> {
 
   void _updateVideoController() {
     _controller.pause();
-    _controller = VideoPlayerController.asset(_videoAssets[_currentVideoIndex])
+    _controller = VideoPlayerController.network(_videoAssets[_currentVideoIndex])
       ..initialize().then((_) {
         _controller.setLooping(true);
         _controller.play();
