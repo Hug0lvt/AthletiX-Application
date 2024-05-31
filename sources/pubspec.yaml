@@ -38,6 +38,12 @@ flutter:
   uses-material-design: true
 
   assets:
+  - assets/dumbbell.png
+  - assets/dumbbell_button.png
+  - assets/chat.png
+  - assets/person.png
+  - assets/plus.png
+  - assets/video.png
   - assets/EditIcon.svg
   - assets/AthletiX.svg
   - assets/LikeIcon.svg
@@ -48,6 +54,7 @@ flutter:
   - assets/Filter.svg
   - assets/Benchpress.png
   - assets/LetsGo.svg
+  - assets/search.png
   - assets/doigby.mp4
   - assets/airsoft.mp4
   - assets/Logo.png
