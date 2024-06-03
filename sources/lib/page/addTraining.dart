@@ -86,7 +86,7 @@ class _AddTrainingPageState extends State<AddTrainingPage> {
                 final navigator = Navigator.of(context);
                 String? token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
                 String programName = _controller.text;
-                print(_profile!.email);
+                print(token);
                 sessionToCreate = Session(
                     id: 213,
                     profile: _profile!,

@@ -1,8 +1,12 @@
+import 'package:AthletiX/components/trainingExercise.dart';
+import 'package:AthletiX/model/exercise.dart';
 import 'package:AthletiX/model/session.dart';
 import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../model/category.dart';
+import '../model/set.dart';
 import '../model/profile.dart';
 import '../providers/localstorage/secure/authKeys.dart';
 import '../providers/localstorage/secure/authManager.dart';
@@ -18,6 +22,30 @@ class ModifTrainingPage extends StatefulWidget {
 
 class _ModifTrainingPageState extends State<ModifTrainingPage> {
   late Session currentSession;
+  List<Exercise> exercises = [
+    Exercise(
+      id: 1,
+      name: "Bench Press",
+      description: "Chest exercise",
+      image: "bench_press.png",
+      category: Category(id: 1, title: 'Strength'),
+      sets: [
+        Set(id: 1, reps: 10, weight: [60, 70, 80], rest: Duration(seconds: 60), mode: 0),
+        Set(id: 2, reps: 8, weight: [70, 80, 90], rest: Duration(seconds: 60), mode: 0),
+      ],
+    ),
+    Exercise(
+      id: 2,
+      name: "Squat",
+      description: "Leg exercise",
+      image: "squat.png",
+      category: Category(id: 1, title: 'Strength'),
+      sets: [
+        Set(id: 1, reps: 12, weight: [80, 90, 100], rest: Duration(seconds: 90), mode: 0),
+        Set(id: 2, reps: 10, weight: [90, 100, 110], rest: Duration(seconds: 90), mode: 0),
+      ],
+    ),
+  ];
 
   @override
   void initState() {
@@ -40,70 +68,53 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
       ),
       body: Container(
         color: const Color(0xFF282828),
-        /*child: Column(
-          children: [
-            Text(
-              'Session: ${currentSession.name}',
-              style: const TextStyle(
-                color: Colors.white
-              ),
-            ),
-          ],
-        ),*/
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.only(left: 15, top: 5, bottom: 10),
-              child: Text(
-                currentSession.name,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 30
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        // Text aligné à droite
-                        const Text(
-                          'Text à droite',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20
-                          ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
+                      child: Text(
+                        currentSession.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
                         ),
-                        const SizedBox(width: 10), // Espacement entre le texte et la ligne
-                        Expanded(
-                          child: Container(
-                            height: 2, // Épaisseur de la ligne
-                            color: Colors.white, // Couleur de la ligne
-                            margin: const EdgeInsets.only(right: 2), // Marge à droite pour le padding
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                  const Divider(
-                    thickness: 3,
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Add set functionality here
-                    },
-                    child: Icon(Icons.add),
-                  ),
-                ],
+                    const SizedBox(height: 5),
+                    /*ListView.builder(
+                      itemCount: exercises.length,
+                      itemBuilder: (context, index) {
+                        final exercise = exercises[index];
+                        //return TrainingExercise(exercise: exercise);
+                      },
+                    ),*/
+                    Column(
+                      children: exercises.map((exercise) {
+                        return TrainingExercise(exercise: exercise);
+                      }).toList(),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: TextButton(
+                        onPressed: () {
+                          // Add set functionality here
+                        },
+                        child: const Text(
+                          'Add exercise',
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

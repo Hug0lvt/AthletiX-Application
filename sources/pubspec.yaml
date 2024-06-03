@@ -49,6 +49,8 @@ flutter:
   - assets/LetsGo.svg
   - assets/doigby.mp4
   - assets/Logo.png
+  - assets/AddIcon.svg
+  - assets/MinusIcon.svg
 
 # Gen Splash Screen "flutter pub run flutter_native_splash:create"
 flutter_native_splash:
