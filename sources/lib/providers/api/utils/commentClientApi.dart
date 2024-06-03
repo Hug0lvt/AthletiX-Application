@@ -19,7 +19,6 @@ class CommentClientApi{
     return commentFromJson(await _clientApi.getDataById(_endpoint, commentId));
   }
 
-  // TODO LIST
   Future<List<Comment>> getComment() async {
     try {
       String commentsJsonString = await _clientApi.getData(_endpoint);
