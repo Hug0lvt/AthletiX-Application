@@ -19,6 +19,8 @@ class CreateProfilePage extends State<CreateProfileForm> {
   final ageController = TextEditingController();
   final heightController = TextEditingController();
   final weightController = TextEditingController();
+  List<bool> _selectedGender = [true, false];
+  var gender = false;
 
   @override
   void dispose() {
@@ -91,6 +93,33 @@ class CreateProfilePage extends State<CreateProfileForm> {
                 ),
               ),
               const SizedBox(height: 10.0),
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                child: ToggleButtons(
+                  direction: Axis.horizontal,
+                  onPressed: (int index) {
+                    setState(() {
+                      for (int i = 0; i < _selectedGender.length; i++) {
+                        _selectedGender[i] = i == index;
+                      }
+                      if(_selectedGender[0]) gender = false;
+                      if(_selectedGender[1]) gender = true;
+                      print(gender);
+                    });
+                  },
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  selectedBorderColor: Colors.blue[700],
+                  selectedColor: Colors.white,
+                  fillColor: Colors.blue[200],
+                  color: Colors.blue[400],
+                  isSelected: _selectedGender,
+                  children: <Widget>[
+                    Icon(Icons.female),
+                    Icon(Icons.male),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10.0),
               ElevatedButton(
                 onPressed: () {
                   createProfile();
@@ -132,6 +161,8 @@ class CreateProfilePage extends State<CreateProfileForm> {
           role: 0,
           uniqueNotificationToken: "",
           username: profile.username,
+          gender: gender,
+          picture: "",
         ));
         AuthManager.setProfile(newProfile);
         Navigator.pushNamedAndRemoveUntil(context, '/navbar', (route) => false);

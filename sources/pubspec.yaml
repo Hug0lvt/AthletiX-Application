@@ -51,6 +51,10 @@ flutter:
   - assets/doigby.mp4
   - assets/airsoft.mp4
   - assets/Logo.png
+  - assets/SettingsIcon.svg
+  - assets/StatisticsIcon.svg
+  - assets/HeartIcon.svg
+  - assets/PostIcon.svg
 
 # Gen Splash Screen "flutter pub run flutter_native_splash:create"
 flutter_native_splash:
