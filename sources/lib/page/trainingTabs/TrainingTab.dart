@@ -144,6 +144,7 @@ class _TrainingTab extends State<TrainingTab> {
                   ),
                 );
               },
+            ),
           ],
         ),
       ),
