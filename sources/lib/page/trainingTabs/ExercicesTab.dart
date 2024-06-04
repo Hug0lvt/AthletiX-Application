@@ -78,7 +78,6 @@ class _ExercicesTab extends State<ExercicesTab> {
       });
     }
   }
-q
   void _applyFilters(List<Exercise> exercises) {
     Map<Category, List<Exercise>> grouped = {};
 
