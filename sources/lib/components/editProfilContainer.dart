@@ -93,8 +93,7 @@ class _EditProfileContainerState extends State<EditProfileContainer> {
           submitForm();
         },
         style: ElevatedButton.styleFrom(
-          primary: Colors.transparent,
-          onPrimary: Colors.black,
+
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0.0),
           ),
