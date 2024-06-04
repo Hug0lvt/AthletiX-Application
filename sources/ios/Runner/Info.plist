@@ -47,5 +47,11 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSCameraUsageDescription</key>
+        <string>Nous avons besoin d'accéder à la caméra pour que vous puissiez prendre des photos et des vidéos.</string>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Nous avons besoin d'accéder à votre bibliothèque de photos pour que vous puissiez sélectionner des photos et des vidéos.</string>
+        <key>NSMicrophoneUsageDescription</key>
+        <string>Nous avons besoin d'accéder au microphone pour enregistrer des vidéos.</string>
 	</dict>
 </plist>

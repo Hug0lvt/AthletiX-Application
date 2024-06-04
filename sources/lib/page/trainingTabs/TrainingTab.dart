@@ -1,21 +1,55 @@
 import 'package:AthletiX/page/addTraining.dart';
+import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
+import 'package:AthletiX/components/ProgramContainer.dart';
+import 'package:AthletiX/model/session.dart';
+import 'package:AthletiX/main.dart';
 
-import '../../components/ProgramContainer.dart';
 
-class TrainingTab extends StatelessWidget {
+class TrainingTab extends StatefulWidget {
   const TrainingTab({super.key});
+  @override
+  State<TrainingTab> createState() => _TrainingTab();
+}
+
+class _TrainingTab extends State<TrainingTab> {
+
+  final clientApi = getIt<TrainingClientApi>();
+
+  get onPressed => null;
+
+  late Future<List<Session>> FutureSessions;
+
+  String searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    int? profileId;
+    Future<Profile?> profileFuture = AuthManager.getProfile();
+    FutureBuilder<Profile?>(
+      future: profileFuture,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          Profile? profile = snapshot.data!;
+          profileId = profile.id;
+        }
+        return const CircularProgressIndicator();
+      },
+    );
+    FutureSessions = clientApi.getSessionsOfUser(profileId!);
+  }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      body:
-      Container(
+      body: Container(
         color: Color(0xFF282828),
-        child:
-        Column(
+        child: Column(
           children: [
             const SizedBox(height: 8.0),
             SizedBox(
@@ -23,6 +57,11 @@ class TrainingTab extends StatelessWidget {
               child: Stack(
                 children: [
                   TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText: 'Search',
@@ -35,7 +74,7 @@ class TrainingTab extends StatelessWidget {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       prefixIcon: Padding(
-                        padding: const EdgeInsets.all(15.0), // Adjust padding as needed
+                        padding: const EdgeInsets.all(15.0),
                         child: SvgPicture.asset(
                           'assets/MagGlass.svg',
                         ),
@@ -46,6 +85,7 @@ class TrainingTab extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 8.0),
             Row(
               children: [
                 const SizedBox(width: 8.0),
@@ -53,7 +93,8 @@ class TrainingTab extends StatelessWidget {
                   'My Training Programs',
                   style: TextStyle(
                     color: Colors.white,
-                    fontFamily: 'Mulish',),
+                    fontFamily: 'Mulish',
+                  ),
                 ),
                 const SizedBox(width: 8.0),
                 Expanded(
@@ -73,33 +114,36 @@ class TrainingTab extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8.0),
-            Expanded(
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  ProgramContainer(
-                    title: 'Push',
-                    lastSession: '19',
-                    exercises: [
-                      '4 x 8 Dumbbell Benchpress',
-                      '4 x 8 Inclined Dumbbell Benchpress',
-                      '4 x 8 Machine Fly',
-                      '4 x 8 Cable Triceps',
-                    ],
+            FutureBuilder<List<Session>>(
+              future: FutureSessions,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Session> allSessions = snapshot.data!;
+                  List<Session> filteredSessions = allSessions
+                      .where((session) =>
+                      session.name.toLowerCase().contains(searchQuery.toLowerCase()))
+                      .toList();
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: filteredSessions.length,
+                    itemBuilder: (context, index) {
+                      return ProgramContainer(
+                        title: filteredSessions[index].name,
+                        lastSession: '',
+                        exercises: filteredSessions[index].exercises,
+                      );
+                    },
+                  );
+                }
+                return const Text(
+                  "No Sessions Found"
+                  ,style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Mulish',
                   ),
-                  ProgramContainer(
-                    title: 'Pull',
-                    lastSession: '1',
-                    exercises: [
-                      '4 x 8 Pull-ups',
-                      '4 x 8 Barbell Rows',
-                      '4 x 8 Lat Pulldowns',
-                      '4 x 8 Face Pulls',
-                    ],
-                  ),
-                ],
-              ),
-            ),
+                );
+              },
           ],
         ),
       ),

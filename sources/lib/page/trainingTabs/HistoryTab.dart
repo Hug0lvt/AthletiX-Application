@@ -1,10 +1,45 @@
+import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
+import 'package:AthletiX/components/ProgramContainer.dart';
+import 'package:AthletiX/model/session.dart';
 
-import '../../components/ProgramContainer.dart';
+import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
+import 'package:AthletiX/main.dart';
 
-class HistoryTab extends StatelessWidget {
+class HistoryTab extends StatefulWidget {
   const HistoryTab({super.key});
+  @override
+  State<HistoryTab> createState() => _HistoryTab();
+}
 
+class _HistoryTab extends State<HistoryTab> {
+
+  final clientApi = getIt<TrainingClientApi>();
+
+  get onPressed => null;
+
+  late Future<List<Session>> FutureSessions;
+
+  String searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    int? profileId;
+    Future<Profile?> profileFuture = AuthManager.getProfile();
+    FutureBuilder<Profile?>(
+      future: profileFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            Profile? profile = snapshot.data!;
+            profileId = profile.id;
+          }
+          return const CircularProgressIndicator();
+        },
+    );
+      FutureSessions = clientApi.getSessionsOfUser(profileId!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +70,31 @@ class HistoryTab extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8.0),
-            Expanded(
-              child: ListView(
+          ListView(
+            shrinkWrap: true,
+            children: [
+              FutureBuilder<List<Session>>(
+                future: FutureSessions,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Session> allSessions = snapshot.data!;
+                    for (int i = 0; i < allSessions.length; i++) {
+                      ProgramContainer(
+                        title: allSessions[i].name,
+                        lastSession : DateTime.now().difference(allSessions[i].date).inDays.toString(), // in days
+                        exercises : allSessions[i].exercises
+                      );
+                    }
+                  }
+                  return const CircularProgressIndicator();
+                },
+              )
+          ],
+              /*ListView(
                 shrinkWrap: true,
-                children: [
+                children:*/
+
+                /*[
                   ProgramContainer(
                     title: 'Push',
                     lastSession: '19',
@@ -61,7 +117,7 @@ class HistoryTab extends StatelessWidget {
                   ),
                   // Add more ProgramContainer widgets as needed
                 ],
-              ),
+              ),*/
             ),
           ],
         ),
