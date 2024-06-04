@@ -173,7 +173,7 @@ class RegisterPage extends State<RegisterForm> {
       );
       AuthManager.setProfile(Profile(username: username, email: email));
       Navigator.pushNamed(context, '/createProfile');
-    } catch (error) {
+    } catch (error) { // TODO la plus part du temps c'est que le mdp est pas assez fort !!!
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error.toString()),
