@@ -1,6 +1,7 @@
 import 'package:AthletiX/components/trainingExercise.dart';
 import 'package:AthletiX/model/exercise.dart';
 import 'package:AthletiX/model/session.dart';
+import 'package:AthletiX/page/trainingTabs/ExercicesTab.dart';
 import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -53,6 +54,15 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
     currentSession = widget.session;
   }
 
+  void _showExerciceModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return const ExercicesTab();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +113,7 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
                       alignment: Alignment.center,
                       child: TextButton(
                         onPressed: () {
-                          // Add set functionality here
+                          _showExerciceModal(context);
                         },
                         child: const Text(
                           'Add exercise',

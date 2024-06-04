@@ -31,10 +31,10 @@ class TrainingSet extends StatelessWidget {
           children: [
             Table(
               columnWidths: const {
-                0: FlexColumnWidth(0.15), // 25% de la largeur
-                1: FlexColumnWidth(0.3), // 25% de la largeur
-                2: FlexColumnWidth(0.3), // 25% de la largeur
-                3: FlexColumnWidth(0.15), // 25% de la largeur
+                0: FlexColumnWidth(0.15), // 15% de la largeur
+                1: FlexColumnWidth(0.3), // 30% de la largeur
+                2: FlexColumnWidth(0.3), // 30% de la largeur
+                3: FlexColumnWidth(0.15), // 15% de la largeur
               },
               children: [
                 const TableRow(
@@ -47,7 +47,7 @@ class TrainingSet extends StatelessWidget {
                 ),
                 TableRow(
                   children: [
-                    SizedBox(height: screenHeight * 0.01), // Espacement entre les lignes
+                    SizedBox(height: screenHeight * 0.01),
                     SizedBox(height: screenHeight * 0.01),
                     SizedBox(height: screenHeight * 0.01),
                     SizedBox(height: screenHeight * 0.01),
@@ -59,7 +59,7 @@ class TrainingSet extends StatelessWidget {
                       verticalAlignment: TableCellVerticalAlignment.middle,
                       child: Center(
                           child: Text("${set.id}",
-                              style: TextStyle(color: Colors.white))
+                              style: const TextStyle(color: Colors.white))
                       ),
                     ),
                     TableCell(
@@ -87,6 +87,10 @@ class TrainingSet extends StatelessWidget {
                                 value: 1,
                                 child: Text("Degressive"),
                               ),
+                              DropdownMenuItem(
+                                value: 2,
+                                child: Text("Normal"),
+                              ),
                             ],
                             onChanged: (value) {},
                           ),
@@ -106,7 +110,7 @@ class TrainingSet extends StatelessWidget {
                           child:
                             Center(
                                 child: Text(set.weight.join(', '),
-                                    style: TextStyle(color: Colors.white))
+                                    style: const TextStyle(color: Colors.white))
                             ),
                         ),
                     ),
@@ -123,7 +127,7 @@ class TrainingSet extends StatelessWidget {
                           child:
                           Center(
                               child: Text("${set.reps}",
-                                  style: TextStyle(color: Colors.white)),
+                                  style: const TextStyle(color: Colors.white)),
                           ),
                       ),
                     ),
@@ -164,7 +168,7 @@ class TrainingSet extends StatelessWidget {
                       Container(
                         height: screenHeight * 0.06,
                         decoration: BoxDecoration(
-                          color: AppColors.grey, // Couleur de la boîte grise foncée
+                          color: AppColors.grey,
                           borderRadius: BorderRadius.circular(10.0), // Ajustez selon votre besoin
                         ),
                         padding: EdgeInsets.all(10.0), // Ajustez selon votre besoin
