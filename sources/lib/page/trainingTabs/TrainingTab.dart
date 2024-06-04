@@ -8,6 +8,8 @@ import 'package:AthletiX/components/ProgramContainer.dart';
 import 'package:AthletiX/model/session.dart';
 import 'package:AthletiX/main.dart';
 
+import '../../exceptions/not_found_exception.dart';
+
 
 class TrainingTab extends StatefulWidget {
   const TrainingTab({super.key});
@@ -21,26 +23,50 @@ class _TrainingTab extends State<TrainingTab> {
 
   get onPressed => null;
 
-  late Future<List<Session>> FutureSessions;
+  late List<Session> sessions;
 
+  bool isLoading = false;
+
+  late List<Session> filteredSessions;
   String searchQuery = '';
 
   @override
   void initState() {
+    sessions = [];
+    filteredSessions = [];
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _loadSessions();
+    });
+
+  }
+  void _loadSessions() async {
+    setState(() {
+      isLoading = true;
+    });
     int? profileId;
-    Future<Profile?> profileFuture = AuthManager.getProfile();
-    FutureBuilder<Profile?>(
-      future: profileFuture,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          Profile? profile = snapshot.data!;
-          profileId = profile.id;
-        }
-        return const CircularProgressIndicator();
-      },
-    );
-    FutureSessions = clientApi.getSessionsOfUser(profileId!);
+    Profile? profile = await AuthManager.getProfile();
+    if (profile != null) {
+      profileId = profile.id;
+    }
+    try {
+      List<Session> fetchedSessions = await clientApi.getProgramsOfUser(profileId);
+      List<Session> filterSessions = fetchedSessions
+          .where((session) =>
+          session.name.toLowerCase().contains(searchQuery.toLowerCase()))
+          .toList();
+      setState(() {
+        filterSessions = filteredSessions;
+        sessions = fetchedSessions;
+        isLoading = false;
+      });
+    } on NotFoundException catch (_) {
+      // Gère spécifiquement la NotFoundException
+      setState(() {
+        sessions = []; // Aucune session trouvée
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -114,36 +140,35 @@ class _TrainingTab extends State<TrainingTab> {
               ],
             ),
             const SizedBox(height: 8.0),
-            FutureBuilder<List<Session>>(
-              future: FutureSessions,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<Session> allSessions = snapshot.data!;
-                  List<Session> filteredSessions = allSessions
-                      .where((session) =>
-                      session.name.toLowerCase().contains(searchQuery.toLowerCase()))
-                      .toList();
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: filteredSessions.length,
-                    itemBuilder: (context, index) {
-                      return ProgramContainer(
-                        title: filteredSessions[index].name,
-                        lastSession: '',
-                        exercises: filteredSessions[index].exercises,
-                      );
-                    },
-                  );
-                }
-                return const Text(
-                  "No Sessions Found"
-                  ,style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Mulish',
+            ListView(
+              shrinkWrap: true,
+              children: [
+                isLoading
+                    ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+                    : filteredSessions.isEmpty
+                    ? const Center(
+                  child: Text(
+                    "No Programs Found",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Mulish',
+                    ),
                   ),
-                );
-              },
+                )
+                    : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: filteredSessions.length,
+                  itemBuilder: (context, index) {
+                    return ProgramContainer(
+                      title: filteredSessions[index].name,
+                      lastSession: '',
+                      exercises: filteredSessions[index].exercises,
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),

@@ -22,6 +22,11 @@ class CategoryClientApi{
     return categoryFromJson(await _clientApi.getData(_endpoint));
   }
 
+  // TODO LIST
+  Future<List<Category>> getCategories() async {
+    return categoryListFromJson(await _clientApi.getData(_endpoint));
+  }
+
   Future<Category> updateCategory(int categoryId, Category updatedCategory) async {
     return categoryFromJson(await _clientApi.putData('$_endpoint/$categoryId', categoryToJson(updatedCategory)));
   }
