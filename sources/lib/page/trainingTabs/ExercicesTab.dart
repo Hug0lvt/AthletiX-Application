@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:AthletiX/components/ExerciseContainer.dart';
 import 'package:AthletiX/components/FilterContainer.dart';
 import 'package:AthletiX/exceptions/not_found_exception.dart';
@@ -26,14 +26,15 @@ class _ExercicesTab extends State<ExercicesTab> {
   bool isLoading = false;
   bool isLoadingCat = false;
 
-  late List<Exercise> filteredExercices;
+  late Map<Category, List<Exercise>> groupedExercises;
   String searchQuery = '';
+  List<Category> filtersSelected = [];
 
   @override
   void initState() {
     categories = [];
     exercices = [];
-    filteredExercices = [];
+    groupedExercises = {};
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _loadExercices();
@@ -46,40 +47,15 @@ class _ExercicesTab extends State<ExercicesTab> {
       isLoading = true;
     });
     try {
-       List<Exercise> fetchedExercices = await clientApi.getExercises();
-      /*List<Exercise> fetchedExercices = [
-        Exercise(
-          id: 0,
-          name: "Push-ups",
-          description: "Perform 3 sets of 15 push-ups",
-          image: "",
-          category: Category(id: 0, title: "Chest"),
-          sets: [],
-        ),
-        Exercise(
-          id: 1,
-          name: "Dumbell press",
-          description: "Perform 3 sets of 15 push-ups",
-          image: "",
-          category: Category(id: 1, title: "Chest 2"),
-          sets: [],
-        )
-      ];*/
-
-      List<Exercise> filterExercices = fetchedExercices
-          .where((exerc) =>
-          exerc.name.toLowerCase().contains(searchQuery.toLowerCase()))
-          .toList();
-
+      List<Exercise> fetchedExercices = await clientApi.getExercises();
+      _applyFilters(fetchedExercices);
       setState(() {
-        filteredExercices = filterExercices;
         exercices = fetchedExercices;
         isLoading = false;
       });
     } on NotFoundException catch (_) {
-      // Handle NotFoundException
       setState(() {
-        exercices = []; // No exercises found
+        exercices = [];
         isLoading = false;
       });
     }
@@ -90,35 +66,77 @@ class _ExercicesTab extends State<ExercicesTab> {
       isLoadingCat = true;
     });
     try {
-      List<Category> fetchedCategories =
-      await clientCategoryApi.getCategories();
+      List<Category> fetchedCategories = await clientCategoryApi.getCategories();
       setState(() {
         categories = fetchedCategories;
         isLoadingCat = false;
       });
     } on NotFoundException catch (_) {
-      // Handle NotFoundException
       setState(() {
-        categories = []; // No categories found
+        categories = [];
         isLoadingCat = false;
       });
     }
+  }
+q
+  void _applyFilters(List<Exercise> exercises) {
+    Map<Category, List<Exercise>> grouped = {};
+
+
+    for (var exercise in exercises) {
+      bool matchesSearch = exercise.name.toLowerCase().contains(searchQuery.toLowerCase());
+      bool matchesFilter = filtersSelected.isEmpty;
+      if(!matchesFilter){
+        for( var filter in filtersSelected){
+          if(exercise.category.id == filter.id){
+            matchesFilter = true;
+          }
+        }
+      }
+
+      if (matchesSearch && matchesFilter) {
+        if (!grouped.containsKey(exercise.category)) {
+          grouped[exercise.category] = [];
+        }
+        grouped[exercise.category]!.add(exercise);
+      }
+    }
+
+    setState(() {
+      groupedExercises = grouped;
+    });
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() {
+      searchQuery = value;
+      _applyFilters(exercices);
+    });
+  }
+
+  void _onFilterChanged(List<Category> selectedFilters) {
+    setState(() {
+      filtersSelected = selectedFilters;
+      _applyFilters(exercices);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     void onPressed() {
-      showModalBottomSheet<int>(
-        showDragHandle: true,
+      showModalBottomSheet<dynamic>(
         isScrollControlled: true,
         backgroundColor: Colors.black87,
         context: context,
         builder: (context) {
           return Container(
+            height: screenHeight * 0.7, // 70% of screen height
             child: Column(
               children: [
+                Padding(padding: EdgeInsets.fromLTRB(0, screenHeight * 0.03, 0, 0)),
                 Text(
                   'Filters',
                   textAlign: TextAlign.left,
@@ -131,6 +149,8 @@ class _ExercicesTab extends State<ExercicesTab> {
                 FilterContainer(
                   filters: categories,
                   color: Colors.white24,
+                  selectedFilters: filtersSelected,
+                  onFilterChanged: _onFilterChanged,
                 ),
               ],
             ),
@@ -154,15 +174,7 @@ class _ExercicesTab extends State<ExercicesTab> {
                   child: Stack(
                     children: [
                       TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            searchQuery = value;
-                            // Update the filtered list of exercises based on the search query
-                            filteredExercices = exercices.where((exerc) =>
-                                exerc.name.toLowerCase().contains(searchQuery.toLowerCase())
-                            ).toList();
-                          });
-                        },
+                        onChanged: _onSearchChanged,
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           hintText: 'Search',
@@ -189,8 +201,7 @@ class _ExercicesTab extends State<ExercicesTab> {
                 IconButton(
                     onPressed: onPressed,
                     icon: SvgPicture.asset('assets/Filter.svg'),
-                    padding:
-                    EdgeInsets.fromLTRB(0, screenWidth * 0.01, 0, 0))
+                    padding: EdgeInsets.fromLTRB(0, screenWidth * 0.01, 0, 0))
               ],
             ),
             Row(
@@ -214,33 +225,39 @@ class _ExercicesTab extends State<ExercicesTab> {
             ),
             const SizedBox(height: 8.0),
             Expanded(
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  isLoading
-                      ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                      : filteredExercices.isEmpty
-                      ? const Center(
-                    child: Text(
-                      "No Exercises Found",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Mulish',
-                      ),
-                    ),
-                  )
-                      : ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: filteredExercices.length,
-                    itemBuilder: (context, index) {
-                      return ExerciseContainer(
-                        exercice: filteredExercices[index],
-                      );
-                    },
+              child: isLoading
+                  ? const Center(
+                child: CircularProgressIndicator(),
+              )
+                  : groupedExercises.isEmpty
+                  ? const Center(
+                child: Text(
+                  "No Exercises Found",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Mulish',
                   ),
-                ],
+                ),
+              )
+                  : ListView.builder(
+                shrinkWrap: true,
+                itemCount: groupedExercises.length,
+                itemBuilder: (context, index) {
+                  Category category = groupedExercises.keys.elementAt(index);
+                  List<Exercise> exercises = groupedExercises[category]!;
+                  return ExpansionTile(
+                    initiallyExpanded: true,
+                    title: Text(
+                      category.title,
+                      style: TextStyle(color: Colors.white, fontFamily: 'Mulish'),
+                    ),
+                    children: exercises.map((exercise) {
+                      return ExerciseContainer(
+                        exercice: exercise,
+                      );
+                    }).toList(),
+                  );
+                },
               ),
             ),
           ],

@@ -21,19 +21,18 @@ class ExerciseClientApi{
   }
   
   Future<List<Exercise>> getExercises() async {
-    // A revoir
     List<Exercise> exercises = [];
     const int pageSize = 10;
-    int pageNumber = 0;
-    String jsonReply = await _clientApi.getData('$_endpoint/pages?pageSize=$pageSize&pageNumber=$pageNumber');
+    int nextPage = 0;
+    String jsonReply = await _clientApi.getData('$_endpoint/pages?pageSize=$pageSize&pageNumber=$nextPage');
     Map<String, dynamic> data = json.decode(jsonReply);
-    pageNumber = data["pageNumber"];
+    nextPage = data["nextPage"];
     String jsonItems = json.encode(data["items"]);
     exercises.addAll(exerciseListFromJson(jsonItems));
-    while(pageNumber != -1){
-      String jsonReply = await _clientApi.getData('$_endpoint/pages?pageSize=$pageSize&pageNumber=$pageNumber');
+    while(nextPage != -1){
+      String jsonReply = await _clientApi.getData('$_endpoint/pages?pageSize=$pageSize&pageNumber=$nextPage');
       data = json.decode(jsonReply);
-      pageNumber = data["pageNumber"];
+      nextPage = data["nextPage"];
       String jsonItems = json.encode(data["items"]);
       exercises.addAll(exerciseListFromJson(jsonItems));
     }
