@@ -1,35 +1,35 @@
+import 'package:AthletiX/model/practicalExercise.dart';
 import 'package:AthletiX/providers/api/clientApi.dart';
-import '../../../model/exercise.dart';
 
-class ExerciseClientApi{
+class PracticalExerciseClientApi{
   late final ClientApi _clientApi;
-  final String _endpoint = 'exercises';
+  final String _endpoint = 'practicalexercise';
 
-  ExerciseClientApi(ClientApi cli){
+  PracticalExerciseClientApi(ClientApi cli){
     _clientApi = cli;
   }
 
-  Future<Exercise> createExercise(Exercise exercise) async {
-    return exerciseFromJson(await _clientApi.postData(_endpoint, exerciseToJson(exercise)));
+  Future<PracticalExercise> createPracticalExercise(PracticalExercise exercise) async {
+    return practicalexerciseFromJson(await _clientApi.postData(_endpoint, practicalexerciseToJson(exercise)));
   }
 
-  Future<Exercise> getExerciseById(int exerciseId) async {
-    return exerciseFromJson(await _clientApi.getDataById(_endpoint, exerciseId));
+  Future<PracticalExercise> getPracticalExerciseById(int exerciseId) async {
+    return practicalexerciseFromJson(await _clientApi.getDataById(_endpoint, exerciseId));
   }
   
-  Future<List<Exercise>> getExercises() async {
-    return exerciseListFromJson(await _clientApi.getData(_endpoint));
+  Future<List<PracticalExercise>> getPracticalExercise() async {
+    return practicalexerciseListFromJson(await _clientApi.getData(_endpoint));
   }
   // TODO LIST BY CATEGORY
-  Future<Exercise> getExerciseByCategory(String exerciseEmail) async {
-    return exerciseFromJson(await _clientApi.getData('$_endpoint/email/$exerciseEmail'));
+  Future<PracticalExercise> getPracticalExerciseByCategory(String exerciseEmail) async {
+    return practicalexerciseFromJson(await _clientApi.getData('$_endpoint/email/$exerciseEmail'));
   }
 
-  Future<Exercise> updateExercise(int exerciseId, Exercise updatedExercise) async {
-    return exerciseFromJson(await _clientApi.putData('$_endpoint/$exerciseId', exerciseToJson(updatedExercise)));
+  Future<PracticalExercise> updatePracticalExercise(int exerciseId, PracticalExercise updatedExercise) async {
+    return practicalexerciseFromJson(await _clientApi.putData('$_endpoint/$exerciseId', practicalexerciseToJson(updatedExercise)));
   }
 
-  Future<Exercise> deleteExercise(int exerciseId) async {
-    return exerciseFromJson(await _clientApi.deleteData('$_endpoint/$exerciseId'));
+  Future<PracticalExercise> deletePracticalExercise(int exerciseId) async {
+    return practicalexerciseFromJson(await _clientApi.deleteData('$_endpoint/$exerciseId'));
   }
 }

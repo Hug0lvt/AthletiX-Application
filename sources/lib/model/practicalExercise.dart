@@ -1,31 +1,35 @@
 import 'dart:convert';
 import 'category.dart';
+import 'set.dart';
 
-List<Exercise> exerciseListFromJson(String str) => List<Exercise>.from(json.decode(str).map((x) => Exercise.fromJson(x)));
-Exercise exerciseFromJson(String str) => Exercise.fromJson(json.decode(str));
-String exerciseToJson(Exercise data) => json.encode(data.toJson());
+List<PracticalExercise> practicalexerciseListFromJson(String str) => List<PracticalExercise>.from(json.decode(str).map((x) => PracticalExercise.fromJson(x)));
+PracticalExercise practicalexerciseFromJson(String str) => PracticalExercise.fromJson(json.decode(str));
+String practicalexerciseToJson(PracticalExercise data) => json.encode(data.toJson());
 
-class Exercise {
+class PracticalExercise {
   int id;
   String name;
   String description;
   String image;
   Category category;
+  List<Set> sets;
 
-  Exercise({
+  PracticalExercise({
     required this.id,
     required this.name,
     required this.description,
     required this.image,
     required this.category,
+    required this.sets,
   });
 
-  factory Exercise.fromJson(Map<String, dynamic> json) => Exercise(
+  factory PracticalExercise.fromJson(Map<String, dynamic> json) => PracticalExercise(
     id: json["id"],
     name: json["name"],
     description: json["description"],
     image: json["image"],
     category: Category.fromJson(json["category"]),
+    sets: List<Set>.from(json["sets"].map((x) => Set.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -34,5 +38,7 @@ class Exercise {
     "description": description,
     "image": image,
     "category": category.toJson(),
+    "sets": List<dynamic>.from(sets.map((x) => x.toJson())),
   };
 }
+

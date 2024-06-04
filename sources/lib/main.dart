@@ -14,6 +14,7 @@ import 'package:AthletiX/providers/api/utils/conversationClientApi.dart';
 import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
 import 'package:AthletiX/providers/api/utils/messageClientApi.dart';
 import 'package:AthletiX/providers/api/utils/postClientApi.dart';
+import 'package:AthletiX/providers/api/utils/practicalexerciseClientApi.dart';
 import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
 import 'package:AthletiX/providers/api/utils/sessionClientApi.dart';
 import 'package:AthletiX/providers/api/utils/setClientApi.dart';
@@ -34,22 +35,22 @@ void setupLocator() {
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/api',
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api'
       ));
-  getIt.registerSingleton<ProfileClientApi>(
-      ProfileClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<CommentClientApi>(
-      CommentClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<TrainingClientApi>(
-      TrainingClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ExerciseClientApi>(ExerciseClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<TrainingClientApi>(TrainingClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<CategoryClientApi>(CategoryClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<ConversationClientApi>(ConversationClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<ExerciseClientApi>(ExerciseClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<MessageClientApi>(MessageClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<PostClientApi>(PostClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<SessionClientApi>(SessionClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<SetClientApi>(SetClientApi(getIt<ClientApi>()));
-}
+  getIt.registerSingleton<PracticalExerciseClientApi>(PracticalExerciseClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
+
+  }
+
 
 Future<void> isAuthanticated() async {
   String? token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
