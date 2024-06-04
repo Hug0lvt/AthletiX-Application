@@ -2,8 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../components/buttonProfilePage.dart';
 import '../components/editProfilContainer.dart';
+import '../model/profile.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 
-class ProfilePrivatePage extends StatelessWidget {
+class ProfilePrivatePage extends StatefulWidget {
+  @override
+  _ProfilePrivatePageState createState() => _ProfilePrivatePageState();
+}
+
+class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
+  Profile? _profile;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProfile();
+  }
+
+  void fetchProfile() async {
+    // Call your method to fetch the profile
+    Profile? profile = await AuthManager.getProfile();
+
+    setState(() {
+      _profile = profile;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -51,7 +75,7 @@ class ProfilePrivatePage extends StatelessWidget {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      margin: const  EdgeInsets.symmetric(vertical: 35.0),
+                      margin: const  EdgeInsets.symmetric(vertical: 15.0),
                       constraints: BoxConstraints.expand(
                         width: screenWidth * 0.9,
                         height: screenHeight * 0.2,
@@ -65,7 +89,7 @@ class ProfilePrivatePage extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Pseudo',
+                            _profile?.username.toString() ?? 'Unknown',
                             style: TextStyle(
                               fontSize: ((screenWidth + screenHeight) / 2) * 0.040,
                               color: Colors.white,
@@ -83,32 +107,14 @@ class ProfilePrivatePage extends StatelessWidget {
                               Column(
                                 children: [
                                   Text(
-                                    'coucou',
+                                    'Age',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
-                                    '1',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: screenWidth * 0.034,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Text(
-                                    'coucou',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: screenWidth * 0.034,
-                                    ),
-                                  ),
-                                  Text(
-                                    '2',
+                                    _profile?.age.toString() ?? 'Unknown',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
@@ -119,14 +125,14 @@ class ProfilePrivatePage extends StatelessWidget {
                               Column(
                                 children: [
                                   Text(
-                                    'coucou',
+                                    'Height',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
-                                    '3',
+                                    (_profile?.height.toString() ?? '0') + ' cm',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
@@ -137,14 +143,14 @@ class ProfilePrivatePage extends StatelessWidget {
                               Column(
                                 children: [
                                   Text(
-                                    'coucou',
+                                    'Weight',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
                                     ),
                                   ),
                                   Text(
-                                    '4',
+                                    (_profile?.weight.toString() ?? '0') + ' kg',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth * 0.034,
@@ -187,7 +193,7 @@ class ProfilePrivatePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Posts',
                       imagePath: 'assets/PostIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -195,7 +201,7 @@ class ProfilePrivatePage extends StatelessWidget {
                       screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Favorite Posts',
                       imagePath: 'assets/HeartIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -203,7 +209,7 @@ class ProfilePrivatePage extends StatelessWidget {
                       screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Statistics',
                       imagePath: 'assets/StatisticsIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -211,7 +217,7 @@ class ProfilePrivatePage extends StatelessWidget {
                       screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Exercises',
                       imagePath: 'assets/DoubleHaltereIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -219,7 +225,7 @@ class ProfilePrivatePage extends StatelessWidget {
                       screenWidth: screenWidth,
                     ),
                     ButtonProfilePage(
-                      text: 'Mon bouton',
+                      text: 'Settings',
                       imagePath: 'assets/SettingsIcon.svg',
                       width: screenWidth * 0.9,
                       height: screenHeight * 0.07,
@@ -235,7 +241,6 @@ class ProfilePrivatePage extends StatelessWidget {
       ),
     );
   }
+
+
 }
-
-
-
