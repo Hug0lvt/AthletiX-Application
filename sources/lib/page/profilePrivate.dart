@@ -37,7 +37,7 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     Widget _buildProfileImage(double screenWidth) {
-      if (_profile?.picture == null || _profile!.picture!.isEmpty) {
+      if (_profile?.picture == null || _profile!.picture!.isEmpty || _profile!.picture! == "string") {
         return Image.asset(
           'assets/testAvatar.jpg', // Replace with the path to your default image
           width: screenWidth * 0.20,
@@ -66,16 +66,17 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
             child: Column(
               children: [
                 Text(
-                  'Edit my profile',
+                  'Edit profile',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: screenWidth * 0.1,
+                    fontSize: screenWidth * 0.07,
                     fontFamily: 'Mulish',
                   ),
                 ),
                 EditProfileContainer(onClose: () {
                   Navigator.pop(context);
+                  fetchProfile();
                 }),
               ],
             ),
