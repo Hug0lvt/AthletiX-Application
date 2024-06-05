@@ -35,7 +35,6 @@ void setupLocator() {
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api'
       ));
   getIt.registerSingleton<TrainingClientApi>(TrainingClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<CategoryClientApi>(CategoryClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<ConversationClientApi>(ConversationClientApi(getIt<ClientApi>()));
@@ -44,6 +43,7 @@ void setupLocator() {
   getIt.registerSingleton<PostClientApi>(PostClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<SessionClientApi>(SessionClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<SetClientApi>(SetClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
 }
 
 Future<void> isAuthanticated() async {

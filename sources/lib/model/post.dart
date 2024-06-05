@@ -16,7 +16,7 @@ class Post {
   String description;
   int publicationType;
   String content;
-  List<Comment> comments;
+  List<Comment> comments = [];
 
   Post({
     required this.id,

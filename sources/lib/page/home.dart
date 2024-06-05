@@ -1,9 +1,11 @@
 import 'package:AthletiX/page/profilePublic.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../components/commentCard.dart';
 import '../model/comment.dart';
+import '../model/profile.dart';
 import '../providers/api/utils/commentClientApi.dart';
 import '../main.dart';
 import '../model/post.dart';
@@ -15,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Profile? _profile;
   final commentClientApi = getIt<CommentClientApi>();
   final postClientApi = getIt<PostClientApi>();
   late VideoPlayerController _controller;
@@ -26,12 +29,21 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _loadProfile();
     fetchVideos();
+  }
+
+  Future<void> _loadProfile() async {
+    Profile? profile = await AuthManager.getProfile();
+    setState(() {
+      _profile = profile;
+    });
   }
 
   Future<void> fetchVideos() async {
     try {
       List<Post> posts = await postClientApi.getRecommendedPosts('1');
+      print(posts);
       setState(() {
         _posts = posts;
         if (_posts.isNotEmpty) {
@@ -79,6 +91,8 @@ class _HomePageState extends State<HomePage> {
 
   void onPressed() {
     List<Comment> comments = _posts[_currentVideoIndex].comments;
+    TextEditingController commentController = TextEditingController();
+
     showModalBottomSheet<int>(
       showDragHandle: true,
       isScrollControlled: true,
@@ -108,12 +122,59 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: commentController,
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          hintText: 'Ajouter un commentaire...',
+                          hintStyle: TextStyle(color: Colors.grey),
+                          filled: true,
+                          fillColor: Colors.black54,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.send, color: Colors.white),
+                      onPressed: () async {
+                        if (commentController.text.isNotEmpty) {
+                          Comment newComment = Comment(
+                              id: 0,
+                              publishDate: DateTime.timestamp(),
+                              publisher: _profile!,
+                              content: commentController.text,
+                              answers: [],
+                              post: _posts[_currentVideoIndex],
+                              parentCommentId: null,
+                          );
+                          // Appelez l'API pour envoyer le commentaire
+                          Comment createdComment = await commentClientApi.createComment(newComment);
+                          setState(() {
+                            _posts[_currentVideoIndex].comments.add(createdComment);
+                          });
+                          commentController.clear();
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         );
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
