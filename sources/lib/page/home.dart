@@ -116,8 +116,8 @@ class _HomePageState extends State<HomePage> {
                   itemCount: comments.length,
                   itemBuilder: (context, index) {
                     return CommentCard(
-                      username: comments[index].publisher.username!,
-                      commentText: comments[index].content,
+                      username: comments[index].publisher!.username!,
+                      commentText: comments[index].content!,
                     );
                   },
                 ),

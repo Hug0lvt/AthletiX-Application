@@ -8,27 +8,27 @@ Comment commentFromJson(String str) => Comment.fromJson(json.decode(str));
 String commentToJson(Comment data) => json.encode(data.toJson());
 
 class Comment {
-  int id;
+  int? id;
   int? parentCommentId;
-  DateTime publishDate;
-  Profile publisher;
-  String content;
-  List<Comment> answers = [];
-  Post post;
+  DateTime? publishDate;
+  Profile? publisher;
+  String? content;
+  List<Comment>? answers = [];
+  Post? post;
 
   Comment({
-    required this.id,
-    required this.parentCommentId,
-    required this.publishDate,
-    required this.publisher,
-    required this.content,
-    required this.answers,
-    required this.post,
+    this.id,
+    this.parentCommentId,
+    this.publishDate,
+    this.publisher,
+    this.content,
+    this.answers,
+    this.post,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
     id: json["id"],
-      parentCommentId: json["parentCommentId"],
+    parentCommentId: json["parentCommentId"],
     publishDate: DateTime.parse(json["publishDate"]),
     publisher: Profile.fromJson(json["publisher"]),
     content: json["content"],
@@ -39,10 +39,10 @@ class Comment {
   Map<String, dynamic> toJson() => {
     "id": id,
     "parentCommentId": parentCommentId,
-    "publishDate": publishDate.toIso8601String(),
-    "publisher": publisher.toJson(),
+    "publishDate": publishDate?.toIso8601String(),
+    "publisher": publisher?.toJson(),
     "content": content,
-    "answers": List<dynamic>.from(answers.map((x) => x)),
-    "post": post.toJson(),
+    "answers": [],
+    "post": post?.toJson(),
   };
 }
