@@ -5,13 +5,13 @@ class ProgramContainer extends StatelessWidget {
   final String title;
   final List<PracticalExercise> exercises;
   final String lastSession;
-  final VoidCallback onDelete;
+  final VoidCallback? onDelete;
 
   ProgramContainer({
     required this.title,
     required this.exercises,
     required this.lastSession,
-    required this.onDelete,
+    this.onDelete,
   });
 
   @override
@@ -98,14 +98,15 @@ class ProgramContainer extends StatelessWidget {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.white),
-                            onPressed: onDelete,
-                          ),
+                          if (onDelete != null)
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.white),
+                              onPressed: onDelete,
+                            ),
                         ],
                       ),
                       Text(
-                        'Last session : $lastSession days ago',
+                        'Last session : $lastSession',
                         style: TextStyle(
                           color: const Color(0xFFA1A1A1),
                           fontSize: screenWidth * 0.03,
