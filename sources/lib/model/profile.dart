@@ -13,6 +13,8 @@ class Profile {
   String? email;
   int? weight;
   int? height;
+  bool? gender;
+  String? picture;
 
   Profile({
     this.id,
@@ -23,6 +25,8 @@ class Profile {
     this.email,
     this.weight,
     this.height,
+    this.gender,
+    this.picture,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
@@ -34,6 +38,8 @@ class Profile {
     email: json["email"],
     weight: json["weight"],
     height: json["height"],
+    gender: json["gender"],
+    picture: json["picture"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -45,5 +51,7 @@ class Profile {
     "email": email,
     "weight": weight,
     "height": height,
+    "gender": gender,
+    "picture": picture,
   };
 }
