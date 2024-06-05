@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:AthletiX/model/profile.dart';
 import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../main.dart';
 
@@ -19,6 +23,9 @@ class CreateProfilePage extends State<CreateProfileForm> {
   final ageController = TextEditingController();
   final heightController = TextEditingController();
   final weightController = TextEditingController();
+  List<bool> _selectedGender = [true, false];
+  var gender = false;
+  String userPicture = "";
 
   @override
   void dispose() {
@@ -28,9 +35,24 @@ class CreateProfilePage extends State<CreateProfileForm> {
     super.dispose();
   }
 
+  Future<void> openImagePicker() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      List<int> imageBytes = await imageFile.readAsBytes();
+      userPicture = base64Encode(imageBytes);
+    } else {
+      print('Aucune image sélectionnée.');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -91,6 +113,67 @@ class CreateProfilePage extends State<CreateProfileForm> {
                 ),
               ),
               const SizedBox(height: 10.0),
+              Container(
+                margin: const EdgeInsets.all(8.0),
+                child: ToggleButtons(
+                  direction: Axis.horizontal,
+                  onPressed: (int index) {
+                    setState(() {
+                      for (int i = 0; i < _selectedGender.length; i++) {
+                        _selectedGender[i] = i == index;
+                      }
+                      if(_selectedGender[0]) gender = false;
+                      if(_selectedGender[1]) gender = true;
+                      print(gender);
+                    });
+                  },
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  selectedBorderColor: Colors.blue[700],
+                  selectedColor: Colors.white,
+                  fillColor: Colors.blue[200],
+                  color: Colors.blue[400],
+                  isSelected: _selectedGender,
+                  children: <Widget>[
+                    Icon(Icons.female),
+                    Icon(Icons.male),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              GestureDetector(
+                onTap: () {
+                  openImagePicker();
+                },
+                child: Container(
+                  width: width * 0.8,
+                  height: screenHeight * 0.08,
+                  decoration: ShapeDecoration(
+                    color: Colors.deepPurple, // Couleur transparente pour laisser voir le contour pointillé
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: BorderSide(color: Colors.purple, width: 1.0, style: BorderStyle.solid), // Contour gris pointillé
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0), // Ajoute un padding autour de l'icône
+                        child: Icon(
+                          Icons.folder, // Icône "addfile"
+                          color: Colors.white, // Couleur de l'icône
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Import Profile Picture (1:1)', // Texte à droite de l'icône
+                          style: TextStyle(color: Colors.white), // Couleur du texte
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
                   createProfile();
@@ -132,6 +215,8 @@ class CreateProfilePage extends State<CreateProfileForm> {
           role: 0,
           uniqueNotificationToken: "",
           username: profile.username,
+          gender: gender,
+          picture: userPicture,
         ));
         AuthManager.setProfile(newProfile);
         Navigator.pushNamedAndRemoveUntil(context, '/navbar', (route) => false);

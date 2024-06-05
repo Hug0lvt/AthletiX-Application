@@ -1,14 +1,31 @@
 import 'package:AthletiX/model/category.dart';
 import 'package:flutter/material.dart';
 
-class FilterContainer extends StatelessWidget {
+class FilterContainer extends StatefulWidget {
   final List<Category> filters;
   final Color color;
+  final List<Category>  selectedFilters;
+  final Function(List<Category> ) onFilterChanged;
 
   FilterContainer({
     required this.filters,
     required this.color,
+    required this.selectedFilters,
+    required this.onFilterChanged,
   });
+
+  @override
+  _FilterContainerState createState() => _FilterContainerState();
+}
+
+class _FilterContainerState extends State<FilterContainer> {
+  late List<Category>  filtersSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    filtersSelected = widget.selectedFilters;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +34,19 @@ class FilterContainer extends StatelessWidget {
     final double dynamicWidth = screenWidth * 0.2;
 
     Widget buildFilterItem(Category filter) {
+      bool isSelected = filtersSelected.contains(filter);
+      Color itemColor = isSelected ? Colors.green : widget.color;
+
       return GestureDetector(
         onTap: () {
-            filters.remove(filter);
+          setState(() {
+            if (isSelected) {
+              filtersSelected.remove(filter);
+            } else {
+              filtersSelected.add(filter);
+            }
+            widget.onFilterChanged(filtersSelected);
+          });
         },
         child: SizedBox(
           width: dynamicWidth,
@@ -28,7 +55,7 @@ class FilterContainer extends StatelessWidget {
               Container(
                 width: dynamicWidth,
                 decoration: BoxDecoration(
-                  color: color,
+                  color: itemColor,
                   borderRadius: BorderRadius.circular(dynamicWidth * 0.2),
                   boxShadow: [
                     BoxShadow(
@@ -74,9 +101,9 @@ class FilterContainer extends StatelessWidget {
           crossAxisSpacing: 0,
           childAspectRatio: dynamicWidth * 0.035,
         ),
-        itemCount: filters.length,
+        itemCount: widget.filters.length,
         itemBuilder: (BuildContext context, int index) {
-          return buildFilterItem(filters[index]);
+          return buildFilterItem(widget.filters[index]);
         },
       ),
     );

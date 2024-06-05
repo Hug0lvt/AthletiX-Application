@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:AthletiX/providers/api/clientApi.dart';
+import 'package:flutter/services.dart';
 import '../../../model/exercise.dart';
 
 class ExerciseClientApi{
@@ -18,8 +21,31 @@ class ExerciseClientApi{
   }
   
   Future<List<Exercise>> getExercises() async {
-    return exerciseListFromJson(await _clientApi.getData(_endpoint));
+    List<Exercise> exercises = [];
+    const int pageSize = 10;
+    int nextPage = 0;
+    String jsonReply = await _clientApi.getData('$_endpoint/pages?pageSize=$pageSize&pageNumber=$nextPage');
+    Map<String, dynamic> data = json.decode(jsonReply);
+    nextPage = data["nextPage"];
+    String jsonItems = json.encode(data["items"]);
+    exercises.addAll(exerciseListFromJson(jsonItems));
+    while(nextPage != -1){
+      String jsonReply = await _clientApi.getData('$_endpoint/pages?pageSize=$pageSize&pageNumber=$nextPage');
+      data = json.decode(jsonReply);
+      nextPage = data["nextPage"];
+      String jsonItems = json.encode(data["items"]);
+      exercises.addAll(exerciseListFromJson(jsonItems));
+    }
+    return exercises;
   }
+
+  Future<List<Exercise>> getExercisesByPage(int pageSize, int pageNumber) async {
+    String jsonReply = await _clientApi.getData('$_endpoint/pages?pageSize=$pageSize&pageNumber=$pageNumber');
+    Map<String, dynamic> data = json.decode(jsonReply);
+    String jsonItems = json.encode(data["items"]);
+    return exerciseListFromJson(jsonItems);
+  }
+
   // TODO LIST BY CATEGORY
   Future<Exercise> getExerciseByCategory(String exerciseEmail) async {
     return exerciseFromJson(await _clientApi.getData('$_endpoint/email/$exerciseEmail'));
