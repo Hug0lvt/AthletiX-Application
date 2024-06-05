@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../components/buttonProfilePage.dart';
@@ -33,6 +36,25 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+    Widget _buildProfileImage(double screenWidth) {
+      if (_profile?.picture == null || _profile!.picture!.isEmpty || _profile!.picture! == "string") {
+        return Image.asset(
+          'assets/testAvatar.jpg', // Replace with the path to your default image
+          width: screenWidth * 0.20,
+          height: screenWidth * 0.20,
+          fit: BoxFit.cover,
+        );
+      } else {
+        Uint8List _imageBytes = base64Decode(_profile!.picture!);
+        return Image.memory(
+          _imageBytes,
+          width: screenWidth * 0.20,
+          height: screenWidth * 0.20,
+          fit: BoxFit.cover,
+        );
+      }
+    }
+
     void onPressed() {
       showModalBottomSheet<int>(
         showDragHandle: true,
@@ -44,16 +66,17 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
             child: Column(
               children: [
                 Text(
-                  'Edit my profile',
+                  'Edit profile',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: screenWidth * 0.1,
+                    fontSize: screenWidth * 0.07,
                     fontFamily: 'Mulish',
                   ),
                 ),
                 EditProfileContainer(onClose: () {
                   Navigator.pop(context);
+                  fetchProfile();
                 }),
               ],
             ),
@@ -75,14 +98,14 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      margin: const  EdgeInsets.symmetric(vertical: 15.0),
+                      margin: const  EdgeInsets.fromLTRB(0, 40, 0, 10),
                       constraints: BoxConstraints.expand(
                         width: screenWidth * 0.9,
                         height: screenHeight * 0.2,
                       ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF1A1A1A).withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(25.0),
+                        borderRadius: BorderRadius.circular(25.0)
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -104,6 +127,24 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    'Gender',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
+                                    ),
+                                  ),
+                                  Text(
+                                    _profile!.gender! ? "Male" : "Female",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: screenWidth * 0.034,
+                                    ),
+                                  ),
+                                ],
+                              ),
                               Column(
                                 children: [
                                   Text(
@@ -179,12 +220,7 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
                     Positioned(
                       top: 0,
                       child: ClipOval(
-                        child: SvgPicture.asset(
-                          'assets/EditIcon.svg',
-                          width: screenWidth * 0.08,
-                          height: screenHeight * 0.08,
-                          fit: BoxFit.cover,
-                        ),
+                        child: _buildProfileImage(screenWidth)
                       ),
                     ),
                   ],
