@@ -1,6 +1,8 @@
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
 import 'package:AthletiX/page/profilePublic.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
-import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../components/commentCard.dart';
@@ -10,6 +12,7 @@ import '../providers/api/utils/commentClientApi.dart';
 import '../main.dart';
 import '../model/post.dart';
 import '../providers/api/utils/postClientApi.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,6 +26,9 @@ class _HomePageState extends State<HomePage> {
   late VideoPlayerController _controller;
   int _currentVideoIndex = 0;
   List<Post> _posts = [];
+  Uint8List? _imageFromBase64String(String base64String) {
+    return base64Decode(base64String);
+  }
 
   bool _isLiked = false;
 
@@ -310,7 +316,10 @@ class _HomePageState extends State<HomePage> {
                           height: 50,
                           child: ClipOval(
                             child: post.publisher.picture != null
-                                ? Image.network(post.publisher.picture!, fit: BoxFit.cover)
+                                ? Image.memory(
+                              _imageFromBase64String(post.publisher.picture!)!,
+                              fit: BoxFit.cover,
+                            )
                                 : SvgPicture.asset(
                               'assets/EditIcon.svg',
                               width: 50,
