@@ -117,6 +117,7 @@ class _HistoryTab extends State<HistoryTab> {
                           .inDays
                           .toString(), // in days
                       exercises: sessions[index].exercises,
+                      onDelete: () => print("test"),
                     );
                   },
                 ),
