@@ -172,9 +172,11 @@ class _PublishPostPageState extends State<PublishPostPage> {
                           setState(() {
                             searchQuery = value;
                             // Update the filtered list of exercises based on the search query
-                            filteredExercices = exercices.where((exerc) =>
-                                exerc.name.toLowerCase().contains(searchQuery.toLowerCase())
-                            ).toList();
+                            filteredExercices = exercices
+                                .where((exerc) => exerc.name
+                                .toLowerCase()
+                                .contains(searchQuery.toLowerCase()))
+                                .toList();
                           });
                         },
                         style: TextStyle(color: Colors.white), // Texte en gris foncé
@@ -182,7 +184,8 @@ class _PublishPostPageState extends State<PublishPostPage> {
                           hintText: 'Search', // Placeholder
                           hintStyle: TextStyle(color: Colors.grey), // Couleur du placeholder
                           border: InputBorder.none, // Supprime la bordure par défaut
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20), // Ajoute un padding horizontal
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20), // Ajoute un padding horizontal
                         ),
                       ),
                     ),
@@ -197,34 +200,35 @@ class _PublishPostPageState extends State<PublishPostPage> {
                 ),
               ),
               SizedBox(height: 10),
-              Expanded(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    isLoading
-                        ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                        : filteredExercices.isEmpty
-                        ? const Center(
-                      child: Text(
-                        "No Exercises Found",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Mulish',
+              Container(
+                width: screenWidth * 0.8,
+                height: screenHeight * 0.25,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      isLoading
+                          ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                          : filteredExercices.isEmpty
+                          ? const Center(
+                        child: Text(
+                          "No Exercises Found",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Mulish',
+                          ),
                         ),
+                      )
+                          : Column(
+                        children: filteredExercices
+                            .map((exercise) => ExerciseContainer(
+                          exercice: exercise,
+                        ))
+                            .toList(),
                       ),
-                    )
-                        : ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: filteredExercices.length,
-                      itemBuilder: (context, index) {
-                        return ExerciseContainer(
-                          exercice: filteredExercices[index],
-                        );
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 20),
@@ -239,7 +243,10 @@ class _PublishPostPageState extends State<PublishPostPage> {
                     color: Color(0xE51A1A1A), // Couleur transparente pour laisser voir le contour pointillé
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: Colors.grey, width: 1.0, style: BorderStyle.solid), // Contour gris pointillé
+                      side: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                          style: BorderStyle.solid), // Contour gris pointillé
                     ),
                   ),
                   child: Row(

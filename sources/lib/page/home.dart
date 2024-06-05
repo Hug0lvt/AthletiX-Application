@@ -147,13 +147,13 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () async {
                         if (commentController.text.isNotEmpty) {
                           Comment newComment = Comment(
-                              id: 0,
-                              publishDate: DateTime.timestamp(),
-                              publisher: _profile!,
-                              content: commentController.text,
-                              answers: [],
-                              post: _posts[_currentVideoIndex],
-                              parentCommentId: null,
+                            id: 0,
+                            publishDate: DateTime.now(), // Corrected the usage of DateTime.timestamp() which doesn't exist
+                            publisher: _profile!,
+                            content: commentController.text,
+                            answers: [],
+                            post: _posts[_currentVideoIndex],
+                            parentCommentId: null,
                           );
                           // Appelez l'API pour envoyer le commentaire
                           Comment createdComment = await commentClientApi.createComment(newComment);
@@ -174,7 +174,6 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -216,6 +215,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildVideoPage(int index) {
+    final post = _posts[index];
+
     return Stack(
       children: [
         Positioned.fill(
@@ -308,13 +309,11 @@ class _HomePageState extends State<HomePage> {
                           width: 50,
                           height: 50,
                           child: ClipOval(
-                            child: Container(
-                              child: Center(
-                                child: SvgPicture.asset(
-                                  'assets/EditIcon.svg',
-                                  width: 50,
-                                ),
-                              ),
+                            child: post.publisher.picture != null
+                                ? Image.network(post.publisher.picture!, fit: BoxFit.cover)
+                                : SvgPicture.asset(
+                              'assets/EditIcon.svg',
+                              width: 50,
                             ),
                           ),
                         ),
@@ -329,8 +328,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       const SizedBox(width: 5.0),
-                      const Text(
-                        '123',
+                      Text(
+                        "123",
                         style: TextStyle(color: Colors.white),
                       ),
                       const SizedBox(height: 5.0),
@@ -342,7 +341,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           const SizedBox(width: 10.0),
                           const Text(
-                            '456',
+                            '456', // Remplacer par la donnée appropriée si disponible
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -360,8 +359,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           const SizedBox(width: 10.0),
-                          const Text(
-                            '789',
+                          Text(
+                            post.comments.length.toString(),
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -372,7 +371,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  _posts[_currentVideoIndex].description,
+                  post.description,
                   style: TextStyle(color: Colors.white),
                 ),
               ],
