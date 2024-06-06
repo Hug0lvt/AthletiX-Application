@@ -98,7 +98,7 @@ class _TrainingTab extends State<TrainingTab> {
     });
 
     try {
-      await clientApi.deleteSession(session.id);
+      await clientApi.deleteSession(session.id!);
       setState(() {
         sessions.remove(session);
         filteredSessions.remove(session);
@@ -199,14 +199,14 @@ class _TrainingTab extends State<TrainingTab> {
                 itemBuilder: (context, index) {
                   return ProgramContainer(
                     title: filteredSessions[index].name,
-                    lastSession: (DateTime.now()
-                        .difference(sessions[index].date)
+                    lastSession: sessions[index].date != null ? ((DateTime.now()
+                        .difference(sessions[index].date!)
                         .inDays
                         .toString()) == '0' ? 'Today' : '${DateTime.now()
-                        .difference(sessions[index].date)
-                        .inDays} days ago' ,
-                    exercises: filteredSessions[index].exercises.isNotEmpty
-                        ? filteredSessions[index].exercises
+                        .difference(sessions[index].date!)
+                        .inDays} days ago') : 'No record found',
+                    exercises: sessions[index].exercises.isNotEmpty
+                        ? sessions[index].exercises
                         : [],
                     onDelete: () => _showDeleteConfirmationDialog(filteredSessions[index]),
                   );

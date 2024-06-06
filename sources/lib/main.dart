@@ -79,7 +79,7 @@ Future<void> initApp() async{
   //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
-  isAuthanticated();
+  await isAuthanticated();
 }
 
 Future<void> main() async {

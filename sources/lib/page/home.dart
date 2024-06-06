@@ -1,5 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:AthletiX/components/ExerciseContainer.dart';
+import 'package:AthletiX/constants/color.dart';
+import 'package:AthletiX/model/exercise.dart';
+import 'package:AthletiX/model/practicalExercise.dart';
+import 'package:AthletiX/model/session.dart';
+import 'package:AthletiX/providers/api/utils/sessionClientApi.dart';
 import 'package:flutter/material.dart';
 import 'package:AthletiX/page/profilePublic.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
@@ -13,7 +19,6 @@ import '../main.dart';
 import '../model/post.dart';
 import '../providers/api/utils/postClientApi.dart';
 
-
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -22,6 +27,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Profile? _profile;
   final commentClientApi = getIt<CommentClientApi>();
+  final sessionsClientApi = getIt<SessionClientApi>();
   final postClientApi = getIt<PostClientApi>();
   late VideoPlayerController _controller;
   int _currentVideoIndex = 0;
@@ -114,7 +120,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: comments.isEmpty
-                      ? Center(
+                      ? const Center(
                     child: Text(
                       'Pas de commentaire pour cette publication',
                       style: TextStyle(color: Colors.white),
@@ -185,8 +191,98 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void onPressedLinkedExercises(Post post) {
+    if(post.exercises.isNotEmpty) {
+      TextEditingController programNameController = TextEditingController();
+      double screenHeight = MediaQuery
+          .of(context)
+          .size
+          .height;
+      double screenWidth = MediaQuery
+          .of(context)
+          .size
+          .width;
+      showModalBottomSheet<dynamic>(
+        isScrollControlled: true,
+        context: context,
+        builder: (context) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: appBlackColor,
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+            height: screenHeight * 0.7, // 70% of screen height
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: programNameController,
+                  style: const TextStyle(color: Colors.white),
+                  // Set text color to white
+                  decoration: const InputDecoration(
+                    labelText: 'Name your program',
+                    labelStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
 
+                const SizedBox(height: 20),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: post.exercises.length,
+                    itemBuilder: (context, index) {
+                      return ExerciseContainer(
+                        exercice: post.exercises[index],
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+                InkWell(
+                  onTap: () {
+                    createNewProgramFromPost(post, programNameController.text);
+                    Navigator.pop(context);
+                  },
+                  child:
+                  Container(
+                    width: screenWidth * 0.3,
+                    height: screenHeight * 0.06,
+                    decoration: ShapeDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment(-0.92, -0.39),
+                        end: Alignment(0.92, 0.39),
+                        colors: [Color(0xFFA2E4E6), Color(0xFFB66CFF)],
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Add program',
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.05,
+                          fontFamily: 'Mulish',
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
 
+                )
+              ],
+            ),
+          );
+        },
+      );
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User did not link any exercises to post !')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -322,15 +418,7 @@ class _HomePageState extends State<HomePage> {
                           width: 50,
                           height: 50,
                           child: ClipOval(
-                            child: post.publisher.picture != null
-                                ? Image.memory(
-                              _imageFromBase64String(post.publisher.picture!)!,
-                              fit: BoxFit.cover,
-                            )
-                                : SvgPicture.asset(
-                              'assets/EditIcon.svg',
-                              width: 50,
-                            ),
+                            child: _buildImage(post),
                           ),
                         ),
                       ),
@@ -349,18 +437,23 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(color: Colors.white),
                       ),
                       const SizedBox(height: 5.0),
-                      Column(
-                        children: [
-                          SvgPicture.asset(
-                            'assets/DoubleHaltereIcon.svg',
-                            width: 45,
-                          ),
-                          const SizedBox(width: 10.0),
-                          const Text(
-                            '456', // Remplacer par la donnée appropriée si disponible
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
+                      InkWell(
+                        onTap: () {
+                          onPressedLinkedExercises(post);
+                        },
+                        child: Column(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/DoubleHaltereIcon.svg',
+                              width: 45,
+                            ),
+                            const SizedBox(width: 10.0),
+                            Text(
+                              post.exercises.length.toString(),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 5.0),
                       Column(
@@ -377,7 +470,7 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(width: 10.0),
                           Text(
                             post.comments.length.toString(),
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
@@ -388,7 +481,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 10.0),
                 Text(
                   post.description,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                 ),
               ],
             ),
@@ -402,5 +495,41 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+
+  Widget _buildImage(post) {
+    try {
+      if (post.publisher.picture.isNotEmpty) {
+        return Image.memory(
+          base64Decode(post.profile.picture.image),
+          fit: BoxFit.cover,
+        );
+      } else {
+        throw Exception("Image is empty");
+      }
+    } catch (e) {
+      return Image.network("https://via.placeholder.com/200/3C383B/B66CFF?text=${post.publisher.username?.substring(0,1)}",
+        fit: BoxFit.cover,);
+    }
+  }
+
+  void createNewProgramFromPost(Post post, String sessionName) async {
+    List<PracticalExercise> exercises = [];
+    for(var exo in post.exercises){
+      exercises.add(exo.exerciseToPracticalExercise());
+    }
+    Profile? callerProfile = await AuthManager.getProfile();
+    sessionName = sessionName.trim().isEmpty ? '${post.publisher.username}\'s program' : sessionName;
+    if(callerProfile != null && exercises.isNotEmpty){
+      Session session = Session(profile: callerProfile, name: sessionName, exercises: exercises);
+      await sessionsClientApi.createSession(session);
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Program added to your programs !')));
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error while adding new program. Try again later.')));
+    }
   }
 }

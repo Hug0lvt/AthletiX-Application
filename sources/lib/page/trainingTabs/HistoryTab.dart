@@ -112,12 +112,12 @@ class _HistoryTab extends State<HistoryTab> {
                   itemBuilder: (context, index) {
                     return ProgramContainer(
                       title: sessions[index].name,
-                      lastSession: (DateTime.now()
-                          .difference(sessions[index].date)
+                      lastSession: sessions[index].date != null ? ((DateTime.now()
+                          .difference(sessions[index].date!)
                           .inDays
                           .toString()) == '0' ? 'Today' : '${DateTime.now()
-                          .difference(sessions[index].date)
-                          .inDays} days ago' ,
+                          .difference(sessions[index].date!)
+                          .inDays} days ago') : 'No record found',
                       exercises: sessions[index].exercises.isNotEmpty
                           ? sessions[index].exercises
                           : [],
