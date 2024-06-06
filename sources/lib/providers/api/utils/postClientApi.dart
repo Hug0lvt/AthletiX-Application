@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:AthletiX/providers/api/clientApi.dart';
 import '../../../model/post.dart';
@@ -37,5 +38,14 @@ class PostClientApi {
 
   Future<Post> deletePost(int postId) async {
     return postFromJson(await _clientApi.deleteData('$_endpoint/$postId'));
+  }
+
+  Future<void> uploadPostMedia(int postId, File mediaFile) async {
+    final String url = '$_endpoint/$postId/upload';
+    final String base64Media = base64Encode(await mediaFile.readAsBytes());
+    final Map<String, dynamic> payload = {
+      'file': base64Media,
+    };
+    await _clientApi.postData(url, json.encode(payload));
   }
 }

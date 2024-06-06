@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'comment.dart';
+import 'exercise.dart';
 import 'profile.dart';
 import 'category.dart';
 
@@ -10,44 +11,48 @@ String postToJson(Post data) => json.encode(data.toJson());
 
 class Post {
   int id;
-  Profile publisher;
-  Category category;
-  String title;
-  String description;
-  int publicationType;
-  String content;
-  List<Comment> comments = [];
+  Profile? publisher;
+  Category? category;
+  String? title;
+  String? description;
+  int? publicationType;
+  String? content;
+  List<Comment>? comments;
+  List<Exercise>? exercises;
 
   Post({
     required this.id,
-    required this.publisher,
-    required this.category,
-    required this.title,
-    required this.description,
-    required this.publicationType,
-    required this.content,
-    required this.comments,
+    this.publisher,
+    this.category,
+    this.title,
+    this.description,
+    this.publicationType,
+    this.content,
+    this.comments,
+    this.exercises,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
     id: json["id"],
-    publisher: Profile.fromJson(json["publisher"]),
-    category: Category.fromJson(json["category"]),
+    publisher: json["publisher"] != null ? Profile.fromJson(json["publisher"]) : null,
+    category: json["category"] != null ? Category.fromJson(json["category"]) : null,
     title: json["title"],
     description: json["description"],
     publicationType: json["publicationType"],
     content: json["content"],
-    comments: List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x))),
+    comments: json["comments"] != null ? List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x))) : [],
+    exercises: json["exercises"]!= null ? List<Exercise>.from(json["exercises"].map((x) => Comment.fromJson(x))) : [],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "publisher": publisher.toJson(),
-    "category": category.toJson(),
+    "publisher": publisher?.toJson(),
+    "category": category?.toJson(),
     "title": title,
     "description": description,
     "publicationType": publicationType,
     "content": content,
-    "comments": List<dynamic>.from(comments.map((x) => x.toJson())),
+    "comments": List<dynamic>.from(comments!.map((x) => x.toJson())),
+    "exercises": exercises != null ? List<dynamic>.from(exercises!.map((x) => x.toJson())) : [],
   };
 }

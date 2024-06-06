@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _initializeVideoController() {
-    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content)
+    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content!)
       ..initialize().then((_) {
         _controller.setLooping(true);
         _controller.play();
@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onPressed() {
-    List<Comment> comments = _posts[_currentVideoIndex].comments;
+    List<Comment> comments = _posts[_currentVideoIndex].comments!;
     TextEditingController commentController = TextEditingController();
 
     showModalBottomSheet<int>(
@@ -161,13 +161,13 @@ class _HomePageState extends State<HomePage> {
                               publisher: _profile!,
                               content: commentController.text,
                               answers: [],
-                              post: _posts[_currentVideoIndex],
+                              postId: _posts[_currentVideoIndex].id,
                               parentCommentId: null,
                             );
                             // Appelez l'API pour envoyer le commentaire
-                            Comment createdComment = await commentClientApi.createComment(newComment);
+                            var createdCommentJson = await commentClientApi.createComment(newComment);
                             setState(() {
-                              _posts[_currentVideoIndex].comments.add(createdComment);
+                              _posts[_currentVideoIndex].comments!.add(createdCommentJson);
                             });
                             commentController.clear();
                             Navigator.pop(context);
@@ -184,8 +184,6 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
-
 
 
   @override
@@ -219,7 +217,7 @@ class _HomePageState extends State<HomePage> {
 
   void _updateVideoController() {
     _controller.pause();
-    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content)
+    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content!)
       ..initialize().then((_) {
         _controller.setLooping(true);
         _controller.play();
@@ -322,9 +320,9 @@ class _HomePageState extends State<HomePage> {
                           width: 50,
                           height: 50,
                           child: ClipOval(
-                            child: post.publisher.picture != null
+                            child: post.publisher?.picture != null
                                 ? Image.memory(
-                              _imageFromBase64String(post.publisher.picture!)!,
+                              _imageFromBase64String(post.publisher!.picture!)!,
                               fit: BoxFit.cover,
                             )
                                 : SvgPicture.asset(
@@ -376,7 +374,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           const SizedBox(width: 10.0),
                           Text(
-                            post.comments.length.toString(),
+                            post.comments!.length.toString(),
                             style: TextStyle(color: Colors.white),
                           ),
                         ],
@@ -387,7 +385,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  post.description,
+                  post.description!,
                   style: TextStyle(color: Colors.white),
                 ),
               ],
