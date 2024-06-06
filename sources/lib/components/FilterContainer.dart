@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 class FilterContainer extends StatefulWidget {
   final List<Category> filters;
   final Color color;
+  final List<Category>  selectedFilters;
+  final Function(List<Category> ) onFilterChanged;
 
   FilterContainer({
     required this.filters,
     required this.color,
+    required this.selectedFilters,
+    required this.onFilterChanged,
   });
 
   @override
@@ -15,7 +19,13 @@ class FilterContainer extends StatefulWidget {
 }
 
 class _FilterContainerState extends State<FilterContainer> {
-  Set<Category> filtersSelected = {};
+  late List<Category>  filtersSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    filtersSelected = widget.selectedFilters;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +45,7 @@ class _FilterContainerState extends State<FilterContainer> {
             } else {
               filtersSelected.add(filter);
             }
+            widget.onFilterChanged(filtersSelected);
           });
         },
         child: SizedBox(

@@ -61,6 +61,11 @@ flutter:
   - assets/Logo.png
   - assets/AddIcon.svg
   - assets/MinusIcon.svg
+  - assets/SettingsIcon.svg
+  - assets/StatisticsIcon.svg
+  - assets/HeartIcon.svg
+  - assets/PostIcon.svg
+  - assets/testAvatar.jpg
 
 # Gen Splash Screen "flutter pub run flutter_native_splash:create"
 flutter_native_splash:

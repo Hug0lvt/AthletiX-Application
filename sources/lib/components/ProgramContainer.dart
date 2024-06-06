@@ -1,9 +1,9 @@
+import 'package:AthletiX/model/practicalExercise.dart';
 import 'package:flutter/material.dart';
-import 'package:AthletiX/model/exercise.dart';
 
 class ProgramContainer extends StatelessWidget {
   final String title;
-  final List<Exercise> exercises;
+  final List<PracticalExercise> exercises;
   final String lastSession;
 
   ProgramContainer({
