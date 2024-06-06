@@ -9,7 +9,6 @@ import 'package:AthletiX/main.dart';
 
 import '../../exceptions/not_found_exception.dart';
 
-
 class TrainingTab extends StatefulWidget {
   const TrainingTab({super.key});
   @override
@@ -17,7 +16,6 @@ class TrainingTab extends StatefulWidget {
 }
 
 class _TrainingTab extends State<TrainingTab> {
-
   final clientApi = getIt<TrainingClientApi>();
 
   get onPressed => null;
@@ -34,11 +32,11 @@ class _TrainingTab extends State<TrainingTab> {
     sessions = [];
     filteredSessions = [];
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadSessions();
     });
-
   }
+
   void _loadSessions() async {
     setState(() {
       isLoading = true;
@@ -51,11 +49,10 @@ class _TrainingTab extends State<TrainingTab> {
     try {
       List<Session> fetchedSessions = await clientApi.getProgramsOfUser(profileId);
       List<Session> filterSessions = fetchedSessions
-          .where((session) =>
-          session.name.toLowerCase().contains(searchQuery.toLowerCase()))
+          .where((session) => session.name.toLowerCase().contains(searchQuery.toLowerCase()))
           .toList();
       setState(() {
-        filterSessions = filteredSessions;
+        filteredSessions = filterSessions;
         sessions = fetchedSessions;
         isLoading = false;
       });
@@ -63,6 +60,53 @@ class _TrainingTab extends State<TrainingTab> {
       // Gère spécifiquement la NotFoundException
       setState(() {
         sessions = []; // Aucune session trouvée
+        isLoading = false;
+      });
+    }
+  }
+
+  void _showDeleteConfirmationDialog(Session session) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Program'),
+          content: const Text('Are you sure you want to delete this program?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Delete'),
+              onPressed: () {
+                _deleteProgram(session);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteProgram(Session session) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await clientApi.deleteSession(session.id);
+      setState(() {
+        sessions.remove(session);
+        filteredSessions.remove(session);
+        isLoading = false;
+      });
+    } catch (e) {
+      // Handle deletion error
+      setState(() {
         isLoading = false;
       });
     }
@@ -135,35 +179,39 @@ class _TrainingTab extends State<TrainingTab> {
               ],
             ),
             const SizedBox(height: 8.0),
-            ListView(
-              shrinkWrap: true,
-              children: [
-                isLoading
-                    ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-                    : filteredSessions.isEmpty
-                    ? const Center(
-                  child: Text(
-                    "No Programs Found",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Mulish',
-                    ),
+            Expanded(
+              child: isLoading
+                  ? const Center(
+                child: CircularProgressIndicator(),
+              )
+                  : filteredSessions.isEmpty
+                  ? const Center(
+                child: Text(
+                  "No Programs Found",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Mulish',
                   ),
-                )
-                    : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: filteredSessions.length,
-                  itemBuilder: (context, index) {
-                    return ProgramContainer(
-                      title: filteredSessions[index].name,
-                      lastSession: '',
-                      exercises: filteredSessions[index].exercises,
-                    );
-                  },
                 ),
-              ],
+              )
+                  : ListView.builder(
+                itemCount: filteredSessions.length,
+                itemBuilder: (context, index) {
+                  return ProgramContainer(
+                    title: filteredSessions[index].name,
+                    lastSession: (DateTime.now()
+                        .difference(sessions[index].date)
+                        .inDays
+                        .toString()) == '0' ? 'Today' : '${DateTime.now()
+                        .difference(sessions[index].date)
+                        .inDays} days ago' ,
+                    exercises: filteredSessions[index].exercises.isNotEmpty
+                        ? filteredSessions[index].exercises
+                        : [],
+                    onDelete: () => _showDeleteConfirmationDialog(filteredSessions[index]),
+                  );
+                },
+              ),
             ),
           ],
         ),
