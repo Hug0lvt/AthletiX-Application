@@ -39,7 +39,7 @@ class Comment {
   Map<String, dynamic> toJson() => {
     "id": id,
     "parentCommentId": parentCommentId,
-    "publishDate": publishDate?.toIso8601String(),
+    "publishDate": publishDate!.toUtc().toIso8601String(),
     "publisher": publisher?.toJson(),
     "content": content,
     "answers": [],

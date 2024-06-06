@@ -4,8 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 class CommentCard extends StatelessWidget {
   final String username;
   final String commentText;
+  final String profileImageUrl;
 
-  CommentCard({required this.username, required this.commentText});
+  CommentCard({required this.username, required this.commentText, required this.profileImageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +31,11 @@ class CommentCard extends StatelessWidget {
                       width: 50,
                       height: 50,
                       child: ClipOval(
-                        child: Container(
-                          child: Center(
-                            child: SvgPicture.asset(
-                              'assets/EditIcon.svg',
-                              width: 50,
-                            ),
-                          ),
+                        child: Image.network(
+                          profileImageUrl,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

@@ -13,6 +13,7 @@ class CommentClientApi{
 
   Future<Comment> createComment(Comment comment) async {
     String commentJson = commentToJson(comment);
+    print(commentJson);
     final responseJson = await _clientApi.postData(_endpoint, commentJson);
     return commentFromJson(responseJson);
   }
