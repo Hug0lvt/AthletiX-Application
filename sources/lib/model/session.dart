@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:AthletiX/model/practicalExercise.dart';
+import 'package:AthletiX/utils/utils.dart';
 import 'profile.dart';
 
 List<Session> sessionListFromJson(String str) => List<Session>.from(json.decode(str).map((x) => Session.fromJson(x)));
@@ -29,8 +30,8 @@ class Session {
     profile: Profile.fromJson(json["profile"]),
     name: json["name"],
     date: DateTime.parse(json["date"]),
-    duration: Duration(milliseconds: json["duration"]),
-    exercises: List<PracticalExercise>.from(json["practicalexercises"].map((x) => PracticalExercise.fromJson(x))),
+    duration: Utils.parseDuration(json["duration"]),
+    exercises: List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:AthletiX/providers/api/clientApi.dart';
 import 'package:AthletiX/model/session.dart';
 
@@ -11,18 +13,26 @@ class TrainingClientApi{
 
   Future<List<Session>> getPastSessionsOfUser(int? profileId) async {
     if(profileId != null) {
-      return sessionListFromJson(
-          await _clientApi.getDataById(_endpoint, profileId!));
+      String jsonReply = await _clientApi.getData('$_endpoint/user/$profileId');
+      Map<String, dynamic> data = json.decode(jsonReply);
+      String jsonItems = json.encode(data["items"]);
+      //return sessionListFromJson(jsonItems);
+      return sessionListFromJson(jsonItems);
     }
     return [];
   }
+
   Future<List<Session>> getProgramsOfUser(int? profileId) async {
     if(profileId != null) {
-      return sessionListFromJson(
-          await _clientApi.getDataById(_endpoint, profileId!));
+      String jsonReply = await _clientApi.getData('$_endpoint/user/$profileId');
+      Map<String, dynamic> data = json.decode(jsonReply);
+      String jsonItems = json.encode(data["items"]);
+      //return sessionListFromJson(jsonItems);
+      return sessionListFromJson(jsonItems);
     }
     return [];
   }
+
 
 /*  Future<Profile> createProfile(Profile profile) async {
     return profileFromJson(await _clientApi.postData(_endpoint, profileToJson(profile)));
@@ -38,9 +48,9 @@ class TrainingClientApi{
 
   Future<Profile> updateProfile(int profileId, Profile updatedProfile) async {
     return profileFromJson(await _clientApi.putData('$_endpoint/$profileId', profileToJson(updatedProfile)));
-  }
-
-  Future<Profile> deleteProfile(int profileId) async {
-    return profileFromJson(await _clientApi.deleteData('$_endpoint/$profileId'));
   }*/
+
+  Future<void> deleteSession(int sessionId) async {
+    await _clientApi.deleteData('$_endpoint/$sessionId');
+  }
 }
