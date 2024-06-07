@@ -136,7 +136,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
   }
 
   Future<void> _publishPost() async {
-    if (_selectedMediaFile != null) {
+    if (_selectedMediaFile != null && postNameController.text != "" && descriptionController.text != "") {
       final post = Post(
         publisher: _profile,
         category: selectedCategory,

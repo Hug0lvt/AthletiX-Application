@@ -111,85 +111,93 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black87,
       context: context,
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.85,
-            child: Column(
-              children: [
-                Expanded(
-                  child: comments.isEmpty
-                      ? const Center(
-                    child: Text(
-                      'Pas de commentaire pour cette publication',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )
-                      : ListView.builder(
-                    itemCount: comments.length,
-                    itemBuilder: (context, index) {
-                      return CommentCard(
-                        username: comments[index].publisher!.username!,
-                        commentText: comments[index].content!,
-                        profileImageUrl: comments[index].publisher!.picture!,
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: commentController,
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter modalSetState) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.85,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: comments.isEmpty
+                          ? const Center(
+                        child: Text(
+                          'Pas de commentaire pour cette publication',
                           style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            hintText: 'Ajouter un commentaire...',
-                            hintStyle: TextStyle(color: Colors.grey),
-                            filled: true,
-                            fillColor: Colors.black54,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.send, color: Colors.white),
-                        onPressed: () async {
-                          if (commentController.text.isNotEmpty) {
-                            Comment newComment = Comment(
-                              id: 0,
-                              publishDate: DateTime.now().toUtc(),
-                              publisher: _profile!,
-                              content: commentController.text,
-                              answers: [],
-                              postId: _posts[_currentVideoIndex].id,
-                              parentCommentId: null,
-                            );
-                            // Appelez l'API pour envoyer le commentaire
-                            var createdCommentJson = await commentClientApi.createComment(newComment);
-                            setState(() {
-                              _posts[_currentVideoIndex].comments!.add(createdCommentJson);
-                            });
-                            commentController.clear();
-                            Navigator.pop(context);
-                          }
+                      )
+                          : ListView.builder(
+                        itemCount: comments.length,
+                        itemBuilder: (context, index) {
+                          return CommentCard(
+                            username: comments[index].publisher!.username!,
+                            commentText: comments[index].content!,
+                            profileImageUrl: comments[index].publisher!.picture!,
+                          );
                         },
                       ),
-                    ],
-                  ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: commentController,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Ajouter un commentaire...',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                filled: true,
+                                fillColor: Colors.black54,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.send, color: Colors.white),
+                            onPressed: () async {
+                              if (commentController.text.isNotEmpty) {
+                                Comment newComment = Comment(
+                                  id: 0,
+                                  publishDate: DateTime.now().toUtc(),
+                                  publisher: _profile!,
+                                  content: commentController.text,
+                                  answers: [],
+                                  postId: _posts[_currentVideoIndex].id,
+                                  parentCommentId: null,
+                                );
+                                // Appelez l'API pour envoyer le commentaire
+                                var createdCommentJson = await commentClientApi.createComment(newComment);
+                                setState(() {
+                                });
+                                modalSetState(() {
+                                  comments.add(createdCommentJson);
+                                  commentController.clear();
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
   }
+
+
+
 
   void onPressedLinkedExercises(Post post) {
     if(post.exercises!.isNotEmpty) {

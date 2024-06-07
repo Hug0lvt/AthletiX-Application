@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:AthletiX/constants/color.dart';
+import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../components/buttonProfilePage.dart';
@@ -33,6 +35,24 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
     });
   }
 
+  Widget _buildImage(double screenWidth, double screenHeight) {
+    try {
+      if (_profile!.picture!.isNotEmpty) {
+        return Image.memory(
+          base64Decode(_profile!.picture!),
+          fit: BoxFit.cover,
+          width: screenWidth * 0.20,
+          height: screenWidth * 0.20,
+        );
+      } else {
+        throw Exception("Image is empty");
+      }
+    } catch (e) {
+      return Image.network("https://via.placeholder.com/${screenWidth * 0.20 }/3C383B/B66CFF?text=${_profile?.username?.substring(0,1)}",
+        fit: BoxFit.cover,);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -40,12 +60,7 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
 
     Widget _buildProfileImage(double screenWidth) {
       if (_profile?.picture == null || _profile!.picture!.isEmpty || _profile!.picture! == "string") {
-        return Image.asset(
-          'assets/testAvatar.jpg', // Replace with the path to your default image
-          width: screenWidth * 0.20,
-          height: screenWidth * 0.20,
-          fit: BoxFit.cover,
-        );
+        return _buildImage(screenWidth, screenHeight);
       } else {
         Uint8List _imageBytes = base64Decode(_profile!.picture!);
         return Image.memory(
@@ -88,7 +103,7 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
     }
 
     return Scaffold(
-      backgroundColor: Color(0xFF363636),
+      backgroundColor: AppColors.greyDark,
       body: SafeArea(
         child: _isLoading // Afficher l'indicateur de chargement si _isLoading est vrai
             ? Center(
@@ -98,7 +113,7 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
         )
             : SingleChildScrollView(
           child: Container(
-            color: const Color(0xFF363636),
+            color: AppColors.greyDark,
             padding: const EdgeInsets.all(36),
             child: Center(
               child: Column(
