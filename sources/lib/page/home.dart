@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onPressedLinkedExercises(Post post) {
-    if(post.exercises.isNotEmpty) {
+    if(post.exercises!.isNotEmpty) {
       TextEditingController programNameController = TextEditingController();
       double screenHeight = MediaQuery
           .of(context)
@@ -230,10 +230,10 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: post.exercises.length,
+                    itemCount: post.exercises!.length,
                     itemBuilder: (context, index) {
                       return ExerciseContainer(
-                        exercice: post.exercises[index],
+                        exercice: post.exercises![index],
                       );
                     },
                   ),
@@ -448,7 +448,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             const SizedBox(width: 10.0),
                             Text(
-                              post.exercises.length.toString(),
+                              post.exercises!.length.toString(),
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -515,11 +515,11 @@ class _HomePageState extends State<HomePage> {
 
   void createNewProgramFromPost(Post post, String sessionName) async {
     List<PracticalExercise> exercises = [];
-    for(var exo in post.exercises){
+    for(var exo in post.exercises!){
       exercises.add(exo.exerciseToPracticalExercise());
     }
     Profile? callerProfile = await AuthManager.getProfile();
-    sessionName = sessionName.trim().isEmpty ? '${post.publisher.username}\'s program' : sessionName;
+    sessionName = sessionName.trim().isEmpty ? '${post.publisher!.username}\'s program' : sessionName;
     if(callerProfile != null && exercises.isNotEmpty){
       Session session = Session(profile: callerProfile, name: sessionName, exercises: exercises);
       await sessionsClientApi.createSession(session);

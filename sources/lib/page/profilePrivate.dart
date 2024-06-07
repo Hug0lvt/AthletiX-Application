@@ -16,7 +16,7 @@ class ProfilePrivatePage extends StatefulWidget {
 class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
   Profile? _profile;
   bool _isLoading = true;
-  
+
   @override
   void initState() {
     super.initState();
