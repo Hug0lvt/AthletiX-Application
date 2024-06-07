@@ -38,6 +38,7 @@ flutter:
   uses-material-design: true
 
   assets:
+  - assets/default_exercice_image.svg
   - assets/dumbbell.png
   - assets/dumbbell_button.png
   - assets/chat.png
