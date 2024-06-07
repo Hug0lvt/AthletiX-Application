@@ -1,6 +1,7 @@
 import 'dart:convert';
+import 'package:AthletiX/model/practicalExercise.dart';
+import 'package:flutter/services.dart';
 import 'category.dart';
-import 'set.dart';
 
 List<Exercise> exerciseListFromJson(String str) => List<Exercise>.from(json.decode(str).map((x) => Exercise.fromJson(x)));
 Exercise exerciseFromJson(String str) => Exercise.fromJson(json.decode(str));
@@ -12,7 +13,6 @@ class Exercise {
   String description;
   String image;
   Category category;
-  List<Set> sets;
 
   Exercise({
     required this.id,
@@ -20,17 +20,18 @@ class Exercise {
     required this.description,
     required this.image,
     required this.category,
-    required this.sets,
   });
 
-  factory Exercise.fromJson(Map<String, dynamic> json) => Exercise(
-    id: json["id"],
-    name: json["name"],
-    description: json["description"],
-    image: json["image"],
-    category: Category.fromJson(json["category"]),
-    sets: List<Set>.from(json["sets"].map((x) => Set.fromJson(x))),
-  );
+  factory Exercise.fromJson(Map<String, dynamic> json) {
+    Exercise exercise = Exercise(
+      id: json["id"],
+      name: json["name"],
+      description: json["description"],
+      image: json["image"] ?? '', // Assign empty if no image provided
+      category: Category.fromJson(json["category"]),
+    );
+    return exercise;
+  }
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -38,6 +39,17 @@ class Exercise {
     "description": description,
     "image": image,
     "category": category.toJson(),
-    "sets": List<dynamic>.from(sets.map((x) => x.toJson())),
   };
+
+  // Function to convert from Exercise to PracticalExercise
+  PracticalExercise exerciseToPracticalExercise() {
+    return PracticalExercise(
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      image: this.image,
+      category: this.category,
+      sets: [],
+    );
+  }
 }

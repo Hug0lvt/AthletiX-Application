@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:AthletiX/providers/api/clientApi.dart';
 import 'package:AthletiX/providers/api/utils/postClientApi.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-
 import '../components/profilePublicPostedCard.dart';
 import '../components/sendMessage.dart';
 import '../main.dart';
@@ -27,22 +25,26 @@ class _MyPostPageState extends State<MyPostPage> {
   Profile? _profile;
   List<Post> _posts = [];
   List<String> _thumbnails = [];
+  bool _isLoadingProfile = true;
 
   @override
   void initState() {
     super.initState();
     fetchProfile();
-    fetchMyPosts();
   }
 
-  void fetchProfile() async {
+  Future<void> fetchProfile() async {
     Profile? profile = await AuthManager.getProfile();
     setState(() {
       _profile = profile;
+      _isLoadingProfile = false;
     });
+    if (_profile != null) {
+      fetchMyPosts();
+    }
   }
 
-  void fetchMyPosts() async {
+  Future<void> fetchMyPosts() async {
     if (_profile?.id != null) {
       int profileId = _profile!.id!;
       String jsonReply = await _clientApi.getData('posts/user/$profileId?includeComments=true&includeExercises=true');
@@ -54,7 +56,7 @@ class _MyPostPageState extends State<MyPostPage> {
   }
 
   Future<void> _generateThumbnails() async {
-    List<String> videoUrls = _posts.map((post) => post.content).toList();
+    List<String> videoUrls = _posts.map((post) => post.content!).toList();
     List<String> thumbnails = await getThumbnails(videoUrls);
     setState(() {
       _thumbnails = thumbnails;
@@ -86,67 +88,19 @@ class _MyPostPageState extends State<MyPostPage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Container(
+        child: _isLoadingProfile
+            ? Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        )
+            : Container(
           color: const Color(0xFF363636),
           padding: const EdgeInsets.all(36),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 15.0),
-                      constraints: BoxConstraints.expand(
-                        width: screenWidth * 0.9,
-                        height: screenHeight * 0.13,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1A1A1A).withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(35.0),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 20, right: 10),
-                                child: ClipOval(
-                                  child: _profile != null && _profile!.picture != null
-                                      ? Image.network(
-                                    _profile!.picture!,
-                                    width: 78.0,
-                                    height: 78.0,
-                                    fit: BoxFit.cover,
-                                  )
-                                      : SvgPicture.asset(
-                                    'assets/EditIcon.svg',
-                                    width: 78.0,
-                                    height: 78.0,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                _profile != null ? _profile!.username! : 'Pseudo',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SendMessage(
-                            text: 'Message',
-                            width: screenWidth * 0.25,
-                            height: screenHeight * 0.05,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
                 Row(
                   children: [
                     Expanded(
@@ -185,8 +139,8 @@ class _MyPostPageState extends State<MyPostPage> {
                           children: [
                             if (startIndex < _posts.length)
                               ProfilePublicPostedCard(
-                                postName: _posts[startIndex].title,
-                                description: _posts[startIndex].description,
+                                postName: _posts[startIndex].title!,
+                                description: _posts[startIndex].description!,
                                 //postDate: _posts[startIndex].,
                                 imagePath: _thumbnails.isNotEmpty ? _thumbnails[startIndex] : '',
                                 width: screenWidth * 0.42,
@@ -194,8 +148,8 @@ class _MyPostPageState extends State<MyPostPage> {
                               ),
                             if (endIndex < _posts.length)
                               ProfilePublicPostedCard(
-                                postName: _posts[endIndex].title,
-                                description: _posts[endIndex].description,
+                                postName: _posts[endIndex].title!,
+                                description: _posts[endIndex].description!,
                                 //postDate: _posts[endIndex].,
                                 imagePath: _thumbnails.isNotEmpty ? _thumbnails[endIndex] : '',
                                 width: screenWidth * 0.42,

@@ -1,12 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:AthletiX/providers/api/clientApi.dart';
-import 'package:AthletiX/providers/api/paginationResult.dart';
 import '../../../model/post.dart';
 
-class PostClientApi{
+class PostClientApi {
   late final ClientApi _clientApi;
   final String _endpoint = 'posts';
 
-  PostClientApi(ClientApi cli){
+  PostClientApi(ClientApi cli) {
     _clientApi = cli;
   }
 
@@ -18,14 +19,16 @@ class PostClientApi{
     return postFromJson(await _clientApi.getDataById(_endpoint, postId));
   }
 
-  // TODO LIST BY CATEGORY
-  Future<Post> getPostByCategory(String categoryId) async {
-    return postFromJson(await _clientApi.getData('$_endpoint/category/$categoryId'));
+  Future<List<Post>> getPostsByUser(String profileId, {int offset = 0, int limit = 30}) async {
+    final response = await _clientApi.getData('$_endpoint/user/$profileId?offset=$offset&limit=$limit');
+    final data = json.decode(response) as Map<String, dynamic>;
+    return (data['items'] as List).map((item) => Post.fromJson(item)).toList();
   }
 
-  // TODO LIST BY USER
-  Future<Post> getPostByUser(String profileId) async {
-    return postFromJson(await _clientApi.getData('$_endpoint/user/$profileId?includeComments=true&includeExercises=true'));
+  Future<List<Post>> getRecommendedPosts(String profileId, {int offset = 0, int pageSize = 30}) async {
+    final response = await _clientApi.getData('$_endpoint/recommendations/user/$profileId?offset=$offset&pageSize=$pageSize');
+    final data = json.decode(response) as Map<String, dynamic>;
+    return (data['items'] as List).map((item) => Post.fromJson(item)).toList();
   }
 
   Future<Post> updatePost(int postId, Post updatedPost) async {
@@ -34,5 +37,15 @@ class PostClientApi{
 
   Future<Post> deletePost(int postId) async {
     return postFromJson(await _clientApi.deleteData('$_endpoint/$postId'));
+  }
+
+  Future<void> uploadPostMedia(int postId, File mediaFile) async {
+    final String url = '$_endpoint/$postId/upload';
+    await _clientApi.postMultipartData(url, mediaFile);
+  }
+
+  Future<void> addExerciseToPost(int postId, int exerciseId) async {
+    final String url = '$_endpoint/$postId/addExercise/$exerciseId';
+    await _clientApi.postData(url, '');
   }
 }

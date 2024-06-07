@@ -15,6 +15,7 @@ import 'package:AthletiX/providers/api/utils/conversationClientApi.dart';
 import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
 import 'package:AthletiX/providers/api/utils/messageClientApi.dart';
 import 'package:AthletiX/providers/api/utils/postClientApi.dart';
+import 'package:AthletiX/providers/api/utils/practicalexerciseClientApi.dart';
 import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
 import 'package:AthletiX/providers/api/utils/sessionClientApi.dart';
 import 'package:AthletiX/providers/api/utils/setClientApi.dart';
@@ -30,36 +31,36 @@ import 'model/profile.dart';
 String firstPage = '/start';
 final getIt = GetIt.instance;
 void setupLocator() {
+
   getIt.registerSingleton<ClientApi>(
       ClientApi(
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/api',
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api'
       ));
-  getIt.registerSingleton<ProfileClientApi>(
-      ProfileClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<CommentClientApi>(
-      CommentClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<TrainingClientApi>(
-      TrainingClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<CategoryClientApi>(CategoryClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<ConversationClientApi>(ConversationClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<ExerciseClientApi>(ExerciseClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>(), PostClientApi(getIt<ClientApi>())));
+  getIt.registerSingleton<TrainingClientApi>(TrainingClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<CategoryClientApi>(CategoryClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<ConversationClientApi>(ConversationClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<MessageClientApi>(MessageClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<PostClientApi>(PostClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<SessionClientApi>(SessionClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<SetClientApi>(SetClientApi(getIt<ClientApi>()));
-}
+  getIt.registerSingleton<PracticalExerciseClientApi>(PracticalExerciseClientApi(getIt<ClientApi>()));
+  }
+
 
 Future<void> isAuthanticated() async {
   String? token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
+  print('Retrieved token: $token');
   String? refreshToken = await AuthManager.getToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name);
   Profile? profile = await AuthManager.getProfile();
   DateTime? expireAt = DateTime.tryParse(await AuthManager.getToken(AuthKeys.ATH_END_OF_BEARER_TOKEN_API.name) ?? "");
 
   if(token != null && refreshToken != null && profile != null){
-    if(expireAt != null && expireAt.isBefore(DateTime.now())){
+    //if(expireAt != null && expireAt.isBefore(DateTime.now())){
+    if(expireAt != null ){
       try {
         LoginResponse loginResponse = await getIt<ClientApi>().authClientApi.refreshToken(Refresh(refreshToken: refreshToken));
         await AuthManager.setToken(AuthKeys.ATH_BEARER_TOKEN_API.name, loginResponse.accessToken);
@@ -77,13 +78,14 @@ Future<void> isAuthanticated() async {
 
 Future<void> initApp() async{
   //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  setupLocator(); // DI (usage : final clientApi = getIt<ClientApi>(); ...)
+  WidgetsFlutterBinding.ensureInitialized();
+  setupLocator();
   await isAuthanticated();
 }
 
 Future<void> main() async {
   // For start application
-  initApp();
+  await initApp();
   runApp(const MyApp());
 }
 

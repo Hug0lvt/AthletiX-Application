@@ -22,13 +22,7 @@ class ButtonProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (route != null) {
-          Navigator.of(context).pushNamed(route!);
-        }
-      },
-      child: Container(
+    return Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
         width: screenWidth * 0.9,
         height: screenHeight * 0.08,
@@ -78,7 +72,6 @@ class ButtonProfilePage extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }
