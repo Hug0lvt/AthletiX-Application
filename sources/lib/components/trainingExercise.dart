@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../model/exercise.dart';
+import '../model/practicalExercise.dart';
 
 class TrainingExercise extends StatefulWidget {
-  final Exercise exercise;
+  final PracticalExercise exercise;
 
   const TrainingExercise({Key? key, required this.exercise}) : super(key: key);
 
@@ -27,7 +28,7 @@ class _TrainingExerciseWidgetState extends State<TrainingExercise> {
             child: Row(
               children: [
                 Text(
-                  widget.exercise.name,
+                  widget.exercise.exercise.name,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
