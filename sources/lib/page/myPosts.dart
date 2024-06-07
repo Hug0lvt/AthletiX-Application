@@ -26,6 +26,8 @@ class _MyPostPageState extends State<MyPostPage> {
   final _clientApi = getIt<ClientApi>();
   Profile? _profile;
   List<Post> _posts = [];
+  List<String> _thumbnails = [];
+
   @override
   void initState() {
     super.initState();
@@ -41,31 +43,40 @@ class _MyPostPageState extends State<MyPostPage> {
   }
 
   void fetchMyPosts() async {
-    if(_profile?.id != null) {
+    if (_profile?.id != null) {
       int profileId = _profile!.id!;
       String jsonReply = await _clientApi.getData('posts/user/$profileId?includeComments=true&includeExercises=true');
       Map<String, dynamic> data = json.decode(jsonReply);
       String jsonItems = json.encode(data["items"]);
       _posts = postFromJson(jsonItems) as List<Post>;
+      _generateThumbnails();
     }
   }
 
-  Future<String> getThumbnail(String videoUrl) async {
-    final tempDir = await getTemporaryDirectory();
-    final thumbnailPath = await VideoThumbnail.thumbnailFile(
-      video: videoUrl,
-      thumbnailPath: tempDir.path,
-      imageFormat: ImageFormat.JPEG,
-      maxHeight: 100,
-      quality: 75,
-    );
-
-    return thumbnailPath ?? 'https://via.placeholder.com/800/3C383B/B66CFF?text=${_profile!.username}';
+  Future<void> _generateThumbnails() async {
+    List<String> videoUrls = _posts.map((post) => post.content).toList();
+    List<String> thumbnails = await getThumbnails(videoUrls);
+    setState(() {
+      _thumbnails = thumbnails;
+    });
   }
 
-  String _generateThumbnail(String videoUrl) async {
-    final thumbnailPath = await getThumbnail(videoUrl);
-    return thumbnailPath;
+  Future<List<String>> getThumbnails(List<String> videoUrls) async {
+    final tempDir = await getTemporaryDirectory();
+    List<String> thumbnailPaths = [];
+
+    for (String videoUrl in videoUrls) {
+      final thumbnailPath = await VideoThumbnail.thumbnailFile(
+        video: videoUrl,
+        thumbnailPath: tempDir.path,
+        imageFormat: ImageFormat.JPEG,
+        maxHeight: 100, // specify the height of the thumbnail, width is auto-scaled to keep aspect ratio
+        quality: 75, // specify the quality of the thumbnail
+      );
+      thumbnailPaths.add(thumbnailPath ?? 'https://via.placeholder.com/800/3C383B/B66CFF?text=No+Thumbnail');
+    }
+
+    return thumbnailPaths;
   }
 
   @override
@@ -172,20 +183,21 @@ class _MyPostPageState extends State<MyPostPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            ProfilePublicPostedCard(
-                              postName: _posts[startIndex].title,
-                              description: _posts[startIndex].description,
-                              //postDate: _posts[startIndex].,
-                              imagePath: await _generateThumbnail(_posts[startIndex].content),
-                              width: screenWidth * 0.42,
-                              height: screenHeight * 0.3,
-                            ),
-                            if (endIndex < _posts.length)
+                            if (startIndex < _posts.length)
                               ProfilePublicPostedCard(
                                 postName: _posts[startIndex].title,
-                                description: _posts[startIndex].title,
-                                //postDate: postData[endIndex]['postDate']!,
-                                imagePath: postData[endIndex]['imagePath']!,
+                                description: _posts[startIndex].description,
+                                //postDate: _posts[startIndex].,
+                                imagePath: _thumbnails.isNotEmpty ? _thumbnails[startIndex] : '',
+                                width: screenWidth * 0.42,
+                                height: screenHeight * 0.3,
+                              ),
+                            if (endIndex < _posts.length)
+                              ProfilePublicPostedCard(
+                                postName: _posts[endIndex].title,
+                                description: _posts[endIndex].description,
+                                //postDate: _posts[endIndex].,
+                                imagePath: _thumbnails.isNotEmpty ? _thumbnails[endIndex] : '',
                                 width: screenWidth * 0.42,
                                 height: screenHeight * 0.3,
                               ),
