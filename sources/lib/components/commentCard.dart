@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CommentCard extends StatelessWidget {
+  final String username;
+  final String commentText;
+  final String profileImageUrl;
+
+  CommentCard({required this.username, required this.commentText, required this.profileImageUrl});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const  EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Stack(
         children: [
           Container(
@@ -25,19 +31,17 @@ class CommentCard extends StatelessWidget {
                       width: 50,
                       height: 50,
                       child: ClipOval(
-                        child: Container(
-                          child: Center(
-                            child: SvgPicture.asset(
-                              'assets/EditIcon.svg',
-                              width: 50,
-                            ),
-                          ),
+                        child: Image.network(
+                          profileImageUrl,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
                     const SizedBox(width: 16.0),
-                    const Text(
-                      "Doigby Pagri",
+                    Text(
+                      username,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
@@ -47,8 +51,8 @@ class CommentCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                const Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                Text(
+                  commentText,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

@@ -9,19 +9,19 @@ Session sessionFromJson(String str) => Session.fromJson(json.decode(str));
 String sessionToJson(Session data) => json.encode(data.toJson());
 
 class Session {
-  int id;
+  int? id;
   Profile profile;
   String name;
-  DateTime date;
-  Duration duration;
+  DateTime? date;
+  Duration? duration;
   List<PracticalExercise> exercises;
 
   Session({
-    required this.id,
+    this.id,
     required this.profile,
     required this.name,
-    required this.date,
-    required this.duration,
+    this.date,
+    this.duration,
     required this.exercises,
   });
 
@@ -34,12 +34,22 @@ class Session {
     exercises: List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))),
   );
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "profile": profile.toJson(),
-    "name": name,
-    "date": date.toIso8601String(),
-    "duration": duration.inMilliseconds,
-    "practicalexercises": List<dynamic>.from(exercises.map((x) => x.toJson())),
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      "profile": profile.toJson(),
+      "name": name,
+      "practicalexercises": List<dynamic>.from(exercises.map((x) => x.toJson())),
+    };
+    if (id != null) {
+      data["id"] = id;
+    }
+    if (date != null) {
+      data["date"] = date?.toUtc().toIso8601String();
+    }
+    if (duration != null) {
+      data["duration"] = duration?.inMilliseconds;
+    }
+    return data;
+  }
+
 }

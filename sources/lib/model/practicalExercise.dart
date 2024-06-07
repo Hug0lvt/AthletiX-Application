@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:AthletiX/model/exercise.dart';
+
 import 'category.dart';
 import 'set.dart';
 
@@ -40,5 +42,16 @@ class PracticalExercise {
     "category": category.toJson(),
     "sets": List<dynamic>.from(sets.map((x) => x.toJson())),
   };
+
+  // Function to convert from PracticalExercise to Exercise
+  Exercise practicalExerciseToExercise() {
+    return Exercise(
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      image: this.image,
+      category: this.category,
+    );
+  }
 }
 

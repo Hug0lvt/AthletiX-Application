@@ -1,13 +1,67 @@
+import 'package:AthletiX/exceptions/not_found_exception.dart';
+import 'package:AthletiX/model/exercise.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
 
-class PublishPostPage extends StatelessWidget {
+import '../main.dart';
+
+class PublishPostPage extends StatefulWidget {
+  @override
+  _PublishPostPageState createState() => _PublishPostPageState();
+}
+
+class _PublishPostPageState extends State<PublishPostPage> {
+  late List<Exercise> exercices;
+  late List<Exercise> filteredExercices;
+  final clientApi = getIt<ExerciseClientApi>();
+  String searchQuery = '';
+
+  bool isLoading = false;
+  bool isLoadingCat = false;
+
+  @override
+  void initState() {
+    super.initState();
+    exercices = [];
+    filteredExercices = [];
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _loadExercices();
+    });
+  }
+
+  void _loadExercices() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      List<Exercise> fetchedExercices = await clientApi.getExercises();
+
+      List<Exercise> filterExercices = fetchedExercices
+          .where((exerc) =>
+          exerc.name.toLowerCase().contains(searchQuery.toLowerCase()))
+          .toList();
+
+      setState(() {
+        filteredExercices = filterExercices;
+        exercices = fetchedExercices;
+        isLoading = false;
+      });
+    } on NotFoundException catch (_) {
+      // Handle NotFoundException
+      setState(() {
+        exercices = []; // No exercises found
+        isLoading = false;
+      });
+    }
+  }
 
   Future<void> openImagePicker() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     // Ajoutez ici le code pour traiter la sélection de l'image (p. ex. l'afficher)
   }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -114,12 +168,24 @@ class PublishPostPage extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            searchQuery = value;
+                            // Update the filtered list of exercises based on the search query
+                            filteredExercices = exercices
+                                .where((exerc) => exerc.name
+                                .toLowerCase()
+                                .contains(searchQuery.toLowerCase()))
+                                .toList();
+                          });
+                        },
                         style: TextStyle(color: Colors.white), // Texte en gris foncé
                         decoration: InputDecoration(
-                          hintText: 'Votre texte ici', // Placeholder
+                          hintText: 'Search', // Placeholder
                           hintStyle: TextStyle(color: Colors.grey), // Couleur du placeholder
                           border: InputBorder.none, // Supprime la bordure par défaut
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20), // Ajoute un padding horizontal
+                          contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20), // Ajoute un padding horizontal
                         ),
                       ),
                     ),
@@ -136,20 +202,33 @@ class PublishPostPage extends StatelessWidget {
               SizedBox(height: 10),
               Container(
                 width: screenWidth * 0.8,
-                height: screenHeight * 0.2,
-                decoration: ShapeDecoration(
-                  color: Color(0xE51A1A1A),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                height: screenHeight * 0.25,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      isLoading
+                          ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                          : filteredExercices.isEmpty
+                          ? const Center(
+                        child: Text(
+                          "No Exercises Found",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Mulish',
+                          ),
+                        ),
+                      )
+                          : Column(
+                        children: filteredExercices
+                            .map((exercise) => ExerciseContainer(
+                          exercice: exercise,
+                        ))
+                            .toList(),
+                      ),
+                    ],
                   ),
-                  shadows: [
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
-                    )
-                  ],
                 ),
               ),
               SizedBox(height: 20),
@@ -164,7 +243,10 @@ class PublishPostPage extends StatelessWidget {
                     color: Color(0xE51A1A1A), // Couleur transparente pour laisser voir le contour pointillé
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
-                      side: BorderSide(color: Colors.grey, width: 1.0, style: BorderStyle.solid), // Contour gris pointillé
+                      side: BorderSide(
+                          color: Colors.grey,
+                          width: 1.0,
+                          style: BorderStyle.solid), // Contour gris pointillé
                     ),
                   ),
                   child: Row(
@@ -212,6 +294,28 @@ class PublishPostPage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ExerciseContainer extends StatelessWidget {
+  final Exercise exercice;
+
+  const ExerciseContainer({required this.exercice});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      margin: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.grey[800],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        exercice.name,
+        style: TextStyle(color: Colors.white),
       ),
     );
   }

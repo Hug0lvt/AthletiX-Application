@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:AthletiX/model/practicalExercise.dart';
 import 'package:flutter/services.dart';
 import 'category.dart';
 
@@ -39,4 +40,16 @@ class Exercise {
     "image": image,
     "category": category.toJson(),
   };
+
+  // Function to convert from Exercise to PracticalExercise
+  PracticalExercise exerciseToPracticalExercise() {
+    return PracticalExercise(
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      image: this.image,
+      category: this.category,
+      sets: [],
+    );
+  }
 }

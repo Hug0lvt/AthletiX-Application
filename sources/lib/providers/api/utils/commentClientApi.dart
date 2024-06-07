@@ -12,18 +12,24 @@ class CommentClientApi{
   }
 
   Future<Comment> createComment(Comment comment) async {
-    return commentFromJson(await _clientApi.postData(_endpoint, commentToJson(comment)));
+    String commentJson = commentToJson(comment);
+    print(commentJson);
+    final responseJson = await _clientApi.postData(_endpoint, commentJson);
+    return commentFromJson(responseJson);
   }
 
   Future<Comment> getCommentById(int commentId) async {
     return commentFromJson(await _clientApi.getDataById(_endpoint, commentId));
   }
 
-  // TODO LIST
   Future<List<Comment>> getComment() async {
-    String commentsJsonString = await _clientApi.getData(_endpoint);
-    List<dynamic> commentsJson = jsonDecode(commentsJsonString);
-    return commentsJson.map((json) => commentFromJson(json)).toList();
+    try {
+      String commentsJsonString = await _clientApi.getData(_endpoint);
+      List<dynamic> commentsJson = jsonDecode(commentsJsonString);
+      return commentsJson.map((json) => Comment.fromJson(json as Map<String, dynamic>)).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   Future<Comment> updateComment(int commentId, Comment updatedComment) async {
