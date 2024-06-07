@@ -15,7 +15,6 @@ import '../providers/api/utils/categoryClientApi.dart';
 import '../providers/api/utils/postClientApi.dart';
 import '../providers/localstorage/secure/authManager.dart';
 
-
 class PublishPostPage extends StatefulWidget {
   @override
   _PublishPostPageState createState() => _PublishPostPageState();
@@ -33,11 +32,11 @@ class _PublishPostPageState extends State<PublishPostPage> {
   final postClientApi = getIt<PostClientApi>();
   String searchQuery = '';
   File? _selectedMediaFile;
+  String? _selectedMediaName;
 
   bool isLoading = false;
   bool isLoadingCat = false;
 
-  // Controllers pour capturer les valeurs des champs de saisie
   final TextEditingController postNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
@@ -75,9 +74,8 @@ class _PublishPostPageState extends State<PublishPostPage> {
         _filterExercices();
       });
     } on NotFoundException catch (_) {
-      // Handle NotFoundException
       setState(() {
-        exercices = []; // No exercises found
+        exercices = [];
         selectedExercises = [];
         isLoading = false;
         _filterExercices();
@@ -93,7 +91,6 @@ class _PublishPostPageState extends State<PublishPostPage> {
         selectedCategory = categories[0];
       });
     } catch (e) {
-      // Gérez les erreurs en cas d'échec du chargement des catégories
       print("Failed to load categories: $e");
     }
   }
@@ -108,7 +105,12 @@ class _PublishPostPageState extends State<PublishPostPage> {
   Future<void> openImagePicker() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    // Add code here to handle the selected image (e.g., display it)
+    if (pickedFile != null) {
+      setState(() {
+        _selectedMediaFile = File(pickedFile.path);
+        _selectedMediaName = pickedFile.name;
+      });
+    }
   }
 
   Future<void> openVideoPicker() async {
@@ -117,6 +119,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
     if (pickedFile != null) {
       setState(() {
         _selectedMediaFile = File(pickedFile.path);
+        _selectedMediaName = pickedFile.name;
       });
     }
   }
@@ -133,42 +136,47 @@ class _PublishPostPageState extends State<PublishPostPage> {
   }
 
   Future<void> _publishPost() async {
-    // Créez un objet Post avec les données des champs remplis par l'utilisateur
-    final post = Post(
-      publisher: _profile,
-      category: selectedCategory,
-      title: postNameController.text,  // Utilisez la valeur du champ "Post Name"
-      description: descriptionController.text,  // Utilisez la valeur du champ "Description"
-      publicationType: 0,
-      content: "",
-      comments: [],
-      exercises: [],
-      id: 0,
-    );
+    if (_selectedMediaFile != null) {
+      final post = Post(
+        publisher: _profile,
+        category: selectedCategory,
+        title: postNameController.text,
+        description: descriptionController.text,
+        publicationType: 0,
+        content: "",
+        comments: [],
+        exercises: selectedExercises,
+        id: 0,
+      );
 
-    try {
-      // Créez le post
-      final createdPost = await postClientApi.createPost(post);
+      try {
+        final createdPost = await postClientApi.createPost(post);
 
-      // Si un fichier média est sélectionné, téléchargez-le
-      if (_selectedMediaFile != null) {
-        try {
-          await postClientApi.uploadPostMedia(createdPost.id, _selectedMediaFile!);
-          print("Media uploaded successfully");
-        } catch (e) {
-          print("Failed to upload media: $e");
+        if (_selectedMediaFile != null) {
+          try {
+            await postClientApi.uploadPostMedia(createdPost.id, _selectedMediaFile!);
+            print("Media uploaded successfully");
+
+            for (var exercise in selectedExercises) {
+              try {
+                await postClientApi.addExerciseToPost(createdPost.id, exercise.id);
+                print("Exercise ${exercise.id} added to post ${createdPost.id}");
+              } catch (e) {
+                print("Failed to add exercise ${exercise.id} to post: $e");
+              }
+            }
+
+          } catch (e) {
+            print("Failed to upload media: $e");
+          }
         }
-      }
 
-      // Affichez un message ou effectuez d'autres actions si nécessaire après la publication réussie du post
-      print("Post published successfully: ${createdPost.id}");
-    } catch (e) {
-      // Gérez les erreurs en cas d'échec de la publication du post
-      print("Failed to publish post: $e");
+        print("Post published successfully: ${createdPost.id}");
+      } catch (e) {
+        print("Failed to publish post: $e");
+      }
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +226,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
                     ],
                   ),
                   child: TextFormField(
-                    controller: postNameController,  // Ajoutez le contrôleur
+                    controller: postNameController,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       hintText: 'Post Name',
@@ -247,7 +255,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
                     ],
                   ),
                   child: TextFormField(
-                    controller: descriptionController,  // Ajoutez le contrôleur
+                    controller: descriptionController,
                     style: TextStyle(color: Colors.white),
                     maxLines: null,
                     decoration: InputDecoration(
@@ -276,23 +284,45 @@ class _PublishPostPageState extends State<PublishPostPage> {
                       )
                     ],
                   ),
-                  child: DropdownButtonFormField<Category>(
-                    value: selectedCategory,
-                    icon: Icon(Icons.arrow_drop_down, color: Colors.grey),
-                    iconSize: 24,
-                    elevation: 16,
-                    style: TextStyle(color: Colors.black),
-                    onChanged: (Category? newValue) {
-                      setState(() {
-                        selectedCategory = newValue!;
-                      });
-                    },
-                    items: categories.map<DropdownMenuItem<Category>>((Category category) {
-                      return DropdownMenuItem<Category>(
-                        value: category,
-                        child: Text(category.title),
-                      );
-                    }).toList(),
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      canvasColor: Color(0xFF282828),
+                    ),
+                    child: DropdownButtonFormField<Category>(
+                      dropdownColor: Color(0xFF282828),
+                      value: selectedCategory,
+                      icon: Icon(Icons.arrow_drop_down, color: Colors.grey),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Colors.white),
+                      onChanged: (Category? newValue) {
+                        setState(() {
+                          selectedCategory = newValue!;
+                        });
+                      },
+                      items: categories.map<DropdownMenuItem<Category>>((Category category) {
+                        return DropdownMenuItem<Category>(
+                          value: category,
+                          child: Text(
+                            category.title,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        );
+                      }).toList(),
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.transparent),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide(color: Colors.transparent),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xE51A1A1A),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -320,7 +350,6 @@ class _PublishPostPageState extends State<PublishPostPage> {
                           onChanged: (value) {
                             setState(() {
                               searchQuery = value;
-                              // Update the filtered list of exercises based on the search query
                               filteredExercices = exercices
                                   .where((exerc) => exerc.name
                                   .toLowerCase()
@@ -369,7 +398,10 @@ class _PublishPostPageState extends State<PublishPostPage> {
                           ),
                         )
                             : Column(
-                          children: filteredExercices.asMap().entries.map((entry) {
+                          children: filteredExercices
+                              .asMap()
+                              .entries
+                              .map((entry) {
                             final index = entry.key;
                             final exercise = entry.value;
                             return GestureDetector(
@@ -377,7 +409,8 @@ class _PublishPostPageState extends State<PublishPostPage> {
                                 _toggleExerciseSelection(index);
                               },
                               child: ExerciseContainer(
-                                exercice: exercise,),
+                                exercice: exercise,
+                              ),
                             );
                           }).toList(),
                         ),
@@ -410,9 +443,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
                 ),
                 SizedBox(height: 10),
                 GestureDetector(
-                  onTap: () {
-                    openVideoPicker();
-                  },
+                  onTap: openVideoPicker,
                   child: Container(
                     width: screenWidth * 0.8,
                     height: screenHeight * 0.08,
@@ -437,7 +468,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
                         ),
                         Expanded(
                           child: Text(
-                            'Import Picture / Video',
+                            _selectedMediaName ?? 'Import Picture / Video',
                             style: TextStyle(color: Colors.grey),
                           ),
                         ),
@@ -447,7 +478,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
                 ),
                 SizedBox(height: 20),
                 GestureDetector(
-                  onTap: _publishPost,  // Ajoutez cette ligne pour appeler la méthode _publishPost
+                  onTap: _publishPost,
                   child: Container(
                     width: screenWidth * 0.3,
                     height: screenHeight * 0.06,

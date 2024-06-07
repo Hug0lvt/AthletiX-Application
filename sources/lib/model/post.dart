@@ -41,7 +41,7 @@ class Post {
     publicationType: json["publicationType"],
     content: json["content"],
     comments: json["comments"] != null ? List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x))) : [],
-    exercises: json["exercises"]!= null ? List<Exercise>.from(json["exercises"].map((x) => Comment.fromJson(x))) : [],
+    exercises: json["exercises"]!= null ? List<Exercise>.from(json["exercises"].map((x) => Exercise.fromJson(x))) : [],
   );
 
   Map<String, dynamic> toJson() => {

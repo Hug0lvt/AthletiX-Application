@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:AthletiX/providers/api/clientApi.dart';
 import '../../../model/post.dart';
 
@@ -43,5 +42,10 @@ class PostClientApi {
   Future<void> uploadPostMedia(int postId, File mediaFile) async {
     final String url = '$_endpoint/$postId/upload';
     await _clientApi.postMultipartData(url, mediaFile);
+  }
+
+  Future<void> addExerciseToPost(int postId, int exerciseId) async {
+    final String url = '$_endpoint/$postId/addExercise/$exerciseId';
+    await _clientApi.postData(url, '');
   }
 }
