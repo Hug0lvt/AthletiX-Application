@@ -10,7 +10,7 @@ class ExerciseContainer extends StatelessWidget {
 
   ExerciseContainer({
     required this.exercice,
-    this.onExerciseSelected
+    this.onExerciseSelected,
     this.backgroundColor, // Paramètre optionnel
   });
 

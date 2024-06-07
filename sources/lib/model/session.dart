@@ -34,14 +34,15 @@ class Session {
     date: DateTime.parse(json["date"]),
     duration: Utils.parseDuration(json["duration"]),
     exercises: List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))),
+    status: 0,
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "profile": profile.toJson(),
     "name": name,
-    "date": date.toUtc().toIso8601String(),
-    "duration": Utils.formatDuration(duration),
+    "date": date?.toUtc().toIso8601String(),
+    "duration": Utils.formatDuration(duration!),
     "practicalexercises": List<dynamic>.from(exercises.map((x) => x.toJson())),
     "status": status
   };

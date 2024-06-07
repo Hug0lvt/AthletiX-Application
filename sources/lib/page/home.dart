@@ -249,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 20),
                 InkWell(
                   onTap: () {
-                    createNewProgramFromPost(post, programNameController.text);
+                    /*createNewProgramFromPost(post, programNameController.text);*/
                     Navigator.pop(context);
                   },
                   child:
@@ -521,7 +521,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void createNewProgramFromPost(Post post, String sessionName) async {
+  /*void createNewProgramFromPost(Post post, String sessionName) async {
     List<PracticalExercise> exercises = [];
     for(var exo in post.exercises!){
       exercises.add(exo.exerciseToPracticalExercise());
@@ -538,5 +538,5 @@ class _HomePageState extends State<HomePage> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Error while adding new program. Try again later.')));
     }
-  }
+  }*/
 }

@@ -60,7 +60,7 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
   void _addExercise(Exercise exercise) async {
     print(exercise.id);
     print(currentSession.id);
-    PracticalExercise practicalExercise = await practicalExerciseClientApi.createPracticalExercise(currentSession.id, exercise.id);
+    PracticalExercise practicalExercise = await practicalExerciseClientApi.createPracticalExercise(currentSession.id!, exercise.id);
     setState(() {
       currentSession.exercises.add(practicalExercise);
     });

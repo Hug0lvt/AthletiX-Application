@@ -42,14 +42,12 @@ class Exercise {
   };
 
   // Function to convert from Exercise to PracticalExercise
-  PracticalExercise exerciseToPracticalExercise() {
+  /*PracticalExercise exerciseToPracticalExercise(Session session) {
     return PracticalExercise(
       id: this.id,
-      name: this.name,
-      description: this.description,
-      image: this.image,
-      category: this.category,
+      exercise: this,
+      session: ,
       sets: [],
     );
-  }
+  }*/
 }

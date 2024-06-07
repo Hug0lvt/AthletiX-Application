@@ -119,7 +119,7 @@ class _HistoryTab extends State<HistoryTab> {
                               .inDays
                               .toString()) == '0' ? 'Today' : '${DateTime.now()
                               .difference(sessions[index].date!)
-                              .inDays} days ago' : 'No record found' ,
+                              .inDays} days ago') : 'No record found',
                           exercises: sessions[index].exercises.isNotEmpty
                               ? sessions[index].exercises
                               : [],
@@ -128,7 +128,7 @@ class _HistoryTab extends State<HistoryTab> {
                             MaterialPageRoute(builder: (context) => ModifTrainingPage(session: sessions[index])),
                           ),
                         );
-                  },
+                      },
                 ),
               ],
             ),
