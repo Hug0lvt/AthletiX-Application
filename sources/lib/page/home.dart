@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _initializeVideoController() {
-    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content)
+    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content!)
       ..initialize().then((_) {
         _controller.setLooping(true);
         _controller.play();
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void onPressed() {
-    List<Comment> comments = _posts[_currentVideoIndex].comments;
+    List<Comment> comments = _posts[_currentVideoIndex].comments!;
     TextEditingController commentController = TextEditingController();
 
     showModalBottomSheet<int>(
@@ -111,88 +111,96 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black87,
       context: context,
       builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.85,
-            child: Column(
-              children: [
-                Expanded(
-                  child: comments.isEmpty
-                      ? const Center(
-                    child: Text(
-                      'Pas de commentaire pour cette publication',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  )
-                      : ListView.builder(
-                    itemCount: comments.length,
-                    itemBuilder: (context, index) {
-                      return CommentCard(
-                        username: comments[index].publisher!.username!,
-                        commentText: comments[index].content!,
-                        profileImageUrl: comments[index].publisher!.picture!,
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: commentController,
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter modalSetState) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.85,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: comments.isEmpty
+                          ? const Center(
+                        child: Text(
+                          'Pas de commentaire pour cette publication',
                           style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            hintText: 'Ajouter un commentaire...',
-                            hintStyle: TextStyle(color: Colors.grey),
-                            filled: true,
-                            fillColor: Colors.black54,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.send, color: Colors.white),
-                        onPressed: () async {
-                          if (commentController.text.isNotEmpty) {
-                            Comment newComment = Comment(
-                              id: 0,
-                              publishDate: DateTime.now().toUtc(),
-                              publisher: _profile!,
-                              content: commentController.text,
-                              answers: [],
-                              post: _posts[_currentVideoIndex],
-                              parentCommentId: null,
-                            );
-                            // Appelez l'API pour envoyer le commentaire
-                            Comment createdComment = await commentClientApi.createComment(newComment);
-                            setState(() {
-                              _posts[_currentVideoIndex].comments.add(createdComment);
-                            });
-                            commentController.clear();
-                            Navigator.pop(context);
-                          }
+                      )
+                          : ListView.builder(
+                        itemCount: comments.length,
+                        itemBuilder: (context, index) {
+                          return CommentCard(
+                            username: comments[index].publisher!.username!,
+                            commentText: comments[index].content!,
+                            profileImageUrl: comments[index].publisher!.picture!,
+                          );
                         },
                       ),
-                    ],
-                  ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: commentController,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
+                                hintText: 'Ajouter un commentaire...',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                filled: true,
+                                fillColor: Colors.black54,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.send, color: Colors.white),
+                            onPressed: () async {
+                              if (commentController.text.isNotEmpty) {
+                                Comment newComment = Comment(
+                                  id: 0,
+                                  publishDate: DateTime.now().toUtc(),
+                                  publisher: _profile!,
+                                  content: commentController.text,
+                                  answers: [],
+                                  postId: _posts[_currentVideoIndex].id,
+                                  parentCommentId: null,
+                                );
+                                // Appelez l'API pour envoyer le commentaire
+                                var createdCommentJson = await commentClientApi.createComment(newComment);
+                                setState(() {
+                                });
+                                modalSetState(() {
+                                  comments.add(createdCommentJson);
+                                  commentController.clear();
+                                });
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
+
+
+
   void onPressedLinkedExercises(Post post) {
-    if(post.exercises.isNotEmpty) {
+    if(post.exercises!.isNotEmpty) {
       TextEditingController programNameController = TextEditingController();
       double screenHeight = MediaQuery
           .of(context)
@@ -227,14 +235,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: post.exercises.length,
+                    itemCount: post.exercises!.length,
                     itemBuilder: (context, index) {
                       return ExerciseContainer(
-                        exercice: post.exercises[index],
+                        exercice: post.exercises![index],
                       );
                     },
                   ),
@@ -315,7 +322,7 @@ class _HomePageState extends State<HomePage> {
 
   void _updateVideoController() {
     _controller.pause();
-    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content)
+    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content!)
       ..initialize().then((_) {
         _controller.setLooping(true);
         _controller.play();
@@ -449,7 +456,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             const SizedBox(width: 10.0),
                             Text(
-                              post.exercises.length.toString(),
+                              post.exercises!.length.toString(),
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -469,8 +476,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                           const SizedBox(width: 10.0),
                           Text(
-                            post.comments.length.toString(),
-                            style: const TextStyle(color: Colors.white),
+                            post.comments!.length.toString(),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
@@ -480,8 +487,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  post.description,
-                  style: const TextStyle(color: Colors.white),
+                  post.description!,
+                  style: TextStyle(color: Colors.white),
                 ),
               ],
             ),
@@ -516,11 +523,11 @@ class _HomePageState extends State<HomePage> {
 
   void createNewProgramFromPost(Post post, String sessionName) async {
     List<PracticalExercise> exercises = [];
-    for(var exo in post.exercises){
+    for(var exo in post.exercises!){
       exercises.add(exo.exerciseToPracticalExercise());
     }
     Profile? callerProfile = await AuthManager.getProfile();
-    sessionName = sessionName.trim().isEmpty ? '${post.publisher.username}\'s program' : sessionName;
+    sessionName = sessionName.trim().isEmpty ? '${post.publisher!.username}\'s program' : sessionName;
     if(callerProfile != null && exercises.isNotEmpty){
       Session session = Session(profile: callerProfile, name: sessionName, exercises: exercises);
       await sessionsClientApi.createSession(session);

@@ -38,7 +38,7 @@ void setupLocator() {
       ));
   getIt.registerSingleton<ExerciseClientApi>(ExerciseClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<ProfileClientApi>(ProfileClientApi(getIt<ClientApi>()));
-  getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>()));
+  getIt.registerSingleton<CommentClientApi>(CommentClientApi(getIt<ClientApi>(), PostClientApi(getIt<ClientApi>())));
   getIt.registerSingleton<TrainingClientApi>(TrainingClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<CategoryClientApi>(CategoryClientApi(getIt<ClientApi>()));
   getIt.registerSingleton<ConversationClientApi>(ConversationClientApi(getIt<ClientApi>()));

@@ -2,18 +2,21 @@ import 'dart:convert';
 
 import 'package:AthletiX/providers/api/clientApi.dart';
 import '../../../model/comment.dart';
+import '../../../model/post.dart';
+import 'postClientApi.dart';
 
-class CommentClientApi{
+class CommentClientApi {
   late final ClientApi _clientApi;
+  late final PostClientApi _postClientApi;
   final String _endpoint = 'comments';
 
-  CommentClientApi(ClientApi cli){
+  CommentClientApi(ClientApi cli, PostClientApi postCli) {
     _clientApi = cli;
+    _postClientApi = postCli;
   }
 
   Future<Comment> createComment(Comment comment) async {
     String commentJson = commentToJson(comment);
-    print(commentJson);
     final responseJson = await _clientApi.postData(_endpoint, commentJson);
     return commentFromJson(responseJson);
   }
