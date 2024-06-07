@@ -10,7 +10,8 @@ class SessionClientApi{
   }
 
   Future<Session> createSession(Session session) async {
-    return sessionFromJson(await _clientApi.postData(_endpoint, sessionToJson(session)));
+    String sesh = sessionToJson(session);
+    return sessionFromJson(await _clientApi.postData(_endpoint,sesh));
   }
 
   Future<Session> getSessionById(int sessionId) async {
