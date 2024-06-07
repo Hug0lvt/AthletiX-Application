@@ -1,9 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../components/profilePublicPostedCard.dart';
 import '../components/sendMessage.dart';
+import '../model/profile.dart';
+import '../utils/appColors.dart';
 
 class ProfilePublicPage extends StatelessWidget {
+  final Profile profile;
+
+  ProfilePublicPage({required this.profile});
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -37,11 +44,30 @@ class ProfilePublicPage extends StatelessWidget {
 
     ];
 
+    Widget _buildImage() {
+      try {
+        if (profile.picture!.isNotEmpty) {
+          return Image.memory(
+            base64Decode(profile.picture!),
+            fit: BoxFit.cover,
+            width: screenWidth * 0.2,
+            height: screenHeight * 0.2,
+          );
+        } else {
+          throw Exception("Image is empty");
+        }
+      } catch (e) {
+        return Image.network("https://via.placeholder.com/80/3C383B/B66CFF?text=${profile.username?.substring(0,1)}",
+          fit: BoxFit.cover,);
+      }
+    }
+
     return Scaffold(
+      backgroundColor: AppColors.greyDark,
       body: SafeArea(
         child: Container(
-          color: const Color(0xFF363636),
-          padding: const EdgeInsets.all(36),
+          color: AppColors.greyDark,
+          padding: const EdgeInsets.all(20),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -67,26 +93,20 @@ class ProfilePublicPage extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(left: 20, right: 10),
                                 child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/EditIcon.svg',
-                                    width: 78.0,
-                                    height: 78.0,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: _buildImage()
                                 ),
                               ),
-                              const Text(
-                                'Pseudo',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
+                            Text(
+                              profile.username ?? "Username indisponible",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
                               ),
+                            ),
                             ],
                           ),
                           SendMessage(
-                            text: 'Message',
-                            width: screenWidth * 0.25,
+                            width: screenWidth * 0.20,
                             height: screenHeight * 0.05,
                           ),
                         ],

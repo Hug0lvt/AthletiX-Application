@@ -417,7 +417,7 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProfilePublicPage(),
+                              builder: (context) => ProfilePublicPage(profile: post.publisher!),
                             ),
                           );
                         },
