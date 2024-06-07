@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:AthletiX/exceptions/not_found_exception.dart';
 import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
@@ -13,21 +14,21 @@ class ClientApi {
   late final String _baseUrl;
   late final AuthClientApi authClientApi;
 
-  ClientApi(String baseUriApi, String baseUriAuth){
+  ClientApi(String baseUriApi, String baseUriAuth) {
     _baseUrl = baseUriApi;
     authClientApi = AuthClientApi(baseUriAuth);
   }
 
-  Future<Map<String, String>> _buildHeaders() async {
+  Future<Map<String, String>> _buildHeaders({bool isMultipart = false}) async {
     final headers = <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
+      if (!isMultipart) 'Content-Type': 'application/json; charset=UTF-8',
     };
 
     String? token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
     String? refreshToken = await AuthManager.getToken(AuthKeys.ATH_BEARER_REFRESH_TOKEN_API.name);
     DateTime? expireAt = DateTime.tryParse(await AuthManager.getToken(AuthKeys.ATH_END_OF_BEARER_TOKEN_API.name) ?? "");
-    if(token != null && refreshToken != null){
-      if(expireAt != null && expireAt.isBefore(DateTime.now())){
+    if (token != null && refreshToken != null) {
+      if (expireAt != null && expireAt.isBefore(DateTime.now())) {
         try {
           LoginResponse loginResponse = await authClientApi.refreshToken(Refresh(refreshToken: refreshToken));
           await AuthManager.setToken(AuthKeys.ATH_BEARER_TOKEN_API.name, loginResponse.accessToken);
@@ -129,7 +130,7 @@ class ClientApi {
     final headers = await _buildHeaders();
     final response = await http.delete(
       Uri.parse('$_baseUrl/$endpoint'),
-      headers: headers
+      headers: headers,
     );
 
     switch (response.statusCode) {
@@ -164,4 +165,25 @@ class ClientApi {
     }
   }
 
+  Future<String> postMultipartData(String endpoint, File file) async {
+    final headers = await _buildHeaders(isMultipart: true);
+    final request = http.MultipartRequest('POST', Uri.parse('$_baseUrl/$endpoint'))
+      ..headers.addAll(headers)
+      ..files.add(await http.MultipartFile.fromPath('file', file.path));
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        return response.body;
+      case 401:
+        throw UnauthorizedException('Unauthorized');
+      case 404:
+        throw NotFoundException('Not Found');
+      default:
+        throw Exception('Failed to post data');
+    }
+  }
 }

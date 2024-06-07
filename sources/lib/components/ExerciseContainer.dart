@@ -6,16 +6,23 @@ import 'dart:convert';
 class ExerciseContainer extends StatelessWidget {
   final Exercise exercice;
   final Function(Exercise)? onExerciseSelected;
+  final Color? backgroundColor; // Nouveau paramètre pour la couleur de fond
 
   ExerciseContainer({
     required this.exercice,
     this.onExerciseSelected
+    this.backgroundColor, // Paramètre optionnel
   });
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final dynamicSpacing = screenWidth * 0.02;
+    final defaultBackgroundColor = const Color(0xE51A1A1A); // Couleur par défaut
+
+    // Utilise la couleur fournie ou la couleur par défaut
+    final backgroundColorToUse = backgroundColor ?? defaultBackgroundColor;
+
     final kGradientBoxDecoration = BoxDecoration(
       boxShadow: const [
         BoxShadow(
@@ -66,13 +73,16 @@ class ExerciseContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            decoration: kGradientBoxDecoration,
+            decoration: kGradientBoxDecoration.copyWith(
+              // Remplace la couleur par défaut par la couleur à utiliser
+              color: backgroundColorToUse,
+            ),
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: Container(
                 width: screenWidth * 0.97,
                 decoration: ShapeDecoration(
-                  color: const Color(0xE51A1A1A),
+                  color: defaultBackgroundColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
