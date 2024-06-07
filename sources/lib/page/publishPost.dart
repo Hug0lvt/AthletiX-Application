@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:AthletiX/exceptions/not_found_exception.dart';
 import 'package:AthletiX/model/exercise.dart';
 import 'package:AthletiX/model/profile.dart';
@@ -12,7 +14,7 @@ import '../model/post.dart';
 import '../providers/api/utils/categoryClientApi.dart';
 import '../providers/api/utils/postClientApi.dart';
 import '../providers/localstorage/secure/authManager.dart';
-import 'dart:io';
+
 
 class PublishPostPage extends StatefulWidget {
   @override
@@ -30,6 +32,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
   final clientApi = getIt<ExerciseClientApi>();
   final postClientApi = getIt<PostClientApi>();
   String searchQuery = '';
+  File? _selectedMediaFile;
 
   bool isLoading = false;
   bool isLoadingCat = false;
@@ -37,8 +40,6 @@ class _PublishPostPageState extends State<PublishPostPage> {
   // Controllers pour capturer les valeurs des champs de saisie
   final TextEditingController postNameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-
-  File? _selectedMediaFile; // Fichier média sélectionné
 
   @override
   void initState() {
@@ -104,6 +105,12 @@ class _PublishPostPageState extends State<PublishPostPage> {
         .toList();
   }
 
+  Future<void> openImagePicker() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    // Add code here to handle the selected image (e.g., display it)
+  }
+
   Future<void> openVideoPicker() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickVideo(source: ImageSource.gallery);
@@ -160,6 +167,8 @@ class _PublishPostPageState extends State<PublishPostPage> {
       print("Failed to publish post: $e");
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +231,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
                 SizedBox(height: 10),
                 Container(
                   width: screenWidth * 0.8,
-                  height: screenHeight * 0.15,
+                  height: screenHeight * 0.1,
                   decoration: ShapeDecoration(
                     color: Color(0xE51A1A1A),
                     shape: RoundedRectangleBorder(
@@ -245,8 +254,45 @@ class _PublishPostPageState extends State<PublishPostPage> {
                       hintText: 'Description',
                       hintStyle: TextStyle(color: Colors.grey),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Container(
+                  width: screenWidth * 0.8,
+                  height: screenHeight * 0.06,
+                  decoration: ShapeDecoration(
+                    color: Color(0xE51A1A1A),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    shadows: [
+                      BoxShadow(
+                        color: Color(0x3F000000),
+                        blurRadius: 4,
+                        offset: Offset(0, 4),
+                        spreadRadius: 0,
+                      )
+                    ],
+                  ),
+                  child: DropdownButtonFormField<Category>(
+                    value: selectedCategory,
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.grey),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(color: Colors.black),
+                    onChanged: (Category? newValue) {
+                      setState(() {
+                        selectedCategory = newValue!;
+                      });
+                    },
+                    items: categories.map<DropdownMenuItem<Category>>((Category category) {
+                      return DropdownMenuItem<Category>(
+                        value: category,
+                        child: Text(category.title),
+                      );
+                    }).toList(),
                   ),
                 ),
                 SizedBox(height: 10),
@@ -274,7 +320,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
                           onChanged: (value) {
                             setState(() {
                               searchQuery = value;
-                              // Mettez à jour la liste filtrée des exercices en fonction de la requête de recherche
+                              // Update the filtered list of exercises based on the search query
                               filteredExercices = exercices
                                   .where((exerc) => exerc.name
                                   .toLowerCase()
@@ -391,7 +437,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
                         ),
                         Expanded(
                           child: Text(
-                            'Import Video',
+                            'Import Picture / Video',
                             style: TextStyle(color: Colors.grey),
                           ),
                         ),
