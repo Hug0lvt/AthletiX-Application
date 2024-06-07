@@ -8,6 +8,24 @@ class CommentCard extends StatelessWidget {
 
   CommentCard({required this.username, required this.commentText, required this.profileImageUrl});
 
+  Widget _buildImage() {
+    try {
+      if (profileImageUrl.isNotEmpty) {
+        return  Image.network(
+          profileImageUrl,
+          width: 50,
+          height: 50,
+          fit: BoxFit.cover,
+        );
+      } else {
+        throw Exception("Image is empty");
+      }
+    } catch (e) {
+      return Image.network("https://via.placeholder.com/200/3C383B/B66CFF?text=${username.substring(0,1)}",
+        fit: BoxFit.cover,);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,12 +49,7 @@ class CommentCard extends StatelessWidget {
                       width: 50,
                       height: 50,
                       child: ClipOval(
-                        child: Image.network(
-                          profileImageUrl,
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        ),
+                        child: _buildImage(),
                       ),
                     ),
                     const SizedBox(width: 16.0),

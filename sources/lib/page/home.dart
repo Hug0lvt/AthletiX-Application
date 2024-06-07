@@ -425,7 +425,7 @@ class _HomePageState extends State<HomePage> {
                           width: 50,
                           height: 50,
                           child: ClipOval(
-                            child: _buildImage(post),
+                            child: _buildImage(post.publisher!),
                           ),
                         ),
                       ),
@@ -505,18 +505,18 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  Widget _buildImage(post) {
+  Widget _buildImage(Profile profile) {
     try {
-      if (post.publisher.picture.isNotEmpty) {
+      if (profile?.picture != null && profile!.picture!.isNotEmpty) {
         return Image.memory(
-          base64Decode(post.profile.picture.image),
+          base64Decode(profile.picture!),
           fit: BoxFit.cover,
         );
       } else {
         throw Exception("Image is empty");
       }
     } catch (e) {
-      return Image.network("https://via.placeholder.com/200/3C383B/B66CFF?text=${post.publisher.username?.substring(0,1)}",
+      return Image.network("https://via.placeholder.com/200/3C383B/B66CFF?text=${profile.username?.substring(0,1)}",
         fit: BoxFit.cover,);
     }
   }
