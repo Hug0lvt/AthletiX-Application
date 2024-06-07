@@ -4,19 +4,53 @@ import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../main.dart';
 import '../model/exercise.dart';
 import '../model/practicalExercise.dart';
+import '../model/set.dart';
+import '../providers/api/utils/practicalexerciseClientApi.dart';
+import '../providers/api/utils/setClientApi.dart';
 
 class TrainingExercise extends StatefulWidget {
-  final PracticalExercise exercise;
+  late PracticalExercise exercise;
+  late int status;
 
-  const TrainingExercise({Key? key, required this.exercise}) : super(key: key);
+  TrainingExercise({Key? key, required this.exercise, required this.status}) : super(key: key);
 
   @override
   _TrainingExerciseWidgetState createState() => _TrainingExerciseWidgetState();
 }
 
 class _TrainingExerciseWidgetState extends State<TrainingExercise> {
+
+  final practicalExerciseClientApi = getIt<PracticalExerciseClientApi>();
+  final setClientApi = getIt<SetClientApi>();
+
+  void _addSet() async {
+    Set setToAdd = Set(
+        id: 0,
+        reps: 0,
+        weight: [],
+        rest: Duration(minutes: 0, seconds: 0),
+        mode: 0,
+        exercise: widget.exercise,
+        isDone: false
+    );
+
+    /*Set setCreated = await setClientApi.createSet(setToAdd);
+
+    widget.exercise.sets.add(setCreated);
+    PracticalExercise newPracticalExercise = await practicalExerciseClientApi.updatePracticalExercise(
+        widget.exercise.id,
+        widget.exercise);
+
+    widget.exercise = newPracticalExercise;*/
+    setState(() {
+      widget.exercise.sets.add(setToAdd);
+    });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -49,6 +83,21 @@ class _TrainingExerciseWidgetState extends State<TrainingExercise> {
             children: widget.exercise.sets.map((set) {
               return TrainingSet(set: set);
             }).toList(),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: widget.status == 0 || widget.status == 1
+                ? TextButton(
+              onPressed: () {
+                _addSet();
+              },
+              child: const Text(
+                'Add set',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ) : Container(),
           ),
           const Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.0),

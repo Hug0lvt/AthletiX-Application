@@ -83,6 +83,8 @@ class ClientApi {
   }
 
   Future<String> postData(String endpoint, String data) async {
+    print(data);
+    print(endpoint);
     final headers = await _buildHeaders();
     final response = await http.post(
       Uri.parse('$_baseUrl/$endpoint'),

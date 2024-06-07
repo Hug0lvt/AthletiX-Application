@@ -15,6 +15,7 @@ class Session {
   DateTime date;
   Duration duration;
   List<PracticalExercise> exercises;
+  int status;
 
   Session({
     required this.id,
@@ -23,6 +24,7 @@ class Session {
     required this.date,
     required this.duration,
     required this.exercises,
+    required this.status
   });
 
   factory Session.fromJson(Map<String, dynamic> json) => Session(
@@ -32,6 +34,7 @@ class Session {
     date: DateTime.parse(json["date"]),
     duration: Utils.parseDuration(json["duration"]),
     exercises: List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))),
+    status: json["status"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -41,5 +44,6 @@ class Session {
     "date": date.toUtc().toIso8601String(),
     "duration": Utils.formatDuration(duration),
     "practicalexercises": List<dynamic>.from(exercises.map((x) => x.toJson())),
+    "status": status
   };
 }

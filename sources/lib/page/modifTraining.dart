@@ -124,7 +124,7 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
                     ),*/
                     Column(
                       children: currentSession.exercises.map((exercise) {
-                        return TrainingExercise(exercise: exercise);
+                        return TrainingExercise(exercise: exercise, status: currentSession.status);
                       }).toList(),
                     ),
                     Align(
