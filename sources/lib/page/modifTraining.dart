@@ -2,11 +2,14 @@ import 'package:AthletiX/components/trainingExercise.dart';
 import 'package:AthletiX/model/exercise.dart';
 import 'package:AthletiX/model/session.dart';
 import 'package:AthletiX/page/trainingTabs/ExercicesTab.dart';
+import 'package:AthletiX/providers/api/utils/practicalexerciseClientApi.dart';
 import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../main.dart';
 import '../model/category.dart';
+import '../model/practicalExercise.dart';
 import '../model/set.dart';
 import '../model/profile.dart';
 import '../providers/localstorage/secure/authKeys.dart';
@@ -23,30 +26,30 @@ class ModifTrainingPage extends StatefulWidget {
 
 class _ModifTrainingPageState extends State<ModifTrainingPage> {
   late Session currentSession;
-  List<Exercise> exercises = [
-    Exercise(
+  final practicalExerciseClientApi = getIt<PracticalExerciseClientApi>();
+  /*List<PracticalExercise> exercises = [
+    PracticalExercise(
       id: 1,
-      name: "Bench Press",
-      description: "Chest exercise",
-      image: "bench_press.png",
-      category: Category(id: 1, title: 'Strength'),
       sets: [
         Set(id: 1, reps: 10, weight: [60, 70, 80], rest: Duration(seconds: 60), mode: 0),
         Set(id: 2, reps: 8, weight: [70, 80, 90], rest: Duration(seconds: 60), mode: 0),
       ],
+      exercise: Exercise(
+        id: 1
+      ),
+      session: null,
     ),
-    Exercise(
+    PracticalExercise(
       id: 2,
-      name: "Squat",
-      description: "Leg exercise",
-      image: "squat.png",
-      category: Category(id: 1, title: 'Strength'),
       sets: [
         Set(id: 1, reps: 12, weight: [80, 90, 100], rest: Duration(seconds: 90), mode: 0),
         Set(id: 2, reps: 10, weight: [90, 100, 110], rest: Duration(seconds: 90), mode: 0),
       ],
+      exercise: null,
+      session: null,
     ),
-  ];
+  ];*/
+  //List<PracticalExercise> exercises = [];
 
   @override
   void initState() {
@@ -54,13 +57,28 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
     currentSession = widget.session;
   }
 
+  void _addExercise(Exercise exercise) async {
+    print(exercise.id);
+    print(currentSession.id);
+    PracticalExercise practicalExercise = await practicalExerciseClientApi.createPracticalExercise(currentSession.id, exercise.id);
+    setState(() {
+      currentSession.exercises.add(practicalExercise);
+    });
+  }
+
   void _showExerciceModal(BuildContext context) {
-    showModalBottomSheet(
+    showModalBottomSheet<Exercise>(
       context: context,
-      builder: (BuildContext context) {
-        return const ExercicesTab();
-      },
-    );
+      isScrollControlled: true,
+      backgroundColor: Colors.black87,
+      builder: (context) => ExercicesTab(onExerciseSelected: (exercise) {
+        Navigator.pop(context, exercise);
+      }),
+    ).then((selectedExercise) {
+      if (selectedExercise != null) {
+        _addExercise(selectedExercise);
+      }
+    });
   }
 
   @override
@@ -105,7 +123,7 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
                       },
                     ),*/
                     Column(
-                      children: exercises.map((exercise) {
+                      children: currentSession.exercises.map((exercise) {
                         return TrainingExercise(exercise: exercise);
                       }).toList(),
                     ),

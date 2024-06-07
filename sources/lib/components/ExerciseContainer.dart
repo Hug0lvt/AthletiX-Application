@@ -5,9 +5,11 @@ import 'dart:convert';
 
 class ExerciseContainer extends StatelessWidget {
   final Exercise exercice;
+  final Function(Exercise)? onExerciseSelected;
 
   ExerciseContainer({
     required this.exercice,
+    this.onExerciseSelected
   });
 
   @override
@@ -51,9 +53,14 @@ class ExerciseContainer extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gesture Detected on ' + exercice.name)));
+      onTap:  () {
+        if (onExerciseSelected != null) {
+          onExerciseSelected!(exercice);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Gesture Detected on ' + exercice.name)),
+          );
+        }
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

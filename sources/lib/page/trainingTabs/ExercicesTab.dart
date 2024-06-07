@@ -10,13 +10,15 @@ import 'package:AthletiX/providers/api/utils/exerciseClientApi.dart';
 import 'package:AthletiX/main.dart';
 
 class ExercicesTab extends StatefulWidget {
-  const ExercicesTab({Key? key}) : super(key: key);
+  final Function(Exercise)? onExerciseSelected;
+
+  const ExercicesTab({Key? key, this.onExerciseSelected}) : super(key: key);
 
   @override
-  State<ExercicesTab> createState() => _ExercicesTab();
+  _ExercicesTabState createState() => _ExercicesTabState();
 }
 
-class _ExercicesTab extends State<ExercicesTab> {
+class _ExercicesTabState extends State<ExercicesTab> {
   final clientApi = getIt<ExerciseClientApi>();
   final clientCategoryApi = getIt<CategoryClientApi>();
 
@@ -253,6 +255,7 @@ class _ExercicesTab extends State<ExercicesTab> {
                     children: exercises.map((exercise) {
                       return ExerciseContainer(
                         exercice: exercise,
+                        onExerciseSelected: widget.onExerciseSelected,
                       );
                     }).toList(),
                   );

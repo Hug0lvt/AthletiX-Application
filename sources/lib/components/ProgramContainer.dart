@@ -6,12 +6,14 @@ class ProgramContainer extends StatelessWidget {
   final List<PracticalExercise> exercises;
   final String lastSession;
   final VoidCallback? onDelete;
+  final VoidCallback? onTap;
 
   ProgramContainer({
     required this.title,
     required this.exercises,
     required this.lastSession,
     this.onDelete,
+    required this.onTap,
   });
 
   @override
@@ -21,7 +23,7 @@ class ProgramContainer extends StatelessWidget {
     List<Widget> positionedWidgets = [];
 
     for (int i = 0; i < exercises.length; i++) {
-      String buildExercice = "${exercises[i].sets.length} x ${exercises[i].sets[0].reps} ${exercises[i].name}";
+      String buildExercice = "${exercises[i].sets.length} x ${exercises[i].sets[0].reps} ${exercises[i].exercise.name}";
       positionedWidgets.add(
         SizedBox(
           width: screenWidth * 0.57,
@@ -54,7 +56,7 @@ class ProgramContainer extends StatelessWidget {
     );
 
     return GestureDetector(
-      onTap: () {
+      onTap: onTap ?? () {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Gesture Detected!')));
       },

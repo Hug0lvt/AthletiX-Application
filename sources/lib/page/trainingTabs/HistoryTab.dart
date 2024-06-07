@@ -8,6 +8,8 @@ import 'package:AthletiX/model/session.dart';
 import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
 import 'package:AthletiX/main.dart';
 
+import '../modifTraining.dart';
+
 class HistoryTab extends StatefulWidget {
   const HistoryTab({super.key});
   @override
@@ -107,21 +109,25 @@ class _HistoryTab extends State<HistoryTab> {
                   ),
                 )
                     : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: sessions.length,
-                  itemBuilder: (context, index) {
-                    return ProgramContainer(
-                      title: sessions[index].name,
-                      lastSession: (DateTime.now()
-                          .difference(sessions[index].date)
-                          .inDays
-                          .toString()) == '0' ? 'Today' : '${DateTime.now()
-                          .difference(sessions[index].date)
-                          .inDays} days ago' ,
-                      exercises: sessions[index].exercises.isNotEmpty
-                          ? sessions[index].exercises
-                          : [],
-                    );
+                      shrinkWrap: true,
+                      itemCount: sessions.length,
+                      itemBuilder: (context, index) {
+                        return ProgramContainer(
+                          title: sessions[index].name,
+                          lastSession: (DateTime.now()
+                              .difference(sessions[index].date)
+                              .inDays
+                              .toString()) == '0' ? 'Today' : '${DateTime.now()
+                              .difference(sessions[index].date)
+                              .inDays} days ago' ,
+                          exercises: sessions[index].exercises.isNotEmpty
+                              ? sessions[index].exercises
+                              : [],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ModifTrainingPage(session: sessions[index])),
+                          ),
+                        );
                   },
                 ),
               ],

@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:AthletiX/model/exercise.dart';
+import 'package:AthletiX/model/session.dart';
+
 import 'category.dart';
 import 'set.dart';
 
@@ -8,36 +11,28 @@ String practicalexerciseToJson(PracticalExercise data) => json.encode(data.toJso
 
 class PracticalExercise {
   int id;
-  String name;
-  String description;
-  String image;
-  Category category;
+  Exercise exercise;
+  Session session;
   List<Set> sets;
 
   PracticalExercise({
     required this.id,
-    required this.name,
-    required this.description,
-    required this.image,
-    required this.category,
+    required this.exercise,
+    required this.session,
     required this.sets,
   });
 
   factory PracticalExercise.fromJson(Map<String, dynamic> json) => PracticalExercise(
     id: json["id"],
-    name: json["name"],
-    description: json["description"],
-    image: json["image"],
-    category: Category.fromJson(json["category"]),
+    exercise: Exercise.fromJson(json["exercise"]),
+    session: Session.fromJson(json["session"]),
     sets: List<Set>.from(json["sets"].map((x) => Set.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": name,
-    "description": description,
-    "image": image,
-    "category": category.toJson(),
+    "exercise": exercise.toJson(),
+    "session": session.toJson(),
     "sets": List<dynamic>.from(sets.map((x) => x.toJson())),
   };
 }

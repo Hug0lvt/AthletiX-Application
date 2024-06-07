@@ -1,9 +1,12 @@
 import 'package:AthletiX/model/session.dart';
 import 'package:AthletiX/page/modifTraining.dart';
+import 'package:AthletiX/page/trainingTabs/TrainingTab.dart';
+import 'package:AthletiX/providers/api/utils/sessionClientApi.dart';
 import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../main.dart';
 import '../model/profile.dart';
 import '../providers/localstorage/secure/authKeys.dart';
 import '../providers/localstorage/secure/authManager.dart';
@@ -18,6 +21,7 @@ class _AddTrainingPageState extends State<AddTrainingPage> {
   bool _isButtonEnabled = false;
   Profile? _profile;
   late Session sessionToCreate;
+  final clientApi = getIt<SessionClientApi>();
 
   @override
   void initState() {
@@ -88,17 +92,15 @@ class _AddTrainingPageState extends State<AddTrainingPage> {
                 String programName = _controller.text;
                 print(token);
                 sessionToCreate = Session(
-                    id: 213,
+                    id: 0,
                     profile: _profile!,
                     name: programName,
                     date: DateTime.now(),
-                    duration: const Duration(minutes: 1),
+                    duration: const Duration(minutes: 1,seconds: 1, hours: 1),
                     exercises: []);
-                navigator.push(
-                  MaterialPageRoute(
-                    builder: (context) => ModifTrainingPage(session: sessionToCreate),
-                  ),
-                );
+
+                Session sessionCreated = await clientApi.createSession(sessionToCreate);
+                Navigator.pop(context, sessionCreated);
               }
                   : null,
               child:

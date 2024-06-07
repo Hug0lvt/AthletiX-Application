@@ -38,8 +38,8 @@ class Session {
     "id": id,
     "profile": profile.toJson(),
     "name": name,
-    "date": date.toIso8601String(),
-    "duration": duration.inMilliseconds,
+    "date": date.toUtc().toIso8601String(),
+    "duration": Utils.formatDuration(duration),
     "practicalexercises": List<dynamic>.from(exercises.map((x) => x.toJson())),
   };
 }
