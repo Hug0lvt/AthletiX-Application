@@ -45,4 +45,14 @@ class Set {
     "exercise" : exercise?.toJson(),
     "isDone" : isDone
   };
+
+  Map<String, dynamic> toJsonWithId(int exerciceId) => {
+    "id": id,
+    "reps": reps,
+    "weight": List<dynamic>.from(weight.map((x) => x)),
+    "rest": Utils.formatDuration(rest),
+    "mode": mode,
+    "practicalExerciseId" : exerciceId,
+    "isDone" : isDone
+  };
 }

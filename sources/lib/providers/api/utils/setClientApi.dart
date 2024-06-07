@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:AthletiX/providers/api/clientApi.dart';
 import '../../../model/set.dart';
 
@@ -9,8 +11,10 @@ class SetClientApi{
     _clientApi = cli;
   }
 
-  Future<Set> createSet(Set set) async {
-    return setFromJson(await _clientApi.postData(_endpoint, setToJson(set)));
+  Future<Set> createSet(Set set, int exerciseId) async {
+    String jsonSet = jsonEncode(set.toJsonWithId(exerciseId));
+    print(jsonSet);
+    return setFromJson(await _clientApi.postData(_endpoint, jsonSet));
   }
 
   Future<Set> getSetById(int setId) async {

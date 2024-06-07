@@ -6,8 +6,9 @@ import '../model/set.dart';
 
 class TrainingSet extends StatelessWidget {
   final Set set;
+  late int status;
 
-  const TrainingSet({Key? key, required this.set}) : super(key: key);
+  TrainingSet({Key? key, required this.set, required this.status}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

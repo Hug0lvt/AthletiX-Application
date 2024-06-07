@@ -37,17 +37,11 @@ class _TrainingExerciseWidgetState extends State<TrainingExercise> {
         isDone: false
     );
 
-    /*Set setCreated = await setClientApi.createSet(setToAdd);
+    await setClientApi.createSet(setToAdd, widget.exercise.id);
 
-    widget.exercise.sets.add(setCreated);
-    PracticalExercise newPracticalExercise = await practicalExerciseClientApi.updatePracticalExercise(
-        widget.exercise.id,
-        widget.exercise);
+    PracticalExercise newPracticalExercise = await practicalExerciseClientApi.getPracticalExerciseById(widget.exercise.id);
 
-    widget.exercise = newPracticalExercise;*/
-    setState(() {
-      widget.exercise.sets.add(setToAdd);
-    });
+    widget.exercise = newPracticalExercise;
 
   }
 
@@ -81,7 +75,7 @@ class _TrainingExerciseWidgetState extends State<TrainingExercise> {
           ),
           Column(
             children: widget.exercise.sets.map((set) {
-              return TrainingSet(set: set);
+              return TrainingSet(set: set, status: widget.exercise.session!.status);
             }).toList(),
           ),
           Align(

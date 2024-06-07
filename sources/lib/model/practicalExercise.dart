@@ -14,13 +14,13 @@ String practicalexerciseToJson(PracticalExercise data) => json.encode(data.toJso
 class PracticalExercise {
   int id;
   Exercise exercise;
-  Session session;
+  Session? session;
   List<Set> sets;
 
   PracticalExercise({
     required this.id,
     required this.exercise,
-    required this.session,
+    this.session,
     required this.sets,
   });
 
@@ -34,7 +34,7 @@ class PracticalExercise {
   Map<String, dynamic> toJson() => {
     "id": id,
     "exercise": exercise.toJson(),
-    "session": session.toJson(),
+    "session": session!.toJson(),
     "sets": List<dynamic>.from(sets.map((x) => x.toJson())),
   };
 

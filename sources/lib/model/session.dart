@@ -10,7 +10,7 @@ String sessionToJson(Session data) => json.encode(data.toJson());
 
 class Session {
   int? id;
-  Profile profile;
+  Profile? profile;
   String name;
   DateTime? date;
   Duration? duration;
@@ -19,7 +19,7 @@ class Session {
 
   Session({
     this.id,
-    required this.profile,
+    this.profile,
     required this.name,
     this.date,
     this.duration,
@@ -29,7 +29,7 @@ class Session {
 
   factory Session.fromJson(Map<String, dynamic> json) => Session(
     id: json["id"],
-    profile: Profile.fromJson(json["profile"]),
+    profile: json["profile"] != null ? Profile.fromJson(json["profile"]) : null,
     name: json["name"],
     date: DateTime.parse(json["date"]),
     duration: Utils.parseDuration(json["duration"]),
@@ -39,7 +39,7 @@ class Session {
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "profile": profile.toJson(),
+    "profile": profile!.toJson(),
     "name": name,
     "date": date?.toUtc().toIso8601String(),
     "duration": Utils.formatDuration(duration!),

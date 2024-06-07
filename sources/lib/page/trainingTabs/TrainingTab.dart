@@ -56,6 +56,7 @@ class _TrainingTab extends State<TrainingTab> {
       setState(() {
         filteredSessions = filterSessions;
         sessions = fetchedSessions;
+        print(sessions);
         isLoading = false;
       });
     } on NotFoundException catch (_) {

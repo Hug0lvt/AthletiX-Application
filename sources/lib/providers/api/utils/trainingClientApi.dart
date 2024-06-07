@@ -24,7 +24,7 @@ class TrainingClientApi{
 
   Future<List<Session>> getProgramsOfUser(int? profileId) async {
     if(profileId != null) {
-      String jsonReply = await _clientApi.getData('$_endpoint/user/$profileId');
+      String jsonReply = await _clientApi.getData('$_endpoint/user/2');
       Map<String, dynamic> data = json.decode(jsonReply);
       String jsonItems = json.encode(data["items"]);
       //return sessionListFromJson(jsonItems);

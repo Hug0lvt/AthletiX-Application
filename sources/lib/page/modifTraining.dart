@@ -1,8 +1,11 @@
+import 'package:AthletiX/components/gradientButton.dart';
+import 'package:AthletiX/components/sendMessage.dart';
 import 'package:AthletiX/components/trainingExercise.dart';
 import 'package:AthletiX/model/exercise.dart';
 import 'package:AthletiX/model/session.dart';
 import 'package:AthletiX/page/trainingTabs/ExercicesTab.dart';
 import 'package:AthletiX/providers/api/utils/practicalexerciseClientApi.dart';
+import 'package:AthletiX/providers/api/utils/sessionClientApi.dart';
 import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,6 +30,7 @@ class ModifTrainingPage extends StatefulWidget {
 class _ModifTrainingPageState extends State<ModifTrainingPage> {
   late Session currentSession;
   final practicalExerciseClientApi = getIt<PracticalExerciseClientApi>();
+  final sessionClientApi = getIt<SessionClientApi>();
   /*List<PracticalExercise> exercises = [
     PracticalExercise(
       id: 1,
@@ -66,6 +70,16 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
     });
   }
 
+  void _startTraining() async {
+    currentSession.status = 1;
+
+    setState(() {
+      sessionClientApi.updateSession(currentSession.id!, currentSession);
+    });
+
+
+  }
+
   void _showExerciceModal(BuildContext context) {
     showModalBottomSheet<Exercise>(
       context: context,
@@ -83,6 +97,9 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.black,
@@ -106,12 +123,29 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
                     const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
-                      child: Text(
-                        currentSession.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                        ),
+                      child: Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+
+                          Text(
+                            currentSession.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                            ),
+                          ),
+
+                          if (currentSession.status == 0 || currentSession.status == 1)
+                          Spacer(),
+                            TextButton(
+                              onPressed: () {
+                                // Action du bouton
+                                _startTraining();
+                              },
+                              child: Text('Start', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                            ),
+                            //),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 5),
