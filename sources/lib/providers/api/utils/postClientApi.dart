@@ -1,4 +1,5 @@
 import 'package:AthletiX/providers/api/clientApi.dart';
+import 'package:AthletiX/providers/api/paginationResult.dart';
 import '../../../model/post.dart';
 
 class PostClientApi{
@@ -24,7 +25,7 @@ class PostClientApi{
 
   // TODO LIST BY USER
   Future<Post> getPostByUser(String profileId) async {
-    return postFromJson(await _clientApi.getData('$_endpoint/user/$profileId'));
+    return postFromJson(await _clientApi.getData('$_endpoint/user/$profileId?includeComments=true&includeExercises=true'));
   }
 
   Future<Post> updatePost(int postId, Post updatedPost) async {

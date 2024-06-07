@@ -235,7 +235,7 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
                       height: screenHeight * 0.07,
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
-                      route: '/profile/public',
+                      route: '/myposts',
                     ),
                     ButtonProfilePage(
                       text: 'Favorite Posts',

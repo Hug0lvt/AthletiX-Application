@@ -5,6 +5,7 @@ import 'package:AthletiX/page/login/createProfile.dart';
 import 'package:AthletiX/page/login/login.dart';
 import 'package:AthletiX/page/login/register.dart';
 import 'package:AthletiX/page/login/start.dart';
+import 'package:AthletiX/page/myPosts.dart';
 import 'package:AthletiX/page/profilePrivate.dart';
 import 'package:AthletiX/page/profilePublic.dart';
 import 'package:AthletiX/providers/api/clientApi.dart';
@@ -110,6 +111,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/profile/public': (context) => ProfilePublicPage(),
         '/profile/private': (context) => ProfilePrivatePage(),
+        '/myposts': (context) => MyPostPage(),
       },
     );
   }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ProfilePublicPostedCard extends StatelessWidget {
   final String imagePath;
   final String postName;
-  final String postDate;
+  //final String postDate;
   final String description;
   final double width;
   final double height;
@@ -11,7 +11,7 @@ class ProfilePublicPostedCard extends StatelessWidget {
   ProfilePublicPostedCard({
     required this.imagePath,
     required this.postName,
-    required this.postDate,
+    //required this.postDate,
     required this.description,
     required this.width,
     required this.height,
@@ -51,14 +51,14 @@ class ProfilePublicPostedCard extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            Text(
+            /*Text(
               postDate,
               style: TextStyle(
                 fontSize: width * 0.03,
                 fontWeight: FontWeight.w500,
                 color: Colors.grey,
               ),
-            ),
+            ),*/
             Text(
               description,
               style: TextStyle(

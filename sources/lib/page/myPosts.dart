@@ -1,41 +1,77 @@
+import 'dart:convert';
+
+import 'package:AthletiX/providers/api/clientApi.dart';
+import 'package:AthletiX/providers/api/utils/postClientApi.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
+import 'dart:typed_data';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 import '../components/profilePublicPostedCard.dart';
 import '../components/sendMessage.dart';
+import '../main.dart';
+import '../model/post.dart';
+import '../model/profile.dart';
+import '../providers/localstorage/secure/authManager.dart';
 
-class ProfilePublicPage extends StatelessWidget {
+class MyPostPage extends StatefulWidget {
+  @override
+  _MyPostPageState createState() => _MyPostPageState();
+}
+
+class _MyPostPageState extends State<MyPostPage> {
+  final postsClientApi = getIt<PostClientApi>();
+  final _clientApi = getIt<ClientApi>();
+  Profile? _profile;
+  List<Post> _posts = [];
+  @override
+  void initState() {
+    super.initState();
+    fetchProfile();
+    fetchMyPosts();
+  }
+
+  void fetchProfile() async {
+    Profile? profile = await AuthManager.getProfile();
+    setState(() {
+      _profile = profile;
+    });
+  }
+
+  void fetchMyPosts() async {
+    if(_profile?.id != null) {
+      int profileId = _profile!.id!;
+      String jsonReply = await _clientApi.getData('posts/user/$profileId?includeComments=true&includeExercises=true');
+      Map<String, dynamic> data = json.decode(jsonReply);
+      String jsonItems = json.encode(data["items"]);
+      _posts = postFromJson(jsonItems) as List<Post>;
+    }
+  }
+
+  Future<String> getThumbnail(String videoUrl) async {
+    final tempDir = await getTemporaryDirectory();
+    final thumbnailPath = await VideoThumbnail.thumbnailFile(
+      video: videoUrl,
+      thumbnailPath: tempDir.path,
+      imageFormat: ImageFormat.JPEG,
+      maxHeight: 100,
+      quality: 75,
+    );
+
+    return thumbnailPath ?? 'https://via.placeholder.com/800/3C383B/B66CFF?text=${_profile!.username}';
+  }
+
+  String _generateThumbnail(String videoUrl) async {
+    final thumbnailPath = await getThumbnail(videoUrl);
+    return thumbnailPath;
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-
-    List<Map<String, String>> postData = [
-      {
-        'postName': 'Name post 1',
-        'description': 'Lorem ipsum sdjfhvb sdjfbhjbse kjfsku dfub isdbdsiuifb skdf ...',
-        'postDate': 'Posted 21/09/2023 at 22:46',
-        'imagePath': '../assets/EditIcon.png',
-      },
-      {
-        'postName': 'Name post 2',
-        'description': 'Another description...',
-        'postDate': 'Posted 22/09/2023 at 12:30',
-        'imagePath': '../assets/EditIcon.png',
-      },
-      {
-        'postName': 'Name post 3',
-        'description': 'Another description...',
-        'postDate': 'Posted 22/09/2023 at 12:30',
-        'imagePath': '../assets/EditIcon.png',
-      },
-      {
-        'postName': 'Name post 4',
-        'description': 'Another description...',
-        'postDate': 'Posted 22/09/2023 at 12:30',
-        'imagePath': '../assets/EditIcon.png',
-      },
-
-    ];
 
     return Scaffold(
       body: SafeArea(
@@ -67,17 +103,23 @@ class ProfilePublicPage extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(left: 20, right: 10),
                                 child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/EditIcon.svg',
+                                  child: _profile != null && _profile!.picture != null
+                                      ? Image.network(
+                                    _profile!.picture!,
                                     width: 78.0,
                                     height: 78.0,
                                     fit: BoxFit.cover,
+                                  )
+                                      : SvgPicture.asset(
+                                    'assets/EditIcon.svg',
+                                    width: 78.0,
+                                    height: 78.0,
                                   ),
                                 ),
                               ),
-                              const Text(
-                                'Pseudo',
-                                style: TextStyle(
+                              Text(
+                                _profile != null ? _profile!.username! : 'Pseudo',
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
                                 ),
@@ -121,7 +163,7 @@ class ProfilePublicPage extends StatelessWidget {
                 ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: (postData.length / 2).ceil(),
+                    itemCount: (_posts.length / 2).ceil(),
                     itemBuilder: (context, index) {
                       int startIndex = index * 2;
                       int endIndex = startIndex + 1;
@@ -131,17 +173,17 @@ class ProfilePublicPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             ProfilePublicPostedCard(
-                              postName: postData[startIndex]['postName']!,
-                              description: postData[startIndex]['description']!,
-                              //postDate: postData[startIndex]['postDate']!,
-                              imagePath: postData[startIndex]['imagePath']!,
+                              postName: _posts[startIndex].title,
+                              description: _posts[startIndex].description,
+                              //postDate: _posts[startIndex].,
+                              imagePath: await _generateThumbnail(_posts[startIndex].content),
                               width: screenWidth * 0.42,
                               height: screenHeight * 0.3,
                             ),
-                            if (endIndex < postData.length)
+                            if (endIndex < _posts.length)
                               ProfilePublicPostedCard(
-                                postName: postData[endIndex]['postName']!,
-                                description: postData[endIndex]['description']!,
+                                postName: _posts[startIndex].title,
+                                description: _posts[startIndex].title,
                                 //postDate: postData[endIndex]['postDate']!,
                                 imagePath: postData[endIndex]['imagePath']!,
                                 width: screenWidth * 0.42,
@@ -153,7 +195,6 @@ class ProfilePublicPage extends StatelessWidget {
                     },
                   ),
                 ),
-
               ],
             ),
           ),
