@@ -46,7 +46,7 @@ class _ConversationPageState extends State<ConversationPage> {
             ),
             IconButton(
               icon: SvgPicture.asset(
-                'assets/edit.svg',
+                'assets/EditIcon.svg',
                 width: 30,
                 height: 30,
                 colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn) ,
