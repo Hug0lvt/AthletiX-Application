@@ -12,14 +12,14 @@ class Exercise {
   String name;
   String description;
   String image;
-  Category category;
+  Category? category;
 
   Exercise({
     required this.id,
     required this.name,
     required this.description,
     required this.image,
-    required this.category,
+    this.category,
   });
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
@@ -38,7 +38,7 @@ class Exercise {
     "name": name,
     "description": description,
     "image": image,
-    "category": category.toJson(),
+    "category": category?.toJson(),
   };
 
   // Function to convert from Exercise to PracticalExercise

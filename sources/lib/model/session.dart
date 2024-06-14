@@ -33,7 +33,7 @@ class Session {
     name: json["name"],
     date: DateTime.parse(json["date"]),
     duration: Utils.parseDuration(json["duration"]),
-    exercises: List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))),
+    exercises: json["exercises"].toString().isEmpty ? List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))) : [],
     status: 0,
   );
 

@@ -50,6 +50,7 @@ class _ExercicesTabState extends State<ExercicesTab> {
     });
     try {
       List<Exercise> fetchedExercices = await clientApi.getExercises();
+      print(fetchedExercices.first.name);
       _applyFilters(fetchedExercices);
       setState(() {
         exercices = fetchedExercices;
@@ -89,17 +90,20 @@ class _ExercicesTabState extends State<ExercicesTab> {
       bool matchesFilter = filtersSelected.isEmpty;
       if(!matchesFilter){
         for( var filter in filtersSelected){
-          if(exercise.category.id == filter.id){
+          if(exercise.category != null && exercise.category!.id == filter.id){
+            print('category');
+            print(exercise.category);
             matchesFilter = true;
           }
         }
       }
 
       if (matchesSearch && matchesFilter) {
-        if (!grouped.containsKey(exercise.category)) {
-          grouped[exercise.category] = [];
-        }
-        grouped[exercise.category]!.add(exercise);
+          if (!grouped.containsKey(exercise.category)) {
+              grouped[exercise.category!] = [];
+          }
+          grouped[exercise.category]!.add(exercise);
+
       }
     }
 

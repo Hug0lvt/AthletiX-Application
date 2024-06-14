@@ -49,7 +49,9 @@ class _TrainingTab extends State<TrainingTab> {
       profileId = profile.id;
     }
     try {
-      List<Session> fetchedSessions = await clientApi.getProgramsOfUser(profileId);
+      print(profileId);
+      List<Session> fetchedSessions = await clientApi.getProgramsOfUserWithEx(profileId);
+      print(fetchedSessions.first.name);
       List<Session> filterSessions = fetchedSessions
           .where((session) => session.name.toLowerCase().contains(searchQuery.toLowerCase()))
           .toList();

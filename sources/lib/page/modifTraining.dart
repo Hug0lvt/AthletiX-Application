@@ -10,6 +10,7 @@ import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../exceptions/not_found_exception.dart';
 import '../main.dart';
 import '../model/category.dart';
 import '../model/practicalExercise.dart';
@@ -28,9 +29,10 @@ class ModifTrainingPage extends StatefulWidget {
 }
 
 class _ModifTrainingPageState extends State<ModifTrainingPage> {
-  late Session currentSession;
+  late Session? currentSession;
   final practicalExerciseClientApi = getIt<PracticalExerciseClientApi>();
   final sessionClientApi = getIt<SessionClientApi>();
+  bool isLoading = false;
   /*List<PracticalExercise> exercises = [
     PracticalExercise(
       id: 1,
@@ -57,24 +59,49 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
 
   @override
   void initState() {
+    currentSession = null;
+    isLoading = true;
     super.initState();
-    currentSession = widget.session;
+    //currentSession = widget.session;
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _loadSession();
+    });
+  }
+
+  void _loadSession() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      Session session = await sessionClientApi.getSessionById(widget.session.id!);
+      setState(() {
+        currentSession = session;
+        isLoading = false;
+      });
+    } on NotFoundException catch (_) {
+      setState(() {
+        isLoading = false;
+        currentSession = null;
+      });
+    }
+
   }
 
   void _addExercise(Exercise exercise) async {
     print(exercise.id);
-    print(currentSession.id);
-    PracticalExercise practicalExercise = await practicalExerciseClientApi.createPracticalExercise(currentSession.id!, exercise.id);
+    print(currentSession!.id);
+    PracticalExercise practicalExercise = await practicalExerciseClientApi.createPracticalExercise(currentSession!.id!, exercise.id);
     setState(() {
-      currentSession.exercises.add(practicalExercise);
+      currentSession!.exercises.add(practicalExercise);
     });
   }
 
   void _startTraining() async {
-    currentSession.status = 1;
+    currentSession!.status = 1;
 
     setState(() {
-      sessionClientApi.updateSession(currentSession.id!, currentSession);
+      sessionClientApi.updateSession(currentSession!.id!, currentSession!);
     });
 
 
@@ -113,7 +140,13 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
       ),
       body: Container(
         color: const Color(0xFF282828),
-        child: Column(
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+                )
+              : currentSession == null
+            ? const Text('No session has been found')
+            : Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
@@ -128,14 +161,14 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
                         children: [
 
                           Text(
-                            currentSession.name,
+                            currentSession!.name,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 25,
                             ),
                           ),
 
-                          if (currentSession.status == 0 || currentSession.status == 1)
+                          if (currentSession!.status == 0 || currentSession!.status == 1)
                           Spacer(),
                             TextButton(
                               onPressed: () {
@@ -149,16 +182,9 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
                       ),
                     ),
                     const SizedBox(height: 5),
-                    /*ListView.builder(
-                      itemCount: exercises.length,
-                      itemBuilder: (context, index) {
-                        final exercise = exercises[index];
-                        //return TrainingExercise(exercise: exercise);
-                      },
-                    ),*/
                     Column(
-                      children: currentSession.exercises.map((exercise) {
-                        return TrainingExercise(exercise: exercise, status: currentSession.status);
+                      children: currentSession!.exercises.map((exercise) {
+                        return TrainingExercise(exercise: exercise, status: currentSession!.status);
                       }).toList(),
                     ),
                     Align(

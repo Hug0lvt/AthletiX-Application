@@ -206,7 +206,7 @@ class CreateProfilePage extends State<CreateProfileForm> {
     try {
       final profile = await AuthManager.getProfile();
       if (profile != null && profile.email != null && profile.username != null) {
-        final newProfile = await profileClientApi.createProfile(Profile(
+        final midProfile = await profileClientApi.createProfile(Profile(
           id: 0,
           email: profile.email,
           age: age,
@@ -218,6 +218,7 @@ class CreateProfilePage extends State<CreateProfileForm> {
           gender: gender,
           picture: userPicture,
         ));
+        final newProfile = await profileClientApi.getProfileByEmail(midProfile.email!);
         AuthManager.setProfile(newProfile);
         Navigator.pushNamedAndRemoveUntil(context, '/navbar', (route) => false);
       } else {

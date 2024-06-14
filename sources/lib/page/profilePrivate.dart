@@ -59,6 +59,7 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     Widget _buildProfileImage(double screenWidth) {
+      print(_profile?.id);
       if (_profile?.picture == null || _profile!.picture!.isEmpty || _profile!.picture! == "string") {
         return _buildImage(screenWidth, screenHeight);
       } else {

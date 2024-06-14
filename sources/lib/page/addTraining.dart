@@ -89,10 +89,23 @@ class _AddTrainingPageState extends State<AddTrainingPage> {
                   ? () async {
                 final navigator = Navigator.of(context);
                 String? token = await AuthManager.getToken(AuthKeys.ATH_BEARER_TOKEN_API.name);
+                print(token);
                 String programName = _controller.text;
+                Profile profilev2 = Profile(
+                  id: _profile!.id,
+                  username: _profile!.username,
+                  uniqueNotificationToken: _profile!.uniqueNotificationToken,
+                  role: _profile!.role,
+                  email: _profile!.email,
+                  weight: _profile!.weight,
+                  height: _profile!.height,
+                  gender: _profile!.gender,
+                  picture: _profile!.picture,
+                  age: _profile!.age,
+                );
                 sessionToCreate = Session(
                     id: 0,
-                    profile: _profile!,
+                    profile: profilev2,
                     name: programName,
                     date: DateTime.now(),
                     duration: const Duration(minutes: 0,seconds: 0),

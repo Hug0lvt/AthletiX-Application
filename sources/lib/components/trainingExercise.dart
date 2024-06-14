@@ -25,6 +25,20 @@ class _TrainingExerciseWidgetState extends State<TrainingExercise> {
 
   final practicalExerciseClientApi = getIt<PracticalExerciseClientApi>();
   final setClientApi = getIt<SetClientApi>();
+  PracticalExercise? currentExercice;
+
+  /*@override
+  void initState() {
+    currentExercice = null;
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _loadExercice();
+    });
+    super.initState();
+  }
+
+  void _loadExercice() async {
+    currentExercice = await practicalExerciseClientApi.getPracticalExerciseById(widget.exercise.id);
+  }*/
 
   void _addSet() async {
     Set setToAdd = Set(
