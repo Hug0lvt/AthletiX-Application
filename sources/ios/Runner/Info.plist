@@ -53,5 +53,13 @@
         <string>Nous avons besoin d'accéder à votre bibliothèque de photos pour que vous puissiez sélectionner des photos et des vidéos.</string>
         <key>NSMicrophoneUsageDescription</key>
         <string>Nous avons besoin d'accéder au microphone pour enregistrer des vidéos.</string>
+	    <key>UIBackgroundModes</key>
+        <array>
+            <string>fetch</string>
+            <string>processing</string>
+            <string>voip</string>
+        </array>
+        <key>NSLocalNotificationUsageDescription</key>
+        <string>App needs access to local notifications for receiving messages.</string>
 	</dict>
 </plist>
