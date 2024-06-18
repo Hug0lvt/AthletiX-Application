@@ -60,12 +60,13 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
   @override
   void initState() {
     currentSession = null;
-    isLoading = true;
+    isLoading = false;
     super.initState();
-    //currentSession = widget.session;
-    WidgetsBinding.instance.addPostFrameCallback((_){
+    currentSession = widget.session;
+    //print(currentSession!.exercises.first.exercise.name);
+    /*WidgetsBinding.instance.addPostFrameCallback((_){
       _loadSession();
-    });
+    });*/
   }
 
   void _loadSession() async {
@@ -120,6 +121,27 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
         _addExercise(selectedExercise);
       }
     });
+  }
+
+  void _onDeleteExercise(PracticalExercise exo) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    print("delete exo");
+
+    try {
+      await practicalExerciseClientApi.deletePracticalExercise(exo.id);
+      setState(() {
+        _loadSession();
+        currentSession!.exercises.remove(exo);
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -184,12 +206,12 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
                     const SizedBox(height: 5),
                     Column(
                       children: currentSession!.exercises.map((exercise) {
-                        return TrainingExercise(exercise: exercise, status: currentSession!.status);
+                        return TrainingExercise(exercise: exercise, status: currentSession!.status, onDelete: () => _onDeleteExercise(exercise),);
                       }).toList(),
                     ),
                     Align(
                       alignment: Alignment.center,
-                      child: TextButton(
+                      child: currentSession?.status == 0 ? TextButton(
                         onPressed: () {
                           _showExerciceModal(context);
                         },
@@ -199,7 +221,7 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
                             fontSize: 20,
                           ),
                         ),
-                      ),
+                      ) : Container(),
                     ),
                   ],
                 ),

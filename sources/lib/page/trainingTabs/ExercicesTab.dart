@@ -50,7 +50,6 @@ class _ExercicesTabState extends State<ExercicesTab> {
     });
     try {
       List<Exercise> fetchedExercices = await clientApi.getExercises();
-      print(fetchedExercices.first.name);
       _applyFilters(fetchedExercices);
       setState(() {
         exercices = fetchedExercices;

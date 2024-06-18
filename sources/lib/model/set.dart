@@ -32,7 +32,7 @@ class Set {
     weight: List<int>.from(json["weight"].map((x) => x)),
     rest: Utils.parseDuration(json["rest"]),
     mode: json["mode"],
-    exercise: json["exercise"].toString().isEmpty ? PracticalExercise.fromJson(json["exercise"]) : null,
+    exercise: json["exercise"]!= null ? PracticalExercise.fromJson(json["exercise"]) : null,
     isDone: json["isDone"]
   );
 

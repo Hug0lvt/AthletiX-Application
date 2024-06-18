@@ -1,14 +1,78 @@
-import 'package:AthletiX/components/gradientButton.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter_svg/svg.dart';
 import '../model/set.dart';
+import 'gradientButton.dart';
 
-class TrainingSet extends StatelessWidget {
+class TrainingSet extends StatefulWidget {
   final Set set;
   late int status;
 
   TrainingSet({Key? key, required this.set, required this.status}) : super(key: key);
+
+  @override
+  _TrainingSetState createState() => _TrainingSetState();
+}
+
+class _TrainingSetState extends State<TrainingSet> {
+  late int _secondsElapsed;
+  late Timer _timer;
+  late TextEditingController _controllerRep;
+
+  @override
+  void initState() {
+    //widget.status = 2;
+    super.initState();
+    _secondsElapsed = widget.set.rest.inSeconds;
+    _controllerRep = TextEditingController(text: "${widget.set.reps}");
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      setState(() {
+        if (_secondsElapsed > 0) {
+          _secondsElapsed--;
+        } else {
+          timer.cancel();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _decrementTimer() {
+    setState(() {
+      if (_secondsElapsed > 0) {
+        _secondsElapsed = _secondsElapsed-10;
+      }
+    });
+  }
+
+  String _getModeText(int mode) {
+    switch (mode) {
+      case 0:
+        return "Progressive";
+      case 1:
+        return "Degressive";
+      case 2:
+        return "Normal";
+      default:
+        return "Unknown";
+    }
+  }
+
+  void _incrementTimer() {
+    setState(() {
+      _secondsElapsed = _secondsElapsed+10;
+    });
+  }
+
+  void _handleEditingComplete() {
+    print("onSubmitted: $_controllerRep");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,25 +81,22 @@ class TrainingSet extends StatelessWidget {
 
     return Card(
       color: AppColors.greyMid,
-      margin: EdgeInsets.only(
-        top: screenHeight * 0.01,
-        bottom: screenHeight * 0.01,
-        left: screenWidth * 0.01,
-        right: screenWidth * 0.01,
+      margin: EdgeInsets.symmetric(
+        vertical: screenHeight * 0.01,
+        horizontal: screenWidth * 0.01,
       ),
       child: Padding(
-        padding: EdgeInsets.only(
-          top: screenHeight * 0.015,
-          bottom: screenHeight * 0.015,
+        padding: EdgeInsets.symmetric(
+          vertical: screenHeight * 0.015,
         ),
         child: Column(
           children: [
             Table(
               columnWidths: const {
-                0: FlexColumnWidth(0.15), // 15% de la largeur
-                1: FlexColumnWidth(0.3), // 30% de la largeur
-                2: FlexColumnWidth(0.3), // 30% de la largeur
-                3: FlexColumnWidth(0.15), // 15% de la largeur
+                0: FlexColumnWidth(0.15),
+                1: FlexColumnWidth(0.3),
+                2: FlexColumnWidth(0.3),
+                3: FlexColumnWidth(0.15),
               },
               children: [
                 const TableRow(
@@ -59,14 +120,12 @@ class TrainingSet extends StatelessWidget {
                     TableCell(
                       verticalAlignment: TableCellVerticalAlignment.middle,
                       child: Center(
-                          child: Text("${set.id}",
-                              style: const TextStyle(color: Colors.white))
+                        child: Text("${widget.set.id}", style: const TextStyle(color: Colors.white)),
                       ),
                     ),
                     TableCell(
                       verticalAlignment: TableCellVerticalAlignment.middle,
-                      child:
-                      Center(
+                      child: Center(
                         child: Container(
                           height: screenHeight * 0.05,
                           width: screenWidth * 0.3,
@@ -75,10 +134,15 @@ class TrainingSet extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           alignment: Alignment.center,
-                          child: DropdownButton<int>(
-                            value: set.mode,
+                          child: widget.status == 2 || widget.set.isDone ? Text(
+                            _getModeText(widget.set.mode),
+                            style: const TextStyle(
+                                color: Colors.orange
+                            ),
+                          ) : DropdownButton<int>(
+                            value: widget.set.mode,
                             dropdownColor: AppColors.greyMid,
-                            style: const TextStyle(color: Colors.orange), // Dropdown text color
+                            style: const TextStyle(color: Colors.orange),
                             items: const [
                               DropdownMenuItem(
                                 value: 0,
@@ -93,50 +157,56 @@ class TrainingSet extends StatelessWidget {
                                 child: Text("Normal"),
                               ),
                             ],
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              if (widget.status != 2 && !widget.set.isDone && value != null) {
+                                setState(() {
+                                  widget.set.mode = value;
+                                });
+                              }
+                            },
                           ),
                         ),
                       ),
                     ),
                     TableCell(
-                        verticalAlignment: TableCellVerticalAlignment.middle,
-                        child: Container(
-                          height: screenHeight * 0.05,
-                          width: screenWidth * 0.3,
-                          decoration: BoxDecoration(
-                            color: AppColors.grey,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          alignment: Alignment.center,
-                          child:
-                            Center(
-                                child: Text(set.weight.join(', '),
-                                    style: const TextStyle(color: Colors.white))
-                            ),
+                      verticalAlignment: TableCellVerticalAlignment.middle,
+                      child: Container(
+                        height: screenHeight * 0.05,
+                        width: screenWidth * 0.3,
+                        decoration: BoxDecoration(
+                          color: AppColors.grey,
+                          borderRadius: BorderRadius.circular(5),
                         ),
+                        alignment: Alignment.center,
+                        child: Center(
+                          child: Text(widget.set.weight.join(', '), style: const TextStyle(color: Colors.white)),
+                        ),
+                      ),
                     ),
                     TableCell(
                       verticalAlignment: TableCellVerticalAlignment.middle,
                       child: Container(
-                          height: screenHeight * 0.05,
-                          width: screenWidth * 0.0001,
-                          decoration: BoxDecoration(
-                            color: AppColors.grey,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          alignment: Alignment.center,
-                          child:
-                          Center(
-                              child: Text("${set.reps}",
-                                  style: const TextStyle(color: Colors.white)),
-                          ),
+                        height: screenHeight * 0.05,
+                        width: screenWidth * 0.0001,
+                        decoration: BoxDecoration(
+                          color: AppColors.grey,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        alignment: Alignment.center,
+                        child: Center(
+                          child: widget.status == 2 || widget.set.isDone ?
+                          Text("${widget.set.reps}", style: const TextStyle(color: Colors.white)) :
+                          TextField(
+                              //onEditingComplete: _handleEditingComplete(),
+                              controller: TextEditingController(text: "${widget.set.reps}") ,
+                              style: const TextStyle(color: Colors.white)),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ],
             ),
-            // Timer Row
             SizedBox(height: screenHeight * 0.02),
             Column(
               children: [
@@ -161,23 +231,21 @@ class TrainingSet extends StatelessWidget {
                           ),
                           width: screenWidth * 0.3,
                           height: screenHeight * 0.06,
-                          onPressed: () {
-                            print('Minus Button Pressed');
-                          },
+                          onPressed: _decrementTimer,
                         ),
                       ),
                       Container(
                         height: screenHeight * 0.06,
                         decoration: BoxDecoration(
                           color: AppColors.grey,
-                          borderRadius: BorderRadius.circular(10.0), // Ajustez selon votre besoin
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        padding: EdgeInsets.all(10.0), // Ajustez selon votre besoin
-                        child: const Text(
-                          "00:00:00",
-                          style: TextStyle(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text(
+                          formatTime(_secondsElapsed),
+                          style: const TextStyle(
                             fontSize: 18,
-                            color: Colors.white, // Couleur du texte du timer
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -191,9 +259,7 @@ class TrainingSet extends StatelessWidget {
                           ),
                           width: screenWidth * 0.3,
                           height: screenHeight * 0.06,
-                          onPressed: () {
-                            print('Add Button Pressed');
-                          },
+                          onPressed: _incrementTimer,
                         ),
                       ),
                     ],
@@ -205,5 +271,12 @@ class TrainingSet extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String formatTime(int seconds) {
+    int hours = seconds ~/ 3600;
+    int minutes = (seconds % 3600) ~/ 60;
+    int secs = seconds % 60;
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
   }
 }

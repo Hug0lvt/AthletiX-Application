@@ -33,8 +33,8 @@ class Session {
     name: json["name"],
     date: DateTime.parse(json["date"]),
     duration: Utils.parseDuration(json["duration"]),
-    exercises: json["exercises"].toString().isEmpty ? List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))) : [],
-    status: 0,
+    exercises: json["exercises"]!= null  ? List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))) : [],
+    status: json["status"],
   );
 
   Map<String, dynamic> toJson() => {

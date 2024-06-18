@@ -28,7 +28,7 @@ class Exercise {
       name: json["name"],
       description: json["description"],
       image: json["image"] ?? '', // Assign empty if no image provided
-      category: Category.fromJson(json["category"]),
+      category: json["category"]!=null ? Category.fromJson(json["category"]) : null,
     );
     return exercise;
   }

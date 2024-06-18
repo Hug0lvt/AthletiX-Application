@@ -28,7 +28,7 @@ class PracticalExercise {
     id: json["id"],
     exercise: Exercise.fromJson(json["exercise"]),
     session: Session.fromJson(json["session"]),
-    sets: json["sets"].toString().isEmpty ? List<Set>.from(json["sets"].map((x) => Set.fromJson(x))) : [],
+    sets: json["sets"]!= null  ? List<Set>.from(json["sets"].map((x) => Set.fromJson(x))) : [],
   );
 
   Map<String, dynamic> toJson() => {
