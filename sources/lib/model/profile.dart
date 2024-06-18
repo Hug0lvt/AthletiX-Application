@@ -54,4 +54,16 @@ class Profile {
     "gender": gender,
     "picture": picture,
   };
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Profile &&
+        other.id == id &&
+        other.email == email;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ email.hashCode;
 }
