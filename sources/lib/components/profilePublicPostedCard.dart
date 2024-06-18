@@ -1,27 +1,37 @@
 import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
-class ProfilePublicPostedCard extends StatelessWidget {
-  final String imagePath;
+class ProfilePublicPostedCard extends StatefulWidget {
+  final String thumbnailUrl;
   final String postName;
-  final String postDate;
   final String description;
   final double width;
   final double height;
 
   ProfilePublicPostedCard({
-    required this.imagePath,
+    required this.thumbnailUrl,
     required this.postName,
-    required this.postDate,
     required this.description,
     required this.width,
     required this.height,
   });
 
   @override
+  _ProfilePublicPostedCardState createState() => _ProfilePublicPostedCardState();
+}
+
+class _ProfilePublicPostedCardState extends State<ProfilePublicPostedCard> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-      width: width,
-      height: height,
+      width: widget.width,
+      height: widget.height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: const Color(0xe51a1a1a),
@@ -34,9 +44,9 @@ class ProfilePublicPostedCard extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: Text(
-                postName,
+                widget.postName,
                 style: TextStyle(
-                  fontSize: width * 0.05,
+                  fontSize: widget.width * 0.05,
                   fontWeight: FontWeight.w500,
                   color: Colors.white,
                 ),
@@ -44,25 +54,24 @@ class ProfilePublicPostedCard extends StatelessWidget {
             ),
             ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.asset(
-                imagePath,
+              child: widget.thumbnailUrl.isEmpty
+                  ? Image.asset(
+                'assets/dumbbell_button.png',
                 width: double.infinity,
-                height: height * 0.8,
+                height: widget.height * 0.8,
+                fit: BoxFit.cover,
+              )
+                  : Image.network(
+                widget.thumbnailUrl,
+                width: double.infinity,
+                height: widget.height * 0.8,
                 fit: BoxFit.cover,
               ),
             ),
             Text(
-              postDate,
+              widget.description,
               style: TextStyle(
-                fontSize: width * 0.03,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey,
-              ),
-            ),
-            Text(
-              description,
-              style: TextStyle(
-                fontSize: width * 0.03,
+                fontSize: widget.width * 0.05,
                 fontWeight: FontWeight.w500,
                 color: Colors.white,
               ),
@@ -70,7 +79,7 @@ class ProfilePublicPostedCard extends StatelessWidget {
             Text(
               "Read More",
               style: TextStyle(
-                fontSize: width * 0.03,
+                fontSize: widget.width * 0.03,
                 fontWeight: FontWeight.w500,
                 color: Colors.blue,
               ),
