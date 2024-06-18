@@ -199,14 +199,14 @@ class _TrainingTab extends State<TrainingTab> {
                 itemBuilder: (context, index) {
                   return ProgramContainer(
                     title: filteredSessions[index].name,
-                    lastSession: sessions[index].date != null ? ((DateTime.now()
-                        .difference(sessions[index].date!)
+                    lastSession: filteredSessions[index].date != null ? ((DateTime.now()
+                        .difference(filteredSessions[index].date!)
                         .inDays
                         .toString()) == '0' ? 'Today' : '${DateTime.now()
-                        .difference(sessions[index].date!)
+                        .difference(filteredSessions[index].date!)
                         .inDays} days ago') : 'No record found',
-                    exercises: sessions[index].exercises.isNotEmpty
-                        ? sessions[index].exercises
+                    exercises: filteredSessions[index].exercises.isNotEmpty
+                        ? filteredSessions[index].exercises
                         : [],
                     onDelete: () => _showDeleteConfirmationDialog(filteredSessions[index]),
                   );
