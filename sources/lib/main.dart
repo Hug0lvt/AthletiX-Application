@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:AthletiX/model/authentification/login/loginResponse.dart';
 import 'package:AthletiX/model/authentification/login/refresh.dart';
 import 'package:AthletiX/page/home.dart';
@@ -22,15 +24,18 @@ import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
 import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
+import 'package:signalr_core/signalr_core.dart';
 import 'components/navBar/BottomNavigationBar.dart';
-
 import 'model/profile.dart';
 
 String firstPage = '/start';
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
 final getIt = GetIt.instance;
 void setupLocator() {
-
   getIt.registerSingleton<ClientApi>(
       ClientApi(
           'https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/api',
@@ -75,17 +80,84 @@ Future<void> isAuthanticated() async {
   }
 }
 
-Future<void> initApp() async{
-  //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  WidgetsFlutterBinding.ensureInitialized();
-  setupLocator();
-  await isAuthanticated();
+void onStart(ServiceInstance serviceInstance) async{
+  HubConnection? hubConnection;
+  hubConnection = HubConnectionBuilder()
+      .withUrl('https://codefirst.iut.uca.fr/containers/AthletiX-ath-api/chathub')
+      .build();
+
+  try {
+    await hubConnection.start();
+    print('SignalR connection started!');
+  } catch (e) {
+    print('Error while connecting to SignalR: $e');
+  }
+
+
+  /*Timer.periodic(Duration(seconds: 10), (timer) async {
+    bool isServiceRunning = await FlutterBackgroundService().isRunning();
+    if (!isServiceRunning) {
+      timer.cancel();
+      return;
+    }
+
+    // Listen to SignalR events
+    try {
+      // Example: Listen to a specific event 'newMessage'
+      hubConnection?.on('newMessage', (arguments) {
+        print('New message received in background: $arguments');
+        // Handle the received message or trigger a notification
+        // You can use flutter_local_notifications here to show a notification
+      });
+    } catch (e) {
+      print('Error while listening to SignalR event: $e');
+    }
+  });*/
 }
 
 Future<void> main() async {
-  // For start application
   await initApp();
   runApp(const MyApp());
+}
+
+Future<void> initApp() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  initializeService();
+  setupLocator();
+  await _showNotification(title: "Atheltix - Nouveau Message", body:  "Yanns : Yo mec", payload: "");
+  await isAuthanticated();
+}
+
+bool onBackground(ServiceInstance serviceInstance) {
+  return true;
+}
+Future<void> initializeService() async {
+  final service = FlutterBackgroundService();
+  await service.configure(
+    androidConfiguration: AndroidConfiguration(
+      onStart: onStart,
+      autoStart: true,
+      isForegroundMode: true,
+    ),
+    iosConfiguration: IosConfiguration(
+      autoStart: true,
+      onForeground: onStart,
+      onBackground: onBackground,
+    ),
+  );
+  service.startService();
+}
+
+Future<void> initNotifications() async {
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+  const DarwinInitializationSettings initializationSettingsIOS =
+  DarwinInitializationSettings();
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 }
 
 class MyApp extends StatelessWidget {
@@ -115,4 +187,33 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+Future<void> _showNotification({
+  required String title,
+  required String body,
+  String? payload,
+}) async {
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  AndroidNotificationDetails(
+    'your_channel_id', // ID du canal
+    'your_channel_name', // Nom du canal
+    channelDescription: 'your_channel_description', // Description du canal
+    importance: Importance.max,
+    priority: Priority.high,
+  );
+  const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+  DarwinNotificationDetails();
+  const NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  await flutterLocalNotificationsPlugin.show(
+    0, // ID de la notification
+    title, // Titre de la notification
+    body, // Corps de la notification
+    platformChannelSpecifics,
+    payload: payload,
+  );
 }
