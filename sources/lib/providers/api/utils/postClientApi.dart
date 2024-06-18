@@ -48,4 +48,15 @@ class PostClientApi {
     final String url = '$_endpoint/$postId/addExercise/$exerciseId';
     await _clientApi.postData(url, '');
   }
+
+  Future<void> likePost(int postId, int profileId) async {
+    final String url = '$_endpoint/$postId/likedby/$profileId';
+    await _clientApi.postData(url, '');
+  }
+
+  Future<void> unlikePost(int postId, int profileId) async {
+    final String url = '$_endpoint/$postId/unlikedby/$profileId';
+    await _clientApi.deleteData(url);
+  }
+
 }
