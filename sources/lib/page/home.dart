@@ -40,10 +40,10 @@ class _HomePageState extends State<HomePage> {
   List<Profile> likes = [];
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
     _loadProfile();
-    fetchVideos();
+
   }
 
   Future<void> _loadProfile() async {
@@ -51,11 +51,12 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _profile = profile;
     });
+    await fetchVideos();
   }
 
   Future<void> fetchVideos() async {
     try {
-      List<Post> posts = await postClientApi.getRecommendedPosts('1');
+      List<Post> posts = await postClientApi.getRecommendedPosts(_profile!.id!.toString());
       print(posts);
       setState(() {
         _posts = posts;
@@ -70,7 +71,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchMoreVideos() async {
     try {
-      List<Post> morePosts = await postClientApi.getRecommendedPosts('1', offset: _posts.length);
+      List<Post> morePosts = await postClientApi.getRecommendedPosts(_profile!.id!.toString(), offset: _posts.length);
       setState(() {
         _posts.addAll(morePosts);
       });
