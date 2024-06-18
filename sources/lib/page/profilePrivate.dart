@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:AthletiX/constants/color.dart';
+import 'package:AthletiX/page/myFavoritePosts.dart';
 import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,6 +10,8 @@ import '../components/buttonProfilePage.dart';
 import '../components/editProfilContainer.dart';
 import '../model/profile.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
+
+import 'myPosts.dart';
 
 class ProfilePrivatePage extends StatefulWidget {
   @override
@@ -250,21 +253,37 @@ class _ProfilePrivatePageState extends State<ProfilePrivatePage> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      ButtonProfilePage(
-                        text: 'Posts',
-                        imagePath: 'assets/PostIcon.svg',
-                        width: screenWidth * 0.9,
-                        height: screenHeight * 0.07,
-                        screenHeight: screenHeight,
-                        screenWidth: screenWidth,
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MyPostPage()),
+                          );
+                        },
+                        child: ButtonProfilePage(
+                          text: 'Posts',
+                          imagePath: 'assets/PostIcon.svg',
+                          width: screenWidth * 0.9,
+                          height: screenHeight * 0.07,
+                          screenHeight: screenHeight,
+                          screenWidth: screenWidth,
+                        ),
                       ),
-                      ButtonProfilePage(
-                        text: 'Favorite Posts',
-                        imagePath: 'assets/HeartIcon.svg',
-                        width: screenWidth * 0.9,
-                        height: screenHeight * 0.07,
-                        screenHeight: screenHeight,
-                        screenWidth: screenWidth,
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MyFavoritePostsPage()),
+                          );
+                        },
+                        child: ButtonProfilePage(
+                          text: 'Favorite Posts',
+                          imagePath: 'assets/HeartIcon.svg',
+                          width: screenWidth * 0.9,
+                          height: screenHeight * 0.07,
+                          screenHeight: screenHeight,
+                          screenWidth: screenWidth,
+                        ),
                       ),
                       ButtonProfilePage(
                         text: 'Statistics',
