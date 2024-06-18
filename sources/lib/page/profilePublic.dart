@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:AthletiX/components/UserCard.dart';
 import 'package:flutter/material.dart';
 
 import '../components/profilePublicPostedCard.dart';
@@ -44,23 +45,7 @@ class ProfilePublicPage extends StatelessWidget {
 
     ];
 
-    Widget _buildImage() {
-      try {
-        if (profile.picture!.isNotEmpty) {
-          return Image.memory(
-            base64Decode(profile.picture!),
-            fit: BoxFit.cover,
-            width: screenWidth * 0.2,
-            height: screenHeight * 0.2,
-          );
-        } else {
-          throw Exception("Image is empty");
-        }
-      } catch (e) {
-        return Image.network("https://via.placeholder.com/80/3C383B/B66CFF?text=${profile.username?.substring(0,1)}",
-          fit: BoxFit.cover,);
-      }
-    }
+
 
     return Scaffold(
       backgroundColor: AppColors.greyDark,
@@ -75,43 +60,7 @@ class ProfilePublicPage extends StatelessWidget {
                 Stack(
                   alignment: Alignment.center,
                   children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 15.0),
-                      constraints: BoxConstraints.expand(
-                        width: screenWidth * 0.9,
-                        height: screenHeight * 0.13,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1A1A1A).withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(35.0),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 20, right: 10),
-                                child: ClipOval(
-                                  child: _buildImage()
-                                ),
-                              ),
-                            Text(
-                              profile.username ?? "Username indisponible",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                              ),
-                            ),
-                            ],
-                          ),
-                          SendMessage(
-                            width: screenWidth * 0.20,
-                            height: screenHeight * 0.05,
-                          ),
-                        ],
-                      ),
-                    ),
+                        UserCard(profile: profile, screenWidth: screenWidth, screenHeight: screenHeight)
                   ],
                 ),
                 Row(
