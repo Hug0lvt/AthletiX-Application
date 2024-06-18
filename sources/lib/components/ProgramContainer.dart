@@ -22,22 +22,30 @@ class ProgramContainer extends StatelessWidget {
 
     List<Widget> positionedWidgets = [];
 
-    for (int i = 0; i < exercises.length; i++) {
-      String buildExercice = "${exercises[i].sets.length} x ${exercises[i].sets[0].reps} ${exercises[i].exercise.name}";
-      positionedWidgets.add(
-        SizedBox(
-          width: screenWidth * 0.57,
-          child: Text(
-            buildExercice,
-            style: TextStyle(
-              color: const Color(0xFFA1A1A1),
-              fontSize: screenWidth * 0.03,
-              fontFamily: 'Mulish',
+    if (exercises.isNotEmpty) {
+      for (int i = 0; i < exercises.length; i++) {
+        String buildExercice;
+        if (exercises[i].sets.isNotEmpty) {
+          buildExercice = "${exercises[i].sets.length} x ${exercises[i].sets[0].reps} ${exercises[i].exercise.name}";
+        } else {
+          buildExercice = "${exercises[i].exercise.name}";
+        }
+        positionedWidgets.add(
+          SizedBox(
+            width: screenWidth * 0.57,
+            child: Text(
+              buildExercice,
+              style: TextStyle(
+                color: const Color(0xFFA1A1A1),
+                fontSize: screenWidth * 0.03,
+                fontFamily: 'Mulish',
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
+
 
     final kGradientBoxDecoration = BoxDecoration(
       boxShadow: const [
