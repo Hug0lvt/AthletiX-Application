@@ -1,11 +1,13 @@
+import 'dart:convert';
+
 import 'package:AthletiX/providers/api/clientApi.dart';
 import '../../../model/conversation.dart';
 
-class ConversationClientApi{
+class ConversationClientApi {
   late final ClientApi _clientApi;
   final String _endpoint = 'conversations';
 
-  ConversationClientApi(ClientApi cli){
+  ConversationClientApi(ClientApi cli) {
     _clientApi = cli;
   }
 
@@ -17,9 +19,10 @@ class ConversationClientApi{
     return conversationFromJson(await _clientApi.getDataById(_endpoint, conversationId));
   }
 
-  // TODO LIST
-  Future<Conversation> getConversation(String conversationEmail) async {
-    return conversationFromJson(await _clientApi.getData(_endpoint));
+  Future<List<Conversation>> getConversationsByUserId(int userId) async {
+    final response = await _clientApi.getData('$_endpoint/user/$userId?includeProfiles=true&includeMessages=false');
+    List<dynamic> data = json.decode(response)['items'];
+    return data.map((item) => Conversation.fromJson(item)).toList();
   }
 
   Future<Conversation> deleteConversation(int conversationId) async {
