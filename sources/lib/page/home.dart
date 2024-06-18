@@ -134,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                       child: comments.isEmpty
                           ? const Center(
                         child: Text(
-                          'Pas de commentaire pour cette publication',
+                          'No comments for this post.',
                           style: TextStyle(color: Colors.white),
                         ),
                       )
@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                               controller: commentController,
                               style: TextStyle(color: Colors.white),
                               decoration: InputDecoration(
-                                hintText: 'Ajouter un commentaire...',
+                                hintText: 'Add a comment...',
                                 hintStyle: TextStyle(color: Colors.grey),
                                 filled: true,
                                 fillColor: Colors.black54,
