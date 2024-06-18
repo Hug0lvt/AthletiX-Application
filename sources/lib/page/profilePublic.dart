@@ -21,25 +21,25 @@ class ProfilePublicPage extends StatelessWidget {
         'postName': 'Name post 1',
         'description': 'Lorem ipsum sdjfhvb sdjfbhjbse kjfsku dfub isdbdsiuifb skdf ...',
         'postDate': 'Posted 21/09/2023 at 22:46',
-        'imagePath': '../assets/EditIcon.png',
+        'imagePath': 'assets/EditIcon.svg',
       },
       {
         'postName': 'Name post 2',
         'description': 'Another description...',
         'postDate': 'Posted 22/09/2023 at 12:30',
-        'imagePath': '../assets/EditIcon.png',
+        'imagePath': 'assets/EditIcon.svg',
       },
       {
         'postName': 'Name post 3',
         'description': 'Another description...',
         'postDate': 'Posted 22/09/2023 at 12:30',
-        'imagePath': '../assets/EditIcon.png',
+        'imagePath': 'assets/EditIcon.svg',
       },
       {
         'postName': 'Name post 4',
         'description': 'Another description...',
         'postDate': 'Posted 22/09/2023 at 12:30',
-        'imagePath': '../assets/EditIcon.png',
+        'imagePath': 'assets/EditIcon.svg',
       },
 
     ];

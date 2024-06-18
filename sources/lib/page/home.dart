@@ -414,6 +414,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _controller.pause();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
