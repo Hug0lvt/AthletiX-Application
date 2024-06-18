@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:AthletiX/components/ExerciseContainer.dart';
 import 'package:AthletiX/constants/color.dart';
-import 'package:AthletiX/model/exercise.dart';
 import 'package:AthletiX/model/practicalExercise.dart';
 import 'package:AthletiX/model/session.dart';
 import 'package:AthletiX/providers/api/utils/sessionClientApi.dart';
@@ -37,12 +36,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool _isLiked = false;
+  int numberOfLikes = 0;
+  List<Profile> likes = [];
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
     _loadProfile();
-    fetchVideos();
+
   }
 
   Future<void> _loadProfile() async {
@@ -50,11 +51,12 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _profile = profile;
     });
+    await fetchVideos();
   }
 
   Future<void> fetchVideos() async {
     try {
-      List<Post> posts = await postClientApi.getRecommendedPosts('1');
+      List<Post> posts = await postClientApi.getRecommendedPosts(_profile!.id!.toString());
       print(posts);
       setState(() {
         _posts = posts;
@@ -69,7 +71,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> fetchMoreVideos() async {
     try {
-      List<Post> morePosts = await postClientApi.getRecommendedPosts('1', offset: _posts.length);
+      List<Post> morePosts = await postClientApi.getRecommendedPosts(_profile!.id!.toString(), offset: _posts.length);
       setState(() {
         _posts.addAll(morePosts);
       });
@@ -95,9 +97,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void onPressedLiked() {
+  void onPressedLiked() async{
+    if(_isLiked){
+      await postClientApi.unlikePost(_posts[_currentVideoIndex].id, _profile!.id!);
+      likes = await postClientApi.likesOfPost(_posts[_currentVideoIndex].id);
+    }else{
+      await postClientApi.likePost(_posts[_currentVideoIndex].id, _profile!.id!);
+      likes = await postClientApi.likesOfPost(_posts[_currentVideoIndex].id);
+    }
     setState(() {
       _isLiked = !_isLiked;
+      numberOfLikes = likes.length;
     });
   }
 
@@ -124,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                       child: comments.isEmpty
                           ? const Center(
                         child: Text(
-                          'No comment found for this post',
+                          'No comments for this post.',
                           style: TextStyle(color: Colors.white),
                         ),
                       )
@@ -308,11 +318,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void onPageChanged(int index) {
+  void onPageChanged(int index) async{
     setState(() {
       _currentVideoIndex = index;
     });
     _updateVideoController();
+    try {
+      final likes = await postClientApi.likesOfPost(_posts[_currentVideoIndex].id);
+      setState(() {
+        _isLiked = likes.contains(_profile);
+        numberOfLikes = likes.length;
+      });
+    } catch (e) {
+      print("bug likes");
+    }
+
 
     // Si nous sommes dans les 2 dernières vidéos, charger plus de vidéos
     if (_posts.length - index <= 2) {
@@ -414,10 +434,11 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          _controller.pause();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProfilePublicPage(),
+                              builder: (context) => ProfilePublicPage(profile: post.publisher!),
                             ),
                           );
                         },
@@ -440,7 +461,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       const SizedBox(width: 5.0),
                       Text(
-                        "0",
+                        numberOfLikes.toString(),
                         style: TextStyle(color: Colors.white),
                       ),
                       const SizedBox(height: 5.0),

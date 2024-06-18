@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:AthletiX/model/profile.dart';
 import 'package:AthletiX/providers/api/clientApi.dart';
 import '../../../model/post.dart';
 
@@ -48,4 +49,21 @@ class PostClientApi {
     final String url = '$_endpoint/$postId/addExercise/$exerciseId';
     await _clientApi.postData(url, '');
   }
+
+  Future<void> likePost(int postId, int profileId) async {
+    final String url = '$_endpoint/$postId/likedby/$profileId';
+    await _clientApi.postData(url, '');
+  }
+
+  Future<void> unlikePost(int postId, int profileId) async {
+    final String url = '$_endpoint/$postId/unlikedby/$profileId';
+    await _clientApi.deleteData(url);
+  }
+
+  Future<List<Profile>> likesOfPost(int postId) async {
+    final response = await _clientApi.getData('$_endpoint/$postId/likes');
+    final data = json.decode(response) as Map<String, dynamic>;
+    return (data['items'] as List).map((item) => Profile.fromJson(item)).toList();
+  }
+
 }

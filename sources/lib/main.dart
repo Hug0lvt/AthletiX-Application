@@ -110,7 +110,6 @@ class MyApp extends StatelessWidget {
         '/navbar': (context) => const DefaultBottomNavigationBar(),
         // Navigation
         '/home': (context) => HomePage(),
-        '/profile/public': (context) => ProfilePublicPage(),
         '/profile/private': (context) => ProfilePrivatePage(),
       },
     );
