@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:AthletiX/exceptions/not_found_exception.dart';
 import 'package:AthletiX/model/exercise.dart';
 import 'package:AthletiX/model/profile.dart';
@@ -88,7 +87,9 @@ class _PublishPostPageState extends State<PublishPostPage> {
       final loadedCategories = await categoryClientApi.getCategories();
       setState(() {
         categories = loadedCategories;
-        selectedCategory = categories[0];
+        if (categories.isNotEmpty) {
+          selectedCategory = categories[0];
+        }
       });
     } catch (e) {
       print("Failed to load categories: $e");
@@ -96,10 +97,12 @@ class _PublishPostPageState extends State<PublishPostPage> {
   }
 
   void _filterExercices() {
-    filteredExercices = exercices
-        .where((exerc) =>
-        exerc.name.toLowerCase().contains(searchQuery.toLowerCase()))
-        .toList();
+    setState(() {
+      filteredExercices = exercices
+          .where((exerc) =>
+          exerc.name.toLowerCase().contains(searchQuery.toLowerCase()))
+          .toList();
+    });
   }
 
   Future<void> openImagePicker() async {
@@ -135,8 +138,22 @@ class _PublishPostPageState extends State<PublishPostPage> {
     });
   }
 
-  Future<void> _publishPost() async {
-    if (_selectedMediaFile != null && postNameController.text != "" && descriptionController.text != "") {
+  Future<void> _publishPost(BuildContext context) async {
+    if (_selectedMediaFile != null &&
+        postNameController.text != "" &&
+        descriptionController.text != "") {
+      setState(() {
+        isLoading = true;
+      });
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return Center(child: CircularProgressIndicator());
+        },
+      );
+
       final post = Post(
         publisher: _profile,
         category: selectedCategory,
@@ -155,26 +172,42 @@ class _PublishPostPageState extends State<PublishPostPage> {
 
         if (_selectedMediaFile != null) {
           try {
-            await postClientApi.uploadPostMedia(createdPost.id, _selectedMediaFile!);
+            await postClientApi.uploadPostMedia(
+                createdPost.id, _selectedMediaFile!);
             print("Media uploaded successfully");
 
             for (var exercise in selectedExercises) {
               try {
-                await postClientApi.addExerciseToPost(createdPost.id, exercise.id);
-                print("Exercise ${exercise.id} added to post ${createdPost.id}");
+                await postClientApi.addExerciseToPost(
+                    createdPost.id, exercise.id);
+                print(
+                    "Exercise ${exercise.id} added to post ${createdPost.id}");
               } catch (e) {
                 print("Failed to add exercise ${exercise.id} to post: $e");
               }
             }
-
           } catch (e) {
             print("Failed to upload media: $e");
           }
         }
 
         print("Post published successfully: ${createdPost.id}");
+
+        Navigator.of(context).pop(); // Fermer la boîte de dialogue de chargement
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Post published successfully')),
+        );
+
       } catch (e) {
         print("Failed to publish post: $e");
+        Navigator.of(context).pop(); // Fermer la boîte de dialogue de chargement
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to publish post')),
+        );
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
       }
     }
   }
@@ -263,7 +296,8 @@ class _PublishPostPageState extends State<PublishPostPage> {
                       hintText: 'Description',
                       hintStyle: TextStyle(color: Colors.grey),
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      contentPadding:
+                      EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     ),
                   ),
                 ),
@@ -301,7 +335,8 @@ class _PublishPostPageState extends State<PublishPostPage> {
                           selectedCategory = newValue!;
                         });
                       },
-                      items: categories.map<DropdownMenuItem<Category>>((Category category) {
+                      items: categories
+                          .map<DropdownMenuItem<Category>>((Category category) {
                         return DropdownMenuItem<Category>(
                           value: category,
                           child: Text(
@@ -321,7 +356,8 @@ class _PublishPostPageState extends State<PublishPostPage> {
                         ),
                         filled: true,
                         fillColor: Color(0xE51A1A1A),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                        contentPadding:
+                        EdgeInsets.symmetric(horizontal: 20),
                       ),
                     ),
                   ),
@@ -363,7 +399,8 @@ class _PublishPostPageState extends State<PublishPostPage> {
                             hintText: 'Search',
                             hintStyle: TextStyle(color: Colors.grey),
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            contentPadding:
+                            EdgeInsets.symmetric(horizontal: 20),
                           ),
                         ),
                       ),
@@ -479,7 +516,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
                 ),
                 SizedBox(height: 20),
                 GestureDetector(
-                  onTap: _publishPost,
+                  onTap: () => _publishPost(context),
                   child: Container(
                     width: screenWidth * 0.3,
                     height: screenHeight * 0.06,

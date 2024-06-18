@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart'; // Importez le package flutter_svg
 
 class SendMessage extends StatelessWidget {
-  final String text;
   final double width;
   final double height;
 
-  SendMessage({required this.text, required this.width, required this.height});
+  SendMessage({required this.width, required this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +38,11 @@ class SendMessage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(
-            text,
-            style: const TextStyle(
-              color: Colors.black,
-            ),
-          ),
-          Image.asset(
-            '../assets/sendIcon.png',
-            width: 30.0,
-            height: 30.0,
+          // Utilisez SvgPicture.asset pour charger l'icône SVG
+          SvgPicture.asset(
+            'assets/SendIcon.svg',
+            width: 25.0,
+            height: 25.0,
           ),
         ],
       ),
