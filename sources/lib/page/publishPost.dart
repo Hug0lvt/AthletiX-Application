@@ -144,6 +144,7 @@ class _PublishPostPageState extends State<PublishPostPage> {
         description: descriptionController.text,
         publicationType: 0,
         content: "",
+        thumbnail: "",
         comments: [],
         exercises: selectedExercises,
         id: 0,
