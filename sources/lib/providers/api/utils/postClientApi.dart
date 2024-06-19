@@ -26,6 +26,12 @@ class PostClientApi {
     return (data['items'] as List).map((item) => Post.fromJson(item)).toList();
   }
 
+  Future<List<Post>> getPostsLikedByUser(String profileId, {int offset = 0, int limit = 30}) async {
+    final response = await _clientApi.getData('$_endpoint/likedby/$profileId?offset=$offset&limit=$limit');
+    final data = json.decode(response) as Map<String, dynamic>;
+    return (data['items'] as List).map((item) => Post.fromJson(item)).toList();
+  }
+
   Future<List<Post>> getRecommendedPosts(String profileId, {int offset = 0, int pageSize = 30}) async {
     final response = await _clientApi.getData('$_endpoint/recommendations/user/$profileId?offset=$offset&pageSize=$pageSize');
     final data = json.decode(response) as Map<String, dynamic>;
