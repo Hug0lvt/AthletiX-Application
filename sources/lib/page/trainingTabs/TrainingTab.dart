@@ -55,12 +55,11 @@ class _TrainingTab extends State<TrainingTab> {
     try {
       List<Session> fetchedSessions = await clientApi.getProgramsOfUserWithEx(profileId);
       List<Session> filterSessions = fetchedSessions
-          .where((session) => session.name.toLowerCase().contains(searchQuery.toLowerCase()) && (session.status == 0 || session.status == 1 ))
+          .where((session) => session.name.toLowerCase().contains(searchQuery.toLowerCase()) && (session.status != 2 ))
           .toList();
       setState(() {
         filteredSessions = filterSessions;
         sessions = fetchedSessions;
-        print(sessions);
         isLoading = false;
       });
     } on NotFoundException catch (_) {
@@ -216,21 +215,21 @@ class _TrainingTab extends State<TrainingTab> {
                 itemBuilder: (context, index) {
                   return ProgramContainer(
                     title: filteredSessions[index].name,
-                    status: sessions[index].status,
-                    lastSession: sessions[index].date != null ? ((DateTime.now()
-                        .difference(sessions[index].date!)
+                    status: filteredSessions[index].status,
+                    lastSession: filteredSessions[index].date != null ? ((DateTime.now()
+                        .difference(filteredSessions[index].date!)
                         .inDays
                         .toString()) == '0' ? 'Today' : '${DateTime.now()
-                        .difference(sessions[index].date!)
+                        .difference(filteredSessions[index].date!)
                         .inDays} days ago') : 'No record found',
-                    exercises: sessions[index].exercises.isNotEmpty
-                        ? sessions[index].exercises
+                    exercises: filteredSessions[index].exercises.isNotEmpty
+                        ? filteredSessions[index].exercises
                         : [],
                     onDelete: () => _showDeleteConfirmationDialog(filteredSessions[index]),
                     onTap: () => {
                       Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ModifTrainingPage(session: sessions[index], onBack: _onBackModif,)),
+                      MaterialPageRoute(builder: (context) => ModifTrainingPage(session: filteredSessions[index], onBack: _onBackModif,)),
                     ) },
                   );
                 },

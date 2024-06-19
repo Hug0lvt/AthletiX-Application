@@ -189,12 +189,12 @@ class _TrainingExerciseWidgetState extends State<TrainingExercise> {
               onPressed: () {
                 _addSet();
               },
-              child: const Text(
+              child: widget.status == 0 ? const Text(
                 'Add set',
                 style: TextStyle(
                   fontSize: 20,
                 ),
-              ),
+              ) : Container(),
             ) : Container(),
           ),
           const Padding(

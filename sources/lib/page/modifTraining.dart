@@ -63,8 +63,6 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
   }
 
   void _addExercise(Exercise exercise) async {
-    print(exercise.id);
-    print(currentSession!.id);
     PracticalExercise practicalExercise = await practicalExerciseClientApi.createPracticalExercise(currentSession!.id!, exercise.id);
     setState(() {
       currentSession!.exercises.add(practicalExercise);
@@ -113,20 +111,15 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
     }
 
     Session sessionStarted = await sessionClientApi.getSessionById(currentSession!.id!);
-    print(sessionStarted.exercises.first.exercise.name);
 
 
     sessionStarted.status = 1;
     sessionStarted.id = 0;
-    print("sessionStarted.status");
-    print(sessionStarted.status);
 
     Session sessionIntermediaire = await sessionClientApi.createSession(sessionStarted);
 
     List<Future<void>> futuresEx = sessionStarted.exercises.map((exo) async {
-      print(exo.exercise.name);
       PracticalExercise exToAdd = await practicalExerciseClientApi.getPracticalExerciseById(exo.id);
-      print(exToAdd.id);
       PracticalExercise currentEx = await practicalExerciseClientApi.createPracticalExercise(sessionIntermediaire.id!, exToAdd.exercise.id);
       exToAdd.sets.map((set) async {
         Set setToAdd = set;

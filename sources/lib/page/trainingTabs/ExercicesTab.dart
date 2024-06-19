@@ -90,8 +90,6 @@ class _ExercicesTabState extends State<ExercicesTab> {
       if(!matchesFilter){
         for( var filter in filtersSelected){
           if(exercise.category != null && exercise.category!.id == filter.id){
-            print('category');
-            print(exercise.category);
             matchesFilter = true;
           }
         }
