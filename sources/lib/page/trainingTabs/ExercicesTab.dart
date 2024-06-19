@@ -254,9 +254,20 @@ class _ExercicesTabState extends State<ExercicesTab> {
                       style: TextStyle(color: Colors.white, fontFamily: 'Mulish'),
                     ),
                     children: exercises.map((exercise) {
-                      return ExerciseContainer(
-                        exercice: exercise,
-                        onExerciseSelected: widget.onExerciseSelected,
+                      return GestureDetector(
+                        onTap: () {
+                          if (widget.onExerciseSelected != null) {
+                            widget.onExerciseSelected!(exercise);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Gesture Detected on ' + exercise.name)),
+                            );
+                          }
+                          ;
+                        },
+                        child: ExerciseContainer(
+                          exercice: exercise,
+                        ),
                       );
                     }).toList(),
                   );
