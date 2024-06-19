@@ -72,4 +72,10 @@ class PostClientApi {
     return (data['items'] as List).map((item) => Profile.fromJson(item)).toList();
   }
 
+  Future<List<Post>> getPostsByQuery(String query) async {
+    final response = await _clientApi.getData('$_endpoint/search/$query');
+    final data = json.decode(response) as Map<String, dynamic>;
+    return (data['items'] as List).map((item) => Post.fromJson(item)).toList();
+  }
+
 }

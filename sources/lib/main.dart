@@ -22,6 +22,7 @@ import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
 import 'package:AthletiX/providers/localstorage/secure/authKeys.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'components/navBar/BottomNavigationBar.dart';
 
@@ -78,6 +79,9 @@ Future<void> isAuthanticated() async {
 Future<void> initApp() async{
   //await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   setupLocator();
   await isAuthanticated();
 }
