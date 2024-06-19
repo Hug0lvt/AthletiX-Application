@@ -1,9 +1,68 @@
+import 'package:AthletiX/exceptions/not_found_exception.dart';
+import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
+import 'package:AthletiX/components/ProgramContainer.dart';
+import 'package:AthletiX/model/session.dart';
 
-import '../../components/ProgramContainer.dart';
+import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
+import 'package:AthletiX/main.dart';
 
-class HistoryTab extends StatelessWidget {
+import '../modifTraining.dart';
+
+class HistoryTab extends StatefulWidget {
   const HistoryTab({super.key});
+  @override
+  State<HistoryTab> createState() => _HistoryTab();
+}
+
+class _HistoryTab extends State<HistoryTab> {
+
+  final clientApi = getIt<TrainingClientApi>();
+
+  get onPressed => null;
+
+  late List<Session> sessions;
+
+  bool isLoading = false;
+
+  String searchQuery = '';
+
+  @override
+  void initState() {
+    sessions = [];
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _loadSessions();
+    });
+
+  }
+  void _loadSessions() async {
+    setState(() {
+      isLoading = true;
+    });
+    int? profileId;
+    Profile? profile = await AuthManager.getProfile();
+    if (profile != null) {
+      profileId = profile.id;
+    }
+    try {
+      List<Session> fetchedSessions = await clientApi.getProgramsOfUserWithEx(profileId);
+      List<Session> filterSessions = fetchedSessions
+          .where((session) => session.status == 2 )
+          .toList();
+      setState(() {
+        sessions = filterSessions;
+        isLoading = false;
+      });
+    } on NotFoundException catch (_) {
+      // Gère spécifiquement la NotFoundException
+      setState(() {
+        sessions = []; // Aucune session trouvée
+        isLoading = false;
+      });
+    }
+  }
 
 
   @override
@@ -35,33 +94,46 @@ class HistoryTab extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8.0),
-            Expanded(
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  ProgramContainer(
-                    title: 'Push',
-                    lastSession: '19',
-                    exercises: [
-                      '4 x 8 Dumbbell Benchpress',
-                      '4 x 8 Inclined Dumbbell Benchpress',
-                      '4 x 8 Machine Fly',
-                      '4 x 8 Cable Triceps',
-                    ],
+            ListView(
+              shrinkWrap: true,
+              children: [
+                isLoading
+                    ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+                    : sessions.isEmpty
+                    ? const Center(
+                  child: Text(
+                    "No Past Sessions Found",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Mulish',
+                    ),
                   ),
-                  ProgramContainer(
-                    title: 'Pull',
-                    lastSession: '1',
-                    exercises: [
-                      '4 x 8 Pull-ups',
-                      '4 x 8 Barbell Rows',
-                      '4 x 8 Lat Pulldowns',
-                      '4 x 8 Face Pulls',
-                    ],
-                  ),
-                  // Add more ProgramContainer widgets as needed
-                ],
-              ),
+                )
+                    : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: sessions.length,
+                      itemBuilder: (context, index) {
+                        return ProgramContainer(
+                          title: sessions[index].name,
+                          lastSession: sessions[index].date != null ? ((DateTime.now()
+                              .difference(sessions[index].date!)
+                              .inDays
+                              .toString()) == '0' ? 'Today' : '${DateTime.now()
+                              .difference(sessions[index].date!)
+                              .inDays} days ago') : 'No record found',
+                          exercises: sessions[index].exercises.isNotEmpty
+                              ? sessions[index].exercises
+                              : [],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ModifTrainingPage(session: sessions[index])),
+                          ),
+                        );
+                      },
+                ),
+              ],
             ),
           ],
         ),

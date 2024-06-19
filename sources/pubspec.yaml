@@ -16,17 +16,16 @@ dependencies:
   video_player: ^2.8.2
   flutter_svg: ^2.0.9
   http: ^1.1.0
-  firebase_auth: ^4.16.0
   flutter_dotenv: ^5.1.0
   shared_preferences: ^2.2.2
   get_it: ^7.6.7
   flutter_secure_storage: ^9.0.0
   flutter_native_splash: ^2.3.7
+  image_picker: ^0.8.4+3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  firebase_core: ^2.24.2
 
 dev_dependencies:
   flutter_test:
@@ -39,9 +38,17 @@ flutter:
   uses-material-design: true
 
   assets:
-  - .env
+  - assets/default_exercice_image.svg
+  - assets/dumbbell.png
+  - assets/dumbbell_button.png
+  - assets/chat.png
+  - assets/person.png
+  - assets/plus.png
+  - assets/video.png
+  - assets/EditIcon.svg
   - assets/AthletiX.svg
   - assets/LikeIcon.svg
+  - assets/EditIcon.svg
   - assets/DoubleHaltereIcon.svg
   - assets/CommentIcon.svg
   - assets/AddPlus.svg
@@ -49,8 +56,18 @@ flutter:
   - assets/Filter.svg
   - assets/Benchpress.png
   - assets/LetsGo.svg
+  - assets/search.png
   - assets/doigby.mp4
+  - assets/airsoft.mp4
   - assets/Logo.png
+  - assets/AddIcon.svg
+  - assets/MinusIcon.svg
+  - assets/SettingsIcon.svg
+  - assets/StatisticsIcon.svg
+  - assets/HeartIcon.svg
+  - assets/PostIcon.svg
+  - assets/testAvatar.jpg
+  - assets/SendIcon.svg
 
 # Gen Splash Screen "flutter pub run flutter_native_splash:create"
 flutter_native_splash:
