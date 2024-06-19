@@ -33,15 +33,6 @@ class _TrainingSetState extends State<TrainingSet> {
     _secondsElapsed = widget.set.rest.inSeconds;
     _controllerRep = TextEditingController(text: "${widget.set.reps}");
     _controllerWeight = TextEditingController(text: widget.set.weight.join(', '));
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-      /*setState(() {
-        if (_secondsElapsed > 0) {
-          _secondsElapsed--;
-        } else {
-          timer.cancel();
-        }
-      });*/
-    });
   }
 
   @override
@@ -122,6 +113,16 @@ class _TrainingSetState extends State<TrainingSet> {
     widget.set.isDone = true;
 
     await _updateSet(widget.set);
+
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      setState(() {
+        if (_secondsElapsed > 0) {
+          _secondsElapsed--;
+        } else {
+          timer.cancel();
+        }
+      });
+    });
 
     if (widget.isFinished != null) {
       await widget.isFinished();

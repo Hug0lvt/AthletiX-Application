@@ -110,32 +110,55 @@ class _ModifTrainingPageState extends State<ModifTrainingPage> {
       return;
     }
 
-    Session sessionStarted = await sessionClientApi.getSessionById(currentSession!.id!);
-
-
-    sessionStarted.status = 1;
-    sessionStarted.id = 0;
-
-    Session sessionIntermediaire = await sessionClientApi.createSession(sessionStarted);
-
-    List<Future<void>> futuresEx = sessionStarted.exercises.map((exo) async {
-      PracticalExercise exToAdd = await practicalExerciseClientApi.getPracticalExerciseById(exo.id);
-      PracticalExercise currentEx = await practicalExerciseClientApi.createPracticalExercise(sessionIntermediaire.id!, exToAdd.exercise.id);
-      exToAdd.sets.map((set) async {
-        Set setToAdd = set;
-        setToAdd.id = 0;
-        await setClientApi.createSet(setToAdd, currentEx.id);
-      }).toList();
-    }).toList();
-
-    await Future.wait(futuresEx);
-
-    Session duplicatedSession = await sessionClientApi.getSessionById(sessionIntermediaire.id!);
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => ModifTrainingPage(session: duplicatedSession, onBack: widget.onBack,)),
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Ne pas permettre de fermer la modal en cliquant à l'extérieur
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
     );
+
+    try {
+      Session sessionStarted = await sessionClientApi.getSessionById(currentSession!.id!);
+
+      sessionStarted.status = 1;
+      sessionStarted.id = 0;
+
+      Session sessionIntermediaire = await sessionClientApi.createSession(sessionStarted);
+
+      List<Future<void>> futuresEx = sessionStarted.exercises.map((exo) async {
+        PracticalExercise exToAdd = await practicalExerciseClientApi.getPracticalExerciseById(exo.id);
+        PracticalExercise currentEx = await practicalExerciseClientApi.createPracticalExercise(sessionIntermediaire.id!, exToAdd.exercise.id);
+        List<Future<void>> setFutures = exToAdd.sets.map((set) async {
+          Set setToAdd = set;
+          setToAdd.id = 0;
+          await setClientApi.createSet(setToAdd, currentEx.id);
+        }).toList();
+        await Future.wait(setFutures);
+      }).toList();
+
+      await Future.wait(futuresEx);
+
+      Session duplicatedSession = await sessionClientApi.getSessionById(sessionIntermediaire.id!);
+
+      // Fermer la modal de chargement
+      Navigator.of(context, rootNavigator: true).pop();
+
+      // Naviguer vers la nouvelle page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => ModifTrainingPage(session: duplicatedSession, onBack: widget.onBack,)),
+      );
+    } catch (e) {
+      // Fermer la modal de chargement en cas d'erreur
+      Navigator.of(context, rootNavigator: true).pop();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
 
 
   }
