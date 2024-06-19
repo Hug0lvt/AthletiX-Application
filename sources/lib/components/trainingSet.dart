@@ -2,14 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:AthletiX/utils/appColors.dart';
 import 'package:flutter_svg/svg.dart';
+import '../main.dart';
 import '../model/set.dart';
+import '../providers/api/utils/setClientApi.dart';
 import 'gradientButton.dart';
 
 class TrainingSet extends StatefulWidget {
-  final Set set;
+  late final Set set;
   late int status;
+  late Function() isFinished;
 
-  TrainingSet({Key? key, required this.set, required this.status}) : super(key: key);
+  TrainingSet({Key? key, required this.set, required this.status, required this.isFinished}) : super(key: key);
 
   @override
   _TrainingSetState createState() => _TrainingSetState();
@@ -19,36 +22,34 @@ class _TrainingSetState extends State<TrainingSet> {
   late int _secondsElapsed;
   late Timer _timer;
   late TextEditingController _controllerRep;
+  late TextEditingController _controllerWeight;
+  final setClientApi = getIt<SetClientApi>();
+
+  bool get _isDisabled => widget.status == 2 || widget.set.isDone;
 
   @override
   void initState() {
-    //widget.status = 2;
     super.initState();
     _secondsElapsed = widget.set.rest.inSeconds;
     _controllerRep = TextEditingController(text: "${widget.set.reps}");
+    _controllerWeight = TextEditingController(text: widget.set.weight.join(', '));
     _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-      setState(() {
+      /*setState(() {
         if (_secondsElapsed > 0) {
           _secondsElapsed--;
         } else {
           timer.cancel();
         }
-      });
+      });*/
     });
   }
 
   @override
   void dispose() {
     _timer.cancel();
+    _controllerRep.dispose();
+    _controllerWeight.dispose();
     super.dispose();
-  }
-
-  void _decrementTimer() {
-    setState(() {
-      if (_secondsElapsed > 0) {
-        _secondsElapsed = _secondsElapsed-10;
-      }
-    });
   }
 
   String _getModeText(int mode) {
@@ -65,22 +66,95 @@ class _TrainingSetState extends State<TrainingSet> {
   }
 
   void _incrementTimer() {
+    Set newSet = widget.set;
     setState(() {
       _secondsElapsed = _secondsElapsed+10;
     });
+    newSet.rest = Duration( seconds: _secondsElapsed);
+    _updateSet(newSet);
   }
 
-  void _handleEditingComplete() {
-    print("onSubmitted: $_controllerRep");
+  void _decrementTimer() {
+    Set newSet = widget.set;
+    setState(() {
+      if (_secondsElapsed > 0) {
+        _secondsElapsed = _secondsElapsed-10;
+      }
+    });
+    newSet.rest = Duration( seconds: _secondsElapsed);
+    _updateSet(newSet);
   }
+
+  void _handleEditingRepComplete() {
+    FocusScope.of(context).unfocus();
+    Set newSet = widget.set;
+    newSet.reps = int.parse(_controllerRep.text);
+    _updateSet(newSet);
+
+  }
+
+  void _handleEditingWeightComplete() {
+    FocusScope.of(context).unfocus();
+    Set newSet = widget.set;
+    newSet.weight = _controllerWeight.text.split(',').map((e) => int.parse(e.trim())).toList();
+    _updateSet(newSet);
+  }
+
+  Future<void> _updateSet(Set newSet) async {
+    try {
+      Set setUpdated = await setClientApi.updateSet(widget.set.id, newSet);
+
+      setState(() {
+        widget.set.reps = setUpdated.reps;
+        widget.set.mode = setUpdated.mode;
+        widget.set.weight = setUpdated.weight;
+        widget.set.rest = setUpdated.rest;
+        widget.set.isDone = setUpdated.isDone;
+      });
+    } catch (e) {
+      print("Error in the set's update : $e");
+    }
+  }
+
+
+
+  Future<void> _markSetAsDone() async {
+    widget.set.isDone = true;
+
+    await _updateSet(widget.set);
+
+    if (widget.isFinished != null) {
+      await widget.isFinished();
+    }
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return Card(
-      color: AppColors.greyMid,
+    return Dismissible(
+      key: Key(widget.set.id.toString()),
+      direction: widget.status == 1 && !widget.set.isDone ? DismissDirection.endToStart : DismissDirection.none,
+      confirmDismiss: (DismissDirection direction) async {
+        if (direction == DismissDirection.endToStart) {
+          await _markSetAsDone(); // Attendre que le set soit marqué comme terminé
+          return false; // Retourner false pour ne pas supprimer l'élément (ou true si nécessaire)
+        }
+        return false;
+      },
+      background: Container(
+        color: Colors.green,
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Icon(Icons.check, color: Colors.white),
+      ),
+      child :
+     Card(
+      color: widget.set.isDone ? Colors.grey.withOpacity(0.5) : AppColors.greyMid,
       margin: EdgeInsets.symmetric(
         vertical: screenHeight * 0.01,
         horizontal: screenWidth * 0.01,
@@ -161,6 +235,7 @@ class _TrainingSetState extends State<TrainingSet> {
                               if (widget.status != 2 && !widget.set.isDone && value != null) {
                                 setState(() {
                                   widget.set.mode = value;
+                                  _updateSet(widget.set);
                                 });
                               }
                             },
@@ -179,7 +254,19 @@ class _TrainingSetState extends State<TrainingSet> {
                         ),
                         alignment: Alignment.center,
                         child: Center(
-                          child: Text(widget.set.weight.join(', '), style: const TextStyle(color: Colors.white)),
+                          child: widget.status == 2 || widget.set.isDone ?
+                          Text(
+                              widget.set.weight.join(', '),
+                              style: const TextStyle(color: Colors.white))
+                          : TextField(
+                            controller: _controllerWeight,
+                            keyboardType: TextInputType.number,
+                            onEditingComplete: _handleEditingWeightComplete,
+                            decoration: const InputDecoration(
+                              hintText: "0,0,0",
+                            ),
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
@@ -197,8 +284,9 @@ class _TrainingSetState extends State<TrainingSet> {
                           child: widget.status == 2 || widget.set.isDone ?
                           Text("${widget.set.reps}", style: const TextStyle(color: Colors.white)) :
                           TextField(
-                              //onEditingComplete: _handleEditingComplete(),
-                              controller: TextEditingController(text: "${widget.set.reps}") ,
+                            keyboardType: TextInputType.number,
+                              onEditingComplete: () => _handleEditingRepComplete(),
+                              controller: _controllerRep,
                               style: const TextStyle(color: Colors.white)),
                         ),
                       ),
@@ -231,7 +319,7 @@ class _TrainingSetState extends State<TrainingSet> {
                           ),
                           width: screenWidth * 0.3,
                           height: screenHeight * 0.06,
-                          onPressed: _decrementTimer,
+                          onPressed: _isDisabled ? null : _decrementTimer,
                         ),
                       ),
                       Container(
@@ -259,7 +347,7 @@ class _TrainingSetState extends State<TrainingSet> {
                           ),
                           width: screenWidth * 0.3,
                           height: screenHeight * 0.06,
-                          onPressed: _incrementTimer,
+                          onPressed: _isDisabled ? null : _incrementTimer,
                         ),
                       ),
                     ],
@@ -270,7 +358,7 @@ class _TrainingSetState extends State<TrainingSet> {
           ],
         ),
       ),
-    );
+    ),);
   }
 
   String formatTime(int seconds) {

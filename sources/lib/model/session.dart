@@ -43,7 +43,7 @@ class Session {
     "name": name,
     "date": date?.toUtc().toIso8601String(),
     "duration": Utils.formatDuration(duration!),
-    "practicalexercises": List<dynamic>.from(exercises.map((x) => x.toJson())),
+    "exercises": List<dynamic>.from(exercises.map((x) => x.toJson())),
     "status": status
   };
 

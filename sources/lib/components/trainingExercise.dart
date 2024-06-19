@@ -16,8 +16,9 @@ class TrainingExercise extends StatefulWidget {
   late PracticalExercise exercise;
   late int status;
   late VoidCallback? onDelete;
+  late Function() isFinished;
 
-  TrainingExercise({Key? key, required this.exercise, required this.status, required this.onDelete}) : super(key: key);
+  TrainingExercise({Key? key, required this.exercise, required this.status, required this.onDelete, required this.isFinished}) : super(key: key);
 
   @override
   _TrainingExerciseWidgetState createState() => _TrainingExerciseWidgetState();
@@ -45,7 +46,6 @@ class _TrainingExerciseWidgetState extends State<TrainingExercise> {
     });
     try {
       currentExercice = await practicalExerciseClientApi.getPracticalExerciseById(widget.exercise.id);
-      print(currentExercice!.id);
       setState(() {
         isLoading = false;
       });
@@ -152,10 +152,11 @@ class _TrainingExerciseWidgetState extends State<TrainingExercise> {
                     indent: 16.0,
                   ),
                 ),
+                widget.status == 0 ?
                 IconButton(
                   icon: const Icon(Icons.delete, color: Colors.white),
                   onPressed: widget.onDelete,
-                ),
+                ) : Container(),
               ],
             ),
           ),
@@ -166,12 +167,11 @@ class _TrainingExerciseWidgetState extends State<TrainingExercise> {
               : currentExercice != null
               ? Column(
             children: currentExercice!.sets.map((set) {
-              print("set.id");
-              print(set.id);
               return GestureDetector(
-                  onLongPress:  () => _showDeleteConfirmationDialog(set.id),
+                  onLongPress: widget.status == 0 || (widget.status == 1 && !set.isDone) ?  () => _showDeleteConfirmationDialog(set.id) : null,
                   child: TrainingSet(
                 set: set,
+                isFinished: () => widget.isFinished(),
                 status: currentExercice!.session!.status,
               ) );
             }).toList(),

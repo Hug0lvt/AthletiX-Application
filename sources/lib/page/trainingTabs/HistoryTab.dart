@@ -47,9 +47,12 @@ class _HistoryTab extends State<HistoryTab> {
       profileId = profile.id;
     }
     try {
-      List<Session> fetchedSessions = await clientApi.getPastSessionsOfUser(profileId);
+      List<Session> fetchedSessions = await clientApi.getProgramsOfUserWithEx(profileId);
+      List<Session> filterSessions = fetchedSessions
+          .where((session) => session.status == 2 )
+          .toList();
       setState(() {
-        sessions = fetchedSessions;
+        sessions = filterSessions;
         isLoading = false;
       });
     } on NotFoundException catch (_) {
