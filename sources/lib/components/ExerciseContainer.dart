@@ -5,12 +5,10 @@ import 'dart:convert';
 
 class ExerciseContainer extends StatelessWidget {
   final Exercise exercice;
-  final Function(Exercise)? onExerciseSelected;
   final Color? backgroundColor; // Nouveau paramètre pour la couleur de fond
 
   ExerciseContainer({
     required this.exercice,
-    this.onExerciseSelected,
     this.backgroundColor, // Paramètre optionnel
   });
 
@@ -59,70 +57,59 @@ class ExerciseContainer extends StatelessWidget {
       }
     }
 
-    return GestureDetector(
-      onTap:  () {
-        if (onExerciseSelected != null) {
-          onExerciseSelected!(exercice);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Gesture Detected on ' + exercice.name)),
-          );
-        }
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            decoration: kGradientBoxDecoration.copyWith(
-              // Remplace la couleur par défaut par la couleur à utiliser
-              color: backgroundColorToUse,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Container(
-                width: screenWidth * 0.97,
-                decoration: ShapeDecoration(
-                  color: defaultBackgroundColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          decoration: kGradientBoxDecoration.copyWith(
+            // Remplace la couleur par défaut par la couleur à utiliser
+            color: backgroundColorToUse,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Container(
+              width: screenWidth * 0.97,
+              decoration: ShapeDecoration(
+                color: defaultBackgroundColor, // Utilise la couleur par défaut
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                shadows: const [
+                  BoxShadow(
+                    color: Color(0x3F000000),
+                    blurRadius: 4,
+                    offset: Offset(0, 4),
+                    spreadRadius: 0,
                   ),
-                  shadows: const [
-                    BoxShadow(
-                      color: Color(0x3F000000),
-                      blurRadius: 4,
-                      offset: Offset(0, 4),
-                      spreadRadius: 0,
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(25.0),
+                      child: _buildImage(),
+                    ),
+                    SizedBox(width: dynamicSpacing),
+                    Text(
+                      exercice.name,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: screenWidth * 0.036,
+                        fontFamily: 'Mulish',
+                      ),
                     ),
                   ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(25.0),
-                        child: _buildImage(),
-                      ),
-                      SizedBox(width: dynamicSpacing),
-                      Text(
-                        exercice.name,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: screenWidth * 0.036,
-                          fontFamily: 'Mulish',
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 10.0),
-        ],
-      ),
+        ),
+        const SizedBox(height: 10.0),
+      ],
     );
   }
 }
