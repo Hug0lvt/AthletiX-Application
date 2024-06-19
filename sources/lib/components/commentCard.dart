@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -11,8 +13,8 @@ class CommentCard extends StatelessWidget {
   Widget _buildImage() {
     try {
       if (profileImageUrl.isNotEmpty) {
-        return  Image.network(
-          profileImageUrl,
+        return  Image.memory(
+          base64Decode(profileImageUrl),
           width: 50,
           height: 50,
           fit: BoxFit.cover,
