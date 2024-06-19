@@ -17,6 +17,7 @@ class Post {
   String? description;
   int? publicationType;
   String? content;
+  String? thumbnail;
   List<Comment>? comments;
   List<Exercise>? exercises;
 
@@ -28,6 +29,7 @@ class Post {
     this.description,
     this.publicationType,
     this.content,
+    this.thumbnail,
     this.comments,
     this.exercises,
   });
@@ -40,6 +42,7 @@ class Post {
     description: json["description"],
     publicationType: json["publicationType"],
     content: json["content"],
+    thumbnail: json["thumbnail"],
     comments: json["comments"] != null ? List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x))) : [],
     exercises: json["exercises"]!= null ? List<Exercise>.from(json["exercises"].map((x) => Exercise.fromJson(x))) : [],
   );
@@ -52,6 +55,7 @@ class Post {
     "description": description,
     "publicationType": publicationType,
     "content": content,
+    "thumbnail": thumbnail,
     "comments": List<dynamic>.from(comments!.map((x) => x.toJson())),
     "exercises": exercises != null ? List<dynamic>.from(exercises!.map((x) => x.toJson())) : [],
   };

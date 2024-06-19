@@ -179,19 +179,9 @@ class _TrainingTab extends State<TrainingTab> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () async {
-                    final Session? createdSession = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddTrainingPage()),
-                    );
-
-                    if (createdSession != null) {
-                      setState(() {
-                        _loadSessions();
-                      });
-                    }
-                  },
-                  icon: SvgPicture.asset('assets/AddPlus.svg'),)
+                  onPressed: onPressed,
+                  icon: SvgPicture.asset('assets/AddPlus.svg'),
+                )
               ],
             ),
             const SizedBox(height: 8.0),
