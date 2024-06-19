@@ -81,11 +81,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _initializeVideoController() {
-    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content!)
+    _controller = VideoPlayerController.networkUrl(Uri.parse(_posts[_currentVideoIndex].content!))
       ..initialize().then((_) {
         _controller.setLooping(true);
         _controller.play();
         setState(() {});
+      }).catchError((error) {
+        print("Error initializing video: $error");
       });
   }
 
@@ -342,11 +344,13 @@ class _HomePageState extends State<HomePage> {
 
   void _updateVideoController() {
     _controller.pause();
-    _controller = VideoPlayerController.network(_posts[_currentVideoIndex].content!)
+    _controller = VideoPlayerController.networkUrl(Uri.parse(_posts[_currentVideoIndex].content!))
       ..initialize().then((_) {
         _controller.setLooping(true);
         _controller.play();
         setState(() {});
+      }).catchError((error) {
+        print("Error initializing video: $error");
       });
   }
 
