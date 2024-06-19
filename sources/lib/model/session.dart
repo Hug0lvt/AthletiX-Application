@@ -10,31 +10,44 @@ String sessionToJson(Session data) => json.encode(data.toJson());
 
 class Session {
   int? id;
-  Profile profile;
+  Profile? profile;
   String name;
   DateTime? date;
   Duration? duration;
   List<PracticalExercise> exercises;
+  int status;
 
   Session({
     this.id,
-    required this.profile,
+    this.profile,
     required this.name,
     this.date,
     this.duration,
     required this.exercises,
+    required this.status
   });
 
   factory Session.fromJson(Map<String, dynamic> json) => Session(
     id: json["id"],
-    profile: Profile.fromJson(json["profile"]),
+    profile: json["profile"] != null ? Profile.fromJson(json["profile"]) : null,
     name: json["name"],
     date: DateTime.parse(json["date"]),
     duration: Utils.parseDuration(json["duration"]),
-    exercises: List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))),
+    exercises: json["exercises"]!= null  ? List<PracticalExercise>.from(json["exercises"].map((x) => PracticalExercise.fromJson(x))) : [],
+    status: json["status"],
   );
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "profile": profile!.toJson(),
+    "name": name,
+    "date": date?.toUtc().toIso8601String(),
+    "duration": Utils.formatDuration(duration!),
+    "exercises": List<dynamic>.from(exercises.map((x) => x.toJson())),
+    "status": status
+  };
+
+  /*Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       "profile": profile.toJson(),
       "name": name,
@@ -51,5 +64,5 @@ class Session {
     }
     return data;
   }
-
+*/
 }

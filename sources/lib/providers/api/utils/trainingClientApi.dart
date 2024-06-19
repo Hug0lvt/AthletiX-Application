@@ -27,7 +27,16 @@ class TrainingClientApi{
       String jsonReply = await _clientApi.getData('$_endpoint/user/$profileId');
       Map<String, dynamic> data = json.decode(jsonReply);
       String jsonItems = json.encode(data["items"]);
-      //return sessionListFromJson(jsonItems);
+      return sessionListFromJson(jsonItems);
+    }
+    return [];
+  }
+
+  Future<List<Session>> getProgramsOfUserWithEx(int? profileId) async {
+    if(profileId != null) {
+      String jsonReply = await _clientApi.getData('$_endpoint/user/$profileId?includeExercise=true');
+      Map<String, dynamic> data = json.decode(jsonReply);
+      String jsonItems = json.encode(data["items"]);
       return sessionListFromJson(jsonItems);
     }
     return [];

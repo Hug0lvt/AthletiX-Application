@@ -9,8 +9,8 @@ class PracticalExerciseClientApi{
     _clientApi = cli;
   }
 
-  Future<PracticalExercise> createPracticalExercise(PracticalExercise exercise) async {
-    return practicalexerciseFromJson(await _clientApi.postData(_endpoint, practicalexerciseToJson(exercise)));
+  Future<PracticalExercise> createPracticalExercise(int sessionId, int exerciseId) async {
+    return practicalexerciseFromJson(await _clientApi.postData('$_endpoint?sessionId=$sessionId&exerciseId=$exerciseId', ''));
   }
 
   Future<PracticalExercise> getPracticalExerciseById(int exerciseId) async {

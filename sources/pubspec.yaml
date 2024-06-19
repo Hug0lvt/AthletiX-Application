@@ -60,6 +60,8 @@ flutter:
   - assets/doigby.mp4
   - assets/airsoft.mp4
   - assets/Logo.png
+  - assets/AddIcon.svg
+  - assets/MinusIcon.svg
   - assets/SettingsIcon.svg
   - assets/StatisticsIcon.svg
   - assets/HeartIcon.svg

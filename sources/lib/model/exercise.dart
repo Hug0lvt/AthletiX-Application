@@ -12,14 +12,14 @@ class Exercise {
   String name;
   String description;
   String image;
-  Category category;
+  Category? category;
 
   Exercise({
     required this.id,
     required this.name,
     required this.description,
     required this.image,
-    required this.category,
+    this.category,
   });
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
@@ -28,7 +28,7 @@ class Exercise {
       name: json["name"],
       description: json["description"],
       image: json["image"] ?? '', // Assign empty if no image provided
-      category: Category.fromJson(json["category"]),
+      category: json["category"]!=null ? Category.fromJson(json["category"]) : null,
     );
     return exercise;
   }
@@ -38,18 +38,16 @@ class Exercise {
     "name": name,
     "description": description,
     "image": image,
-    "category": category.toJson(),
+    "category": category?.toJson(),
   };
 
   // Function to convert from Exercise to PracticalExercise
-  PracticalExercise exerciseToPracticalExercise() {
+  /*PracticalExercise exerciseToPracticalExercise(Session session) {
     return PracticalExercise(
       id: this.id,
-      name: this.name,
-      description: this.description,
-      image: this.image,
-      category: this.category,
+      exercise: this,
+      session: ,
       sets: [],
     );
-  }
+  }*/
 }

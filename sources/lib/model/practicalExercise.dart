@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:AthletiX/model/exercise.dart';
+import 'package:AthletiX/model/session.dart';
+
+import 'package:AthletiX/model/exercise.dart';
 
 import 'category.dart';
 import 'set.dart';
@@ -10,41 +13,33 @@ String practicalexerciseToJson(PracticalExercise data) => json.encode(data.toJso
 
 class PracticalExercise {
   int id;
-  String name;
-  String description;
-  String image;
-  Category category;
+  Exercise exercise;
+  Session? session;
   List<Set> sets;
 
   PracticalExercise({
     required this.id,
-    required this.name,
-    required this.description,
-    required this.image,
-    required this.category,
+    required this.exercise,
+    this.session,
     required this.sets,
   });
 
   factory PracticalExercise.fromJson(Map<String, dynamic> json) => PracticalExercise(
     id: json["id"],
-    name: json["name"],
-    description: json["description"],
-    image: json["image"],
-    category: Category.fromJson(json["category"]),
-    sets: List<Set>.from(json["sets"].map((x) => Set.fromJson(x))),
+    exercise: Exercise.fromJson(json["exercise"]),
+    session: Session.fromJson(json["session"]),
+    sets: json["sets"]!= null  ? List<Set>.from(json["sets"].map((x) => Set.fromJson(x))) : [],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": name,
-    "description": description,
-    "image": image,
-    "category": category.toJson(),
+    "exercise": exercise.toJson(),
+    "session": session!.toJson(),
     "sets": List<dynamic>.from(sets.map((x) => x.toJson())),
   };
 
   // Function to convert from PracticalExercise to Exercise
-  Exercise practicalExerciseToExercise() {
+  /*Exercise practicalExerciseToExercise() {
     return Exercise(
       id: this.id,
       name: this.name,
@@ -52,6 +47,6 @@ class PracticalExercise {
       image: this.image,
       category: this.category,
     );
-  }
+  }*/
 }
 

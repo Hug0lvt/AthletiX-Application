@@ -5,13 +5,17 @@ class ProgramContainer extends StatelessWidget {
   final String title;
   final List<PracticalExercise> exercises;
   final String lastSession;
+  final int? status;
   final VoidCallback? onDelete;
+  final VoidCallback? onTap;
 
   ProgramContainer({
     required this.title,
     required this.exercises,
     required this.lastSession,
+    this.status,
     this.onDelete,
+    required this.onTap,
   });
 
   @override
@@ -20,41 +24,71 @@ class ProgramContainer extends StatelessWidget {
 
     List<Widget> positionedWidgets = [];
 
-    for (int i = 0; i < exercises.length; i++) {
-      String buildExercice = "${exercises[i].sets.length} x ${exercises[i].sets[0].reps} ${exercises[i].name}";
-      positionedWidgets.add(
-        SizedBox(
-          width: screenWidth * 0.57,
-          child: Text(
-            buildExercice,
-            style: TextStyle(
-              color: const Color(0xFFA1A1A1),
-              fontSize: screenWidth * 0.03,
-              fontFamily: 'Mulish',
+    if (exercises.isNotEmpty) {
+      for (int i = 0; i < exercises.length; i++) {
+        String buildExercice;
+        if (exercises[i].sets.isNotEmpty) {
+          buildExercice = "${exercises[i].sets.length} x ${exercises[i].sets[0].reps} ${exercises[i].exercise.name}";
+        } else {
+          buildExercice = "${exercises[i].exercise.name}";
+        }
+        positionedWidgets.add(
+          SizedBox(
+            width: screenWidth * 0.57,
+            child: Text(
+              buildExercice,
+              style: TextStyle(
+                color: const Color(0xFFA1A1A1),
+                fontSize: screenWidth * 0.03,
+                fontFamily: 'Mulish',
+              ),
             ),
           ),
-        ),
-      );
+        );
+      }
     }
 
-    final kGradientBoxDecoration = BoxDecoration(
-      boxShadow: const [
-        BoxShadow(
-          color: Color(0x3F000000),
-          blurRadius: 4,
-          offset: Offset(0, 4),
-          spreadRadius: 0,
-        ),
-      ],
-      gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFFB66CFF), Color(0xFFA2E4E6)]),
-      borderRadius: BorderRadius.circular(10),
-    );
+
+    BoxDecoration kGradientBoxDecoration() {
+      if (status == 1) {
+        return BoxDecoration(
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 4),
+              spreadRadius: 0,
+            ),
+          ],
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.orange, Colors.orangeAccent],
+          ),
+          borderRadius: BorderRadius.circular(10),
+        );
+      } else {
+        return BoxDecoration(
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x3F000000),
+              blurRadius: 4,
+              offset: Offset(0, 4),
+              spreadRadius: 0,
+            ),
+          ],
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFB66CFF), Color(0xFFA2E4E6)],
+          ),
+          borderRadius: BorderRadius.circular(10),
+        );
+      }
+    }
 
     return GestureDetector(
-      onTap: () {
+      onTap: onTap ?? () {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Gesture Detected!')));
       },
@@ -62,7 +96,7 @@ class ProgramContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            decoration: kGradientBoxDecoration,
+            decoration: kGradientBoxDecoration(),
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: Container(

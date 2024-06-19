@@ -1,4 +1,6 @@
+import 'package:AthletiX/page/addTraining.dart';
 import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/page/modifTraining.dart';
 import 'package:AthletiX/providers/localstorage/secure/authManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -37,6 +39,10 @@ class _TrainingTab extends State<TrainingTab> {
     });
   }
 
+  void _onBackModif(bool popOrNot) {
+    _loadSessions();
+  }
+
   void _loadSessions() async {
     setState(() {
       isLoading = true;
@@ -47,9 +53,9 @@ class _TrainingTab extends State<TrainingTab> {
       profileId = profile.id;
     }
     try {
-      List<Session> fetchedSessions = await clientApi.getProgramsOfUser(profileId);
+      List<Session> fetchedSessions = await clientApi.getProgramsOfUserWithEx(profileId);
       List<Session> filterSessions = fetchedSessions
-          .where((session) => session.name.toLowerCase().contains(searchQuery.toLowerCase()))
+          .where((session) => session.name.toLowerCase().contains(searchQuery.toLowerCase()) && (session.status != 2 ))
           .toList();
       setState(() {
         filteredSessions = filterSessions;
@@ -173,7 +179,18 @@ class _TrainingTab extends State<TrainingTab> {
                   ),
                 ),
                 IconButton(
-                  onPressed: onPressed,
+                  onPressed: () async {
+                    final Session? createdSession = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddTrainingPage()),
+                    );
+
+                    if (createdSession != null) {
+                      setState(() {
+                        _loadSessions();
+                      });
+                    }
+                  },
                   icon: SvgPicture.asset('assets/AddPlus.svg'),
                 )
               ],
@@ -199,6 +216,7 @@ class _TrainingTab extends State<TrainingTab> {
                 itemBuilder: (context, index) {
                   return ProgramContainer(
                     title: filteredSessions[index].name,
+                    status: filteredSessions[index].status,
                     lastSession: filteredSessions[index].date != null ? ((DateTime.now()
                         .difference(filteredSessions[index].date!)
                         .inDays
@@ -209,6 +227,11 @@ class _TrainingTab extends State<TrainingTab> {
                         ? filteredSessions[index].exercises
                         : [],
                     onDelete: () => _showDeleteConfirmationDialog(filteredSessions[index]),
+                    onTap: () => {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ModifTrainingPage(session: filteredSessions[index], onBack: _onBackModif,)),
+                    ) },
                   );
                 },
               ),

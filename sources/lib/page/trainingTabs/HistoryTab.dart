@@ -8,6 +8,8 @@ import 'package:AthletiX/model/session.dart';
 import 'package:AthletiX/providers/api/utils/trainingClientApi.dart';
 import 'package:AthletiX/main.dart';
 
+import '../modifTraining.dart';
+
 class HistoryTab extends StatefulWidget {
   const HistoryTab({super.key});
   @override
@@ -45,9 +47,12 @@ class _HistoryTab extends State<HistoryTab> {
       profileId = profile.id;
     }
     try {
-      List<Session> fetchedSessions = await clientApi.getPastSessionsOfUser(profileId);
+      List<Session> fetchedSessions = await clientApi.getProgramsOfUserWithEx(profileId);
+      List<Session> filterSessions = fetchedSessions
+          .where((session) => session.status == 2 )
+          .toList();
       setState(() {
-        sessions = fetchedSessions;
+        sessions = filterSessions;
         isLoading = false;
       });
     } on NotFoundException catch (_) {
@@ -107,22 +112,26 @@ class _HistoryTab extends State<HistoryTab> {
                   ),
                 )
                     : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: sessions.length,
-                  itemBuilder: (context, index) {
-                    return ProgramContainer(
-                      title: sessions[index].name,
-                      lastSession: sessions[index].date != null ? ((DateTime.now()
-                          .difference(sessions[index].date!)
-                          .inDays
-                          .toString()) == '0' ? 'Today' : '${DateTime.now()
-                          .difference(sessions[index].date!)
-                          .inDays} days ago') : 'No record found',
-                      exercises: sessions[index].exercises.isNotEmpty
-                          ? sessions[index].exercises
-                          : [],
-                    );
-                  },
+                      shrinkWrap: true,
+                      itemCount: sessions.length,
+                      itemBuilder: (context, index) {
+                        return ProgramContainer(
+                          title: sessions[index].name,
+                          lastSession: sessions[index].date != null ? ((DateTime.now()
+                              .difference(sessions[index].date!)
+                              .inDays
+                              .toString()) == '0' ? 'Today' : '${DateTime.now()
+                              .difference(sessions[index].date!)
+                              .inDays} days ago') : 'No record found',
+                          exercises: sessions[index].exercises.isNotEmpty
+                              ? sessions[index].exercises
+                              : [],
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ModifTrainingPage(session: sessions[index])),
+                          ),
+                        );
+                      },
                 ),
               ],
             ),
