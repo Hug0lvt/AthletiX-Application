@@ -39,6 +39,10 @@ class _TrainingTab extends State<TrainingTab> {
     });
   }
 
+  void _onBackModif(bool popOrNot) {
+    _loadSessions();
+  }
+
   void _loadSessions() async {
     setState(() {
       isLoading = true;
@@ -51,7 +55,7 @@ class _TrainingTab extends State<TrainingTab> {
     try {
       List<Session> fetchedSessions = await clientApi.getProgramsOfUserWithEx(profileId);
       List<Session> filterSessions = fetchedSessions
-          .where((session) => session.name.toLowerCase().contains(searchQuery.toLowerCase()))
+          .where((session) => session.name.toLowerCase().contains(searchQuery.toLowerCase()) && (session.status == 0 || session.status == 1 ))
           .toList();
       setState(() {
         filteredSessions = filterSessions;
@@ -212,6 +216,7 @@ class _TrainingTab extends State<TrainingTab> {
                 itemBuilder: (context, index) {
                   return ProgramContainer(
                     title: filteredSessions[index].name,
+                    status: sessions[index].status,
                     lastSession: sessions[index].date != null ? ((DateTime.now()
                         .difference(sessions[index].date!)
                         .inDays
@@ -225,7 +230,7 @@ class _TrainingTab extends State<TrainingTab> {
                     onTap: () => {
                       Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ModifTrainingPage(session: sessions[index])),
+                      MaterialPageRoute(builder: (context) => ModifTrainingPage(session: sessions[index], onBack: _onBackModif,)),
                     ) },
                   );
                 },

@@ -4,8 +4,8 @@ class Utils {
     List<String> parts = durationString.split(':');
     int hours = int.parse(parts[0]);
     int minutes = int.parse(parts[1]);
-    int seconds = int.parse(parts[2]);
-    return Duration(hours: hours, minutes: minutes, seconds: seconds);
+    double seconds = double.parse(parts[2].split('.')[0]);
+    return Duration(hours: hours, minutes: minutes, seconds: seconds.toInt());
   }
 
   static String formatDuration(Duration duration) {
