@@ -109,25 +109,20 @@ class _ConversationPageState extends State<ConversationPage> {
                 borderRadius: BorderRadius.circular(10),
               ),
               height: 100,
-              /*child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 20,
-                itemBuilder: (context, index) {
-                  return const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                      radius: 35,
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.white,
-                        child: _buildImage(conversations[index], screenWidth, screenHeight)
-                    ),
-                  );
-                },
-              ),*/
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
+              child: conversations.isEmpty
+                  ? Center(
+                child: Text(
+                  'No conversations available.',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              )
+                  : ListView.builder(
                 itemCount: conversations.length,
                 itemBuilder: (context, index) {
                   return ConversationWidget(data: conversations[index]);
