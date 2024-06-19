@@ -3,6 +3,7 @@ import 'package:AthletiX/components/profilePublicPostedCard.dart';
 import 'package:AthletiX/main.dart';
 import 'package:AthletiX/model/post.dart';
 import 'package:AthletiX/model/profile.dart';
+import 'package:AthletiX/page/profilePublic.dart';
 import 'package:AthletiX/providers/api/utils/postClientApi.dart';
 import 'package:AthletiX/providers/api/utils/profileClientApi.dart';
 import 'package:flutter/material.dart';
@@ -222,10 +223,20 @@ class _SearchPageState extends State<SearchPage> {
                     margin: EdgeInsets.fromLTRB(
                         screenWidth * 0.01, screenHeight * 0.01, screenWidth * 0.01, 0),
                     width: screenWidth,
-                    child: UserCard(
-                      profile: users[index],
-                      screenWidth: screenWidth,
-                      screenHeight: screenHeight,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfilePublicPage(profile: users[index]),
+                          ),
+                        );
+                      },
+                      child: UserCard(
+                        profile: users[index],
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight,
+                      ),
                     ),
                   );
                 },
