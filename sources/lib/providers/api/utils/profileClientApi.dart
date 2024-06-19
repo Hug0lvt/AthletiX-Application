@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:AthletiX/providers/api/clientApi.dart';
 import '../../../model/profile.dart';
 
@@ -27,5 +29,11 @@ class ProfileClientApi{
 
   Future<Profile> deleteProfile(int profileId) async {
     return profileFromJson(await _clientApi.deleteData('$_endpoint/$profileId'));
+  }
+
+  Future<List<Profile>> getProfileByQuery(String query) async {
+    final response = await _clientApi.getData('$_endpoint/search/$query');
+    final data = json.decode(response) as Map<String, dynamic>;
+    return (data['items'] as List).map((item) => Profile.fromJson(item)).toList();
   }
 }
